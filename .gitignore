@@ -32,5 +32,6 @@ accuconf_config.py
 /.idea/
 
 # Test stuff
-/.cache/
-/.hypothesis/
+.cache/
+.benchmarks/
+.hypothesis/

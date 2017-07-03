@@ -68,11 +68,11 @@ class Proposal(db.Model):
 
 class Presenter(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(100), nullable=False, unique=True)
-    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(64), nullable=False, unique=True)
+    name = db.Column(db.String(96), nullable=False)
     bio = db.Column(db.Text(), nullable=False)
-    country = db.Column(db.String(100), nullable=False)  # TODO Should be String(5)
-    state = db.Column(db.String(100), nullable=False)  # TODO Should be String(10)
+    country = db.Column(db.String(5), nullable=False)  # Use ISO 3 character codes
+    state = db.Column(db.String(20), nullable=False)
     proposals = db.relationship(ProposalPresenter, back_populates='presenter')
 
     def __init__(self, email, name, bio, country, state):

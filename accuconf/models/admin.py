@@ -36,8 +36,7 @@ class UserAdmin(ModelView):
 
 class ProposalsAdmin(ModelView):
     column_list = [
-        'proposer.first_name',
-        'proposer.last_name',
+        'proposer.name',
         'title',
         'session_type',
         'audience',
