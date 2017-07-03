@@ -1,3 +1,5 @@
+[![Licence](https://img.shields.io/badge/license-GPL_3-green.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+
 # ACCUConf Proposal Submission Web Application
 
 This repository contains the source of the Web application for submitting and
@@ -17,4 +19,5 @@ used then.
 
 ## Licence
 
-This code is licensed under the GNU Public License Version 3.
+This code is licensed under
+the [GNU Public License Version 3](https://www.gnu.org/licenses/gpl-3.0.en.html).
