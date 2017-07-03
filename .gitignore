@@ -1,0 +1,36 @@
+# Emacs backup files
+*~
+
+# All Python compiled stuff
+__pycache__/
+*.py[cod]
+
+# The SQLite databases
+/accuconf_test.db
+/accuconf_save.db
+/accuconf_api.db
+/accuconf.db
+
+# Committee member emails
+/scripts/committee_email.txt
+
+# The generated files and their renderings
+/presenters.adoc
+/presenters.html
+/presenters.pdf
+/schedule.adoc
+/schedule.html
+/schedule.pdf
+/sessions.adoc
+/sessions.html
+/sessions.pdf
+
+# The configuration file, it is a per server local file
+accuconf_config.py
+
+# PyCharm project directory
+/.idea/
+
+# Test stuff
+/.cache/
+/.hypothesis/
