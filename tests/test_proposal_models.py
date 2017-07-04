@@ -9,21 +9,22 @@ from accuconf.models import User, Proposal, Presenter, ProposalPresenter, Score,
 from accuconf.utils.proposals import SessionType, SessionCategory, ProposalState
 
 user_data = (
-    "abc@b.c",
-    "password",
+    'abc@b.c',
+    'password',
     'User Name',
     '+01234567890',
-    "IND",
-    "KARNATAKA",
-    "560093",
+    'IND',
+    'KARNATAKA',
+    '560093',
     'Town',
     'Address',
 )
 
 proposal_data = (
-    "TDD with C++",
+    'TDD with C++',
     SessionType.quickie,
-    "A session about creating C++ programs with proper process.",
+    'A session about creating C++ programs with proper process.',
+    'Some notes to the committee',
 )
 
 
@@ -45,7 +46,7 @@ def test_putting_proposal_in_database(database):
     assert len(query_result) == 1
     proposal = query_result[0]
     assert proposal.proposer.email == user.email
-    assert (proposal.title, proposal.session_type, proposal.text) == proposal_data
+    assert (proposal.title, proposal.session_type, proposal.text, proposal.notes) == proposal_data
     assert len(proposal.presenters) == 1
     proposal_presenter = proposal.presenters[0]
     is_lead = proposal_presenter.is_lead

@@ -30,6 +30,7 @@ class Proposal(db.Model):
     title = db.Column(db.String(150), nullable=False)
     session_type = db.Column(db.Enum(SessionType), nullable=False)
     text = db.Column(db.Text, nullable=False)
+    notes = db.Column(db.Text, nullable=True)
     presenters = db.relationship(ProposalPresenter, back_populates='proposal')
     audience = db.Column(db.Enum(SessionAudience), nullable=False)
     category = db.Column(db.Enum(SessionCategory), nullable=False)
@@ -46,7 +47,7 @@ class Proposal(db.Model):
     slides_pdf = db.Column(db.String(80))
     video_url = db.Column(db.String(128))
 
-    def __init__(self, proposer, title, session_type, text,
+    def __init__(self, proposer, title, session_type, text, notes='',
                  audience=SessionAudience.all, category=SessionCategory.not_sure, status=ProposalState.submitted,
                  day=None, session=None, quickie_slot=None, track=None, room=None,
                  slides_pdf=None, video_url=None):
@@ -54,6 +55,7 @@ class Proposal(db.Model):
         self.title = title
         self.session_type = session_type
         self.text = text
+        self.notes = notes
         self.audience = audience
         self.category = category
         self.status = status
