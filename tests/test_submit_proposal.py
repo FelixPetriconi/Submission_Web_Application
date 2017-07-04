@@ -15,7 +15,7 @@ from accuconf.utils.proposals import SessionType
 @pytest.fixture(scope='function')
 def registration_data():
     return {
-        'usermail': 'a@b.c',
+        'email': 'a@b.c',
         'password': 'Password1',
         'cpassword': 'Password1',
         'name': 'User Name',
@@ -94,30 +94,30 @@ def proposal_multiple_presenters_and_leads():
 
 
 def test_user_can_register(client, registration_data):
-    post_and_check_content(client, '/proposals/register', registration_data, values=('You have successfully registered',))
+    post_and_check_content(client, '/register', registration_data, values=('You have successfully registered',))
 
 
 def test_user_cannot_register_twice(client, registration_data):
     test_user_can_register(client, registration_data)
-    post_and_check_content(client, '/proposals/register', registration_data, values=('Registration failed',))
+    post_and_check_content(client, '/register', registration_data, values=('Registration failed',))
 
 
 def test_registered_user_can_login(client, registration_data):
     test_user_can_register(client, registration_data)
-    post_and_check_content(client, '/proposals/login', {'usermail': registration_data['usermail'], 'password': registration_data['password']}, code=302, values=('Redirecting',))
-    get_and_check_content(client, '/site/index.html', values=('ACCU Conference',))
+    post_and_check_content(client, '/login', {'usermail': registration_data['usermail'], 'password': registration_data['password']}, code=302, values=('Redirecting',))
+    get_and_check_content(client, '/', values=('ACCU Conference',))
     # TODO How to check in the above that the left-side menu now has the proposals links?
 
 
 def test_logged_in_user_can_get_submission_page(client, registration_data):
     test_registered_user_can_login(client, registration_data)
-    get_and_check_content(client, '/proposals/submit_proposal', values=('Submit a proposal',))
+    get_and_check_content(client, '/submit_proposal', values=('Submit a proposal',))
 
 
 def test_logged_in_user_can_submit_a_single_presenter_proposal(client, registration_data, proposal_single_presenter):
     test_registered_user_can_login(client, registration_data)
     # TODO Why do we have to send JSON here but just used dictionaries previously?
-    rvd = post_and_check_content(client, '/proposals/upload_proposal', json.dumps(proposal_single_presenter), 'application/json', values=('success',))
+    rvd = post_and_check_content(client, '/upload_proposal', json.dumps(proposal_single_presenter), 'application/json', values=('success',))
     response = json.loads(rvd)
     assert response['success']
     user = User.query.filter_by(email='a@b.c').all()
@@ -143,7 +143,7 @@ def test_logged_in_user_can_submit_a_single_presenter_proposal(client, registrat
 def test_logged_in_user_can_submit_multipresenter_single_lead_proposal(client, registration_data, proposal_multiple_presenters_single_lead):
     test_registered_user_can_login(client, registration_data)
     # TODO Why do we have to send JSON here but just used dictionaries previously?
-    rvd = post_and_check_content(client, '/proposals/upload_proposal', json.dumps(proposal_multiple_presenters_single_lead), 'application/json', values=('success',))
+    rvd = post_and_check_content(client, '/upload_proposal', json.dumps(proposal_multiple_presenters_single_lead), 'application/json', values=('success',))
     response = json.loads(rvd)
     assert response['success']
     user = User.query.filter_by(email='a@b.c').all()
@@ -169,7 +169,7 @@ def test_logged_in_user_can_submit_multipresenter_single_lead_proposal(client, r
 def test_logged_in_user_cannot_submit_multipresenter_multilead_proposal(client, registration_data, proposal_multiple_presenters_and_leads):
     test_registered_user_can_login(client, registration_data)
     # TODO Why do we have to send JSON here but just used dictionaries previously?
-    rvd = post_and_check_content(client, '/proposals/upload_proposal', json.dumps(proposal_multiple_presenters_and_leads), 'application/json', values=('success',))
+    rvd = post_and_check_content(client, '/upload_proposal', json.dumps(proposal_multiple_presenters_and_leads), 'application/json', values=('success',))
     response = json.loads(rvd)
     assert response["success"] is False
     assert "message" in response

@@ -6,7 +6,7 @@ Test the Proposal and related models.
 from common import database
 
 from accuconf.models import User, Proposal, Presenter, ProposalPresenter, Score, Comment
-from accuconf.utils.proposals import SessionType, SessionCategory, ProposalState
+from accuconf.utils.proposals import SessionType, SessionCategory, ProposalState, SessionCategory, SessionAudience
 
 user_data = (
     'abc@b.c',
@@ -25,6 +25,8 @@ proposal_data = (
     SessionType.quickie,
     'A session about creating C++ programs with proper process.',
     'Some notes to the committee',
+    SessionAudience.intermediate,
+    SessionCategory.agile,
 )
 
 
@@ -46,15 +48,14 @@ def test_putting_proposal_in_database(database):
     assert len(query_result) == 1
     proposal = query_result[0]
     assert proposal.proposer.email == user.email
-    assert (proposal.title, proposal.session_type, proposal.text, proposal.notes) == proposal_data
+    assert (proposal.title, proposal.session_type, proposal.text, proposal.notes, proposal.audience, proposal.category) == proposal_data
+    assert proposal.status == ProposalState.submitted
     assert len(proposal.presenters) == 1
     proposal_presenter = proposal.presenters[0]
     is_lead = proposal_presenter.is_lead
     assert is_lead
     proposal_presenter = proposal_presenter.presenter
     assert (proposal_presenter.email, proposal_presenter.name) == (user.email, user.name)
-    assert proposal.category == SessionCategory.not_sure
-    assert proposal.status == ProposalState.submitted
 
 
 def test_adding_review_and_comment_to_proposal_in_database(database):

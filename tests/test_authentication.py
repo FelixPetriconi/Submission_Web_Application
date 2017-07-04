@@ -6,11 +6,10 @@ from common import client, post_and_check_content
 @pytest.fixture
 def registrant():
     return {
-        'usermail': 'a@b.c',
+        'email': 'a@b.c',
         'password': 'Password1',
         'cpassword': 'Password1',
-        'firstname': 'User',
-        'lastname': 'Name',
+        'name': 'User Name',
         'phone': '+011234567890',
         'pincode': '123456',
         'country': 'India',
@@ -23,16 +22,16 @@ def registrant():
 
 
 def test_user_auth_basic(client, registrant):
-    post_and_check_content(client, '/proposals/register', registrant)
-    post_and_check_content(client, '/proposals/login',
-                           {'usermail': 'a@b.c', 'password': 'Password1'},
+    post_and_check_content(client, '/register', registrant)
+    post_and_check_content(client, '/login',
+                           {'email': 'a@b.c', 'password': 'Password1'},
                            values=('ACCU Conference',),
                            follow_redirects=True)
 
 
 def test_user_auth_fail(client, registrant):
-    post_and_check_content(client, '/proposals/register', registrant)
-    post_and_check_content(client, '/proposals/login',
-                           {'usermail': 'a@b.c', 'password': 'Password2'},
+    post_and_check_content(client, '/register', registrant)
+    post_and_check_content(client, '/login',
+                           {'email': 'a@b.c', 'password': 'Password2'},
                            values=('Login',),
                            follow_redirects=True)
