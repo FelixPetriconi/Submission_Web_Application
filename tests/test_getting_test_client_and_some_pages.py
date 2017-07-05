@@ -42,19 +42,19 @@ def test_the_login_page_call_closed(client, monkeypatch):
 
 def test_the_top_page_call_open(client, monkeypatch):
     assert client is not None
-    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
+    monkeypatch.setitem(app.config, 'CALL_OPEN', True)
     get_and_check_content(client, '/', 200, ('ACCU', 'Register', 'Login'), ('Maintenance',))
 
 
 def test_the_registration_page_call_open(client, monkeypatch):
     assert client is not None
-    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
+    monkeypatch.setitem(app.config, 'CALL_OPEN', True)
     get_and_check_content(client, '/register', 200, ('ACCU', 'Register'), ('Login', 'Maintenance'))
 
 
 def test_the_login_page_call_open(client, monkeypatch):
     assert client is not None
-    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
+    monkeypatch.setitem(app.config, 'CALL_OPEN', True)
     get_and_check_content(client, '/login', 200, ('ACCU', 'Login'), ('Register', 'Maintenance'))
 
 
