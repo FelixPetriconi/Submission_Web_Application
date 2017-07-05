@@ -1,5 +1,5 @@
 """
-This tests that we are able to access the Werkzeug test client of the application,
+This tests that the Werkzeug test client of the application is accessible,
 and that each route delivers up a page with some expected content without
 any unexpected content.
 """

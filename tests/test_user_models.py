@@ -1,5 +1,5 @@
 """
-Test putting the User model into the database and getting it out again.
+Test putting an instance the User model into the database and getting it out again.
 """
 
 import pytest

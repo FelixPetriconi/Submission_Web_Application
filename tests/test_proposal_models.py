@@ -1,5 +1,6 @@
 """
-Test the Proposal and related models.
+Test putting instances of various proposal related types into the database
+and retrieving values and creating new instances of equal value..
 """
 
 # import the fixture, PyCharm believes it isn't a used symbol, but it is.
