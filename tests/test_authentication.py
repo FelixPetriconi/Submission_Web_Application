@@ -11,7 +11,7 @@ def registrant():
         'cpassword': 'Password1',
         'name': 'User Name',
         'phone': '+011234567890',
-        'pincode': '123456',
+        'postcode': '123456',
         'country': 'India',
         'state': 'TamilNadu',
         'towncity': 'Chennai',
