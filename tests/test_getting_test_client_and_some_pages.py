@@ -18,59 +18,67 @@ from accuconf import app
 #  NB app is a global variable with only one per test session so back out of any state changes.
 #  This is made easy by using the pytest monkeypatch fixture.
 
+#  The word Register is almost certain to appear in the template.
+
 
 def test_the_top_page_closed(client, monkeypatch):
     assert client is not None
     monkeypatch.setitem(app.config, 'CALL_OPEN', False)
     monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
-    get_and_check_content(client, '/', 200, ('ACCU', 'not available'), ('Register', 'Login', 'Maintenance',))
+    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+    get_and_check_content(client, '/', 200, ('ACCU', 'Not Open', 'not open'), ('Login', 'Maintenance',))
 
 
 def test_the_registration_page_closed(client, monkeypatch):
     assert client is not None
     monkeypatch.setitem(app.config, 'CALL_OPEN', False)
     monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
-    get_and_check_content(client, '/register', 200, ('ACCU', 'not available'), ('Register', 'Login', 'Maintenance'))
+    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+    get_and_check_content(client, '/register', 200, ('ACCU', 'Not Open', 'not open'), ('Login', 'Maintenance'))
 
 
 def test_the_login_page_call_closed(client, monkeypatch):
     assert client is not None
     monkeypatch.setitem(app.config, 'CALL_OPEN', False)
     monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
-    get_and_check_content(client, '/login', 200, ('ACCU', 'not available'), ('Register', 'Login', 'Maintenance'))
+    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+    get_and_check_content(client, '/login', 200, ('ACCU', 'Not Open', 'not open'), ('Login', 'Maintenance'))
 
 
 def test_the_top_page_call_open(client, monkeypatch):
     assert client is not None
     monkeypatch.setitem(app.config, 'CALL_OPEN', True)
+    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
     get_and_check_content(client, '/', 200, ('ACCU', 'Register', 'Login'), ('Maintenance',))
 
 
 def test_the_registration_page_call_open(client, monkeypatch):
     assert client is not None
     monkeypatch.setitem(app.config, 'CALL_OPEN', True)
+    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
     get_and_check_content(client, '/register', 200, ('ACCU', 'Register'), ('Login', 'Maintenance'))
 
 
 def test_the_login_page_call_open(client, monkeypatch):
     assert client is not None
     monkeypatch.setitem(app.config, 'CALL_OPEN', True)
-    get_and_check_content(client, '/login', 200, ('ACCU', 'Login'), ('Register', 'Maintenance'))
+    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+    get_and_check_content(client, '/login', 200, ('ACCU', 'Login'), ('Maintenance',))
 
 
 def test_the_top_page_maintenance(client, monkeypatch):
     assert client is not None
     monkeypatch.setitem(app.config, 'MAINTENANCE', True)
-    get_and_check_content(client, '/', 200, ('ACCU', 'Maintenance'), ('Register', 'Login'))
+    get_and_check_content(client, '/', 200, ('ACCU', 'Maintenance'), ('Login',))
 
 
 def test_the_register_page_maintenance(client, monkeypatch):
     assert client is not None
     monkeypatch.setitem(app.config, 'MAINTENANCE', True)
-    get_and_check_content(client, '/register', 200, ('ACCU', 'Maintenance'), ('Register', 'Login'))
+    get_and_check_content(client, '/register', 200, ('ACCU', 'Maintenance'), ('Login',))
 
 
 def test_the_login_page_maintenance(client, monkeypatch):
     assert client is not None
     monkeypatch.setitem(app.config, 'MAINTENANCE', True)
-    get_and_check_content(client, '/login', 200, ('ACCU', 'Maintenance'), ('Register', 'Login'))
+    get_and_check_content(client, '/login', 200, ('ACCU', 'Maintenance'), ('Login',))

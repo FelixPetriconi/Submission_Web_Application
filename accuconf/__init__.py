@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 
@@ -16,30 +16,49 @@ Bootstrap(app)
 db = SQLAlchemy(app)
 
 
+def is_acceptable_route():
+    """Check the state of the application and return a pair.
+
+    The first item of the pair is a Boolean stating whether the route is acceptable.
+    The second item of the pair is a rendered template to display if the route is not
+     allowed, and None if it is.
+    """
+    if app.config['MAINTENANCE']:
+        return (False, render_template('maintenance.html'))
+    if not app.config['CALL_OPEN']:
+        if app.config['REVIEWING_ALLOWED']:
+            return (True, None)
+        return (False, render_template('not_open.html'))
+    return (True, None)
+
+
 @app.route('/')
 def index():
-    if app.config['MAINTENANCE']:
-        return 'Maintenance of ACCU website'
-    if not (app.config['CALL_OPEN'] or app.config['REVIEWING_ALLOWED']):
-        return 'ACCU Submission Web application not available.'
+    check = is_acceptable_route()
+    if not check[0]:
+        return check[1]
+    assert check[1] is None
     return 'Hello from ACCU. Register or Login'
 
 
 @app.route('/register')
 def register():
-    if app.config['MAINTENANCE']:
-        return 'Maintenance of ACCU website'
-    if not (app.config['CALL_OPEN'] or app.config['REVIEWING_ALLOWED']):
-        return 'ACCU Submission Web application not available.'
+    check = is_acceptable_route()
+    if not check[0]:
+        return check[1]
+    assert check[1] is None
     return 'Hello from ACCU. Register'
 
 
 @app.route('/login')
 def login():
-    if app.config['MAINTENANCE']:
-        return 'Maintenance of ACCU website'
-    if not (app.config['CALL_OPEN'] or app.config['REVIEWING_ALLOWED']):
-        return 'ACCU Submission Web application not available.'
+    check = is_acceptable_route()
+    if not check[0]:
+        return check[1]
+    assert check[1] is None
     return 'Hello from ACCU. Login'
 
 
+# /navlinks for the dynamic left-side menu
+
+# /current_user ????
