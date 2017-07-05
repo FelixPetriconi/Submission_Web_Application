@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, redirect, render_template
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 
@@ -24,20 +24,20 @@ def is_acceptable_route():
      allowed, and None if it is.
     """
     if app.config['MAINTENANCE']:
-        return (False, render_template('maintenance.html'))
+        return (False, redirect('/'))
     if not app.config['CALL_OPEN']:
         if app.config['REVIEWING_ALLOWED']:
             return (True, None)
-        return (False, render_template('not_open.html'))
+        return (False, redirect('/'))
     return (True, None)
 
 
 @app.route('/')
 def index():
-    check = is_acceptable_route()
-    if not check[0]:
-        return check[1]
-    assert check[1] is None
+    if app.config['MAINTENANCE']:
+        return render_template('maintenance.html')
+    if not (app.config['CALL_OPEN'] or app.config['REVIEWING_ALLOWED']):
+        return render_template('not_open.html')
     return 'Hello from ACCU. Register or Login'
 
 
