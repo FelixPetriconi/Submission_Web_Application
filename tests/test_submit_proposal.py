@@ -8,8 +8,8 @@ import pytest
 
 from common import client, get_and_check_content, post_and_check_content
 
-from accuconf.models import User, Proposal
-from accuconf.utils.proposals import SessionType
+from accuconf_cfp.models import User, Proposal
+from accuconf_cfp.utils.proposals import SessionType
 
 
 @pytest.fixture(scope='function')

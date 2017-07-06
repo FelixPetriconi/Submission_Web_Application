@@ -6,8 +6,8 @@ and retrieving values and creating new instances of equal value..
 # import the fixture, PyCharm believes it isn't a used symbol, but it is.
 from common import database
 
-from accuconf.models import User, Proposal, Presenter, ProposalPresenter, Score, Comment
-from accuconf.utils.proposals import SessionType, SessionCategory, ProposalState, SessionCategory, SessionAudience
+from accuconf_cfp.models import User, Proposal, Presenter, ProposalPresenter, Score, Comment
+from accuconf_cfp.utils.proposals import SessionType, SessionCategory, ProposalState, SessionCategory, SessionAudience
 
 user_data = (
     'abc@b.c',

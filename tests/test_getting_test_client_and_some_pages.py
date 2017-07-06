@@ -13,7 +13,7 @@ path_to_add = str(PurePath(__file__).parent.parent)
 if path_to_add not in sys.path:
     sys.path.insert(0, path_to_add)
 
-from accuconf import app
+from accuconf_cfp import app
 
 #  NB app is a global variable with only one per test session so back out of any state changes.
 #  This is made easy by using the pytest monkeypatch fixture.

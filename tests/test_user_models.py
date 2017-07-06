@@ -7,7 +7,7 @@ import pytest
 # PyCharm reports this as unused, but it isn't.
 from common import database
 
-from accuconf.models import User
+from accuconf_cfp.models import User
 
 user_data = (
     'a@b.c',

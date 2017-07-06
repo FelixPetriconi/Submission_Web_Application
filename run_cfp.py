@@ -2,7 +2,7 @@
 
 import sys
 
-from accuconf import app
+from accuconf_cfp import app
 
 if len(sys.argv) > 1:
     host = sys.argv[1]

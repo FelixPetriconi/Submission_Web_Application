@@ -1,4 +1,4 @@
-from accuconf import db
+from accuconf_cfp import db
 
 
 class MathPuzzle(db.Model):

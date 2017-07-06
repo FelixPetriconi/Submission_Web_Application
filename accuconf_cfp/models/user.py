@@ -1,6 +1,6 @@
-from accuconf import db
+from accuconf_cfp import db
 
-from accuconf.utils.roles import Role
+from accuconf_cfp.utils.roles import Role
 
 
 class User(db.Model):

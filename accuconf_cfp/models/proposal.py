@@ -1,6 +1,6 @@
-from accuconf import db
-from accuconf.utils.proposals import SessionType, SessionCategory, ProposalState, SessionAudience
-from accuconf.utils.schedule import ConferenceDay, SessionSlot, QuickieSlot, Track, Room
+from accuconf_cfp import db
+from accuconf_cfp.utils.proposals import SessionType, SessionCategory, ProposalState, SessionAudience
+from accuconf_cfp.utils.schedule import ConferenceDay, SessionSlot, QuickieSlot, Track, Room
 
 
 class ProposalPresenter(db.Model):
