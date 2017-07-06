@@ -7,8 +7,8 @@ from common import client, post_and_check_content
 def registrant():
     return {
         'email': 'a@b.c',
-        'password': 'Password1',
-        'cpassword': 'Password1',
+        'passphrase': 'Passphrase1',
+        'cpassphrase': 'Passphrase1',
         'name': 'User Name',
         'phone': '+011234567890',
         'postcode': '123456',
@@ -30,11 +30,11 @@ def test_user_reg_dup(client, registrant):
     post_and_check_content(client, '/register', registrant, values=('Duplicate user email',))
 
 
-def test_password_short(client):
+def test_passphrase_short(client):
     post_and_check_content(client, '/register', {
         'email': 'test@std.dom',
-        'password': 'Pass1',
-        'cpassword': 'Pass1',
+        'passphrase': 'Pass1',
+        'cpassphrase': 'Pass1',
         'name': 'User2 Name2',
         'phone': '+011234567890',
         'postcode': '123456',
@@ -44,14 +44,14 @@ def test_password_short(client):
         'streetaddress': 'Chepauk',
         'captcha': '1',
         'question': '12',
-    }, values=('Password did not meet checks',))
+    }, values=('Passphrase did not meet checks',))
 
 
-def test_password_invalid(client):
+def test_passphrase_invalid(client):
     post_and_check_content(client, '/register', {
         'email': 'test@std.dom',
-        'password': 'password',
-        'cpassword': 'password',
+        'passphrase': 'passphrase',
+        'cpassphrase': 'passphrase',
         'name': 'User2 Name2',
         'phone': '+011234567890',
         'postcode': '123456',
@@ -62,14 +62,14 @@ def test_password_invalid(client):
         'bio': 'An individual of the world.',
         'captcha': '1',
         'question': '12'
-    }, values=('Password did not meet checks',))
+    }, values=('Passphrase did not meet checks',))
 
 
 def test_username_invalid(client):
     post_and_check_content(client, '/register', {
         'email': 'testing@test.dom',
-        'password': 'passworD13',
-        'cpassword': 'passworD13',
+        'passphrase': 'passphrase13',
+        'cpassphrase': 'passphrase13',
         'name': 'User2 Name2',
         'phone': '+011234567890',
         'postcode': '123456',

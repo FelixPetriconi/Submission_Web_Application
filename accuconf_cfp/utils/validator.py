@@ -14,8 +14,8 @@ def validate_email(email):
         return False
 
 
-def validate_password(password):
-    return re.search("\\d", password) and re.search("[a-z]", password) and re.search("[A-Z]", password) and len(password) >= 8
+def validate_passphrase(passphrase):
+    return re.search("\\d", passphrase) and re.search("[a-z]", passphrase) and re.search("[A-Z]", passphrase) and len(passphrase) >= 8
 
 
 def validate_proposal_data(proposal_data):

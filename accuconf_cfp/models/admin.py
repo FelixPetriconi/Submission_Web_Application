@@ -30,7 +30,7 @@ def _create_enum_selector(enum_class, default):
 
 
 class UserAdmin(ModelView):
-    column_exclude_list = ['password']
+    column_exclude_list = ['passphrase']
 
 
 class ProposalsAdmin(ModelView):

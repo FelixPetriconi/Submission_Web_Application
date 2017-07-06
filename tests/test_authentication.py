@@ -7,8 +7,8 @@ from common import client, post_and_check_content
 def registrant():
     return {
         'email': 'a@b.c',
-        'password': 'Password1',
-        'cpassword': 'Password1',
+        'passphrase': 'Passphrase1',
+        'cpassphrase': 'Passphrase1',
         'name': 'User Name',
         'phone': '+011234567890',
         'postcode': '123456',
@@ -24,7 +24,7 @@ def registrant():
 def test_user_auth_basic(client, registrant):
     post_and_check_content(client, '/register', registrant)
     post_and_check_content(client, '/login',
-                           {'email': 'a@b.c', 'password': 'Password1'},
+                           {'email': 'a@b.c', 'passphrase': 'Passphrase1'},
                            values=('ACCU Conference',),
                            follow_redirects=True)
 
@@ -32,6 +32,6 @@ def test_user_auth_basic(client, registrant):
 def test_user_auth_fail(client, registrant):
     post_and_check_content(client, '/register', registrant)
     post_and_check_content(client, '/login',
-                           {'email': 'a@b.c', 'password': 'Password2'},
+                           {'email': 'a@b.c', 'passphrase': 'Passphrase2'},
                            values=('Login',),
                            follow_redirects=True)

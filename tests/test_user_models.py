@@ -11,7 +11,7 @@ from accuconf_cfp.models import User
 
 user_data = (
     'a@b.c',
-    'password',
+    'passphrase',
     'User Name',
     '+01234567890',
     'Some Country',

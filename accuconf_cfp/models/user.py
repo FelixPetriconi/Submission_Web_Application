@@ -6,7 +6,7 @@ from accuconf_cfp.utils.roles import Role
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), nullable=False, unique=True)
-    password = db.Column(db.String(512), nullable=False)
+    passphrase = db.Column(db.String(200), nullable=False)
     name = db.Column(db.String(100), nullable=False)
     role = db.Column(db.Enum(Role), nullable=False)
     phone = db.Column(db.String(18), nullable=False)
@@ -19,9 +19,9 @@ class User(db.Model):
     scores = db.relationship('Score', backref='scorer')
     comments = db.relationship('Comment', backref='commenter')
 
-    def __init__(self, email, password, name, phone, country, state, postal_code, town_city, street_address):
+    def __init__(self, email, passphrase, name, phone, country, state, postal_code, town_city, street_address):
         self.email = email
-        self.password = password
+        self.passphrase = passphrase
         self.name = name
         self.role = Role.user
         self.phone = phone

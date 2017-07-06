@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-This is the script to reset the password of a registered user.
+This is the script to reset the passphrase of a registered user.
 """
 
 import hashlib
@@ -27,9 +27,9 @@ def _get_user(engine, table, email):
         sys.exit(3)
 
 
-def set_password_of_user(db_path, email, password):
+def set_passphrase_of_user(db_path, email, passphrase):
     """
-    Find the user record and reset the password.
+    Find the user record and reset the passphrase.
     """
     engine = create_engine('sqlite:///' + str(db_path.absolute()))
     tables = engine.table_names()
@@ -39,21 +39,21 @@ def set_password_of_user(db_path, email, password):
         sys.exit(2)
     users = Table(table_name, MetaData(), autoload=True, autoload_with=engine)
     person = _get_user(engine, users, email)
-    print('Amending password for the following user:\n\t{}'.format(person))
-    engine.execute(users.update().where(users.c.user_id == email).values(user_pass=hashlib.sha256(password.encode('utf-8')).hexdigest()))
+    print('Amending passphrase for the following user:\n\t{}'.format(person))
+    engine.execute(users.update().where(users.c.user_id == email).values(user_pass=hashlib.sha256(passphrase.encode('utf-8')).hexdigest()))
     new_person = _get_user(engine, users, email)
     print('Amended record:\n\t{}'.format(new_person))
 
 
 def main(args):
     if len(args) != 3:
-        print('Usage: {} <database-file> <email-address> <password>'.format(Path(__file__).name))
+        print('Usage: {} <database-file> <email-address> <passphrase>'.format(Path(__file__).name))
         sys.exit(1)
     db_path = Path(args[0])
     if not db_path.is_file():
         print('Database file, {}, does not exist.'.format(db_path))
         sys.exit(1)
-    set_password_of_user(db_path, *args[1:])
+    set_passphrase_of_user(db_path, *args[1:])
 
 
 if __name__ == '__main__':

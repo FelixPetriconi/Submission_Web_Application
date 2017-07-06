@@ -16,8 +16,8 @@ from accuconf_cfp.utils.proposals import SessionType
 def registration_data():
     return {
         'email': 'a@b.c',
-        'password': 'Password1',
-        'cpassword': 'Password1',
+        'passphrase': 'Passphrase1',
+        'cpassphrase': 'Passphrase1',
         'name': 'User Name',
         'phone': '+011234567890',
         'postcode': '123456',
@@ -104,7 +104,7 @@ def test_user_cannot_register_twice(client, registration_data):
 
 def test_registered_user_can_login(client, registration_data):
     test_user_can_register(client, registration_data)
-    post_and_check_content(client, '/login', {'usermail': registration_data['usermail'], 'password': registration_data['password']}, code=302, values=('Redirecting',))
+    post_and_check_content(client, '/login', {'usermail': registration_data['usermail'], 'passphrase': registration_data['passphrase']}, code=302, values=('Redirecting',))
     get_and_check_content(client, '/', values=('ACCU Conference',))
     # TODO How to check in the above that the left-side menu now has the proposals links?
 

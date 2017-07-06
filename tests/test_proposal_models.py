@@ -11,7 +11,7 @@ from accuconf_cfp.utils.proposals import SessionType, SessionCategory, ProposalS
 
 user_data = (
     'abc@b.c',
-    'password',
+    'passphrase',
     'User Name',
     '+01234567890',
     'IND',
