@@ -9,8 +9,8 @@ from flask_admin.form.fields import Select2Field
 #
 # TODO Hassle the maintainers to fix this and then remove the workarounds.
 
-from accuconf_cfp.utils.proposals import SessionType, ProposalState, SessionCategory, SessionAudience
-from accuconf_cfp.utils.schedule import ConferenceDay, SessionSlot, QuickieSlot, Track, Room
+from utils.proposals import SessionType, ProposalState, SessionCategory, SessionAudience
+from utils.schedule import ConferenceDay, SessionSlot, QuickieSlot, Track, Room
 
 
 def _create_enum_selector(enum_class, default):

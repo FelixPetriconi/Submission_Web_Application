@@ -11,6 +11,8 @@ path_to_add = str(PurePath(__file__).parent.parent)
 if path_to_add not in sys.path:
     sys.path.insert(0, path_to_add)
 
+# In the context of  a unit test, the symbol accuconf is not defined. Must
+# therefore use one of the two applications to provide the database.
 from accuconf_cfp import app, db
 
 

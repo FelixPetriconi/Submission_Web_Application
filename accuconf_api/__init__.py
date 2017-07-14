@@ -1,12 +1,15 @@
-from flask import Flask, redirect, render_template
-from flask_bootstrap import Bootstrap
+import sys
+
+from flask import Flask, jsonify
 from flask_cors import cross_origin
 from flask_sqlalchemy import SQLAlchemy
 
 try:
     from accuconf_config import Config
 except ImportError:
-    from .configuration import Config
+    from models.configuration import Config
+
+sys.modules['accuconf'] = sys.modules['accuconf_api']
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -16,6 +19,10 @@ app.logger.info(app.url_map)
 db = SQLAlchemy(app)
 
 year = 2018
+
+# app and db must be defined before these imports are executed as they are
+# referred to by these modules. These modules will import accuconf.
+from models.proposal import Presenter, Proposal
 
 
 def presentation_to_json(presentation):
@@ -27,9 +34,10 @@ def presentation_to_json(presentation):
         'session': presentation.session.value,
         'room': presentation.room.value,
         # 'track': presentation.track.value,
-        'presenters': [presenter.presenter.id
-                       for presenter
-                       in presentation.presenters]
+        'presenters': [
+            presenter.presenter.id
+            for presenter in presentation.presenters
+        ]
     }
     if presentation.quickie_slot:
         result['quickie_slot'] = presentation.quickie_slot.value
@@ -48,13 +56,16 @@ def presenter_to_json(presenter):
 
 
 def scheduled_presentations():
-    return Proposal.query.filter(Presentation.day != None, Presentation.session != None).all()
+    return Proposal.query.filter(Proposal.day is not None, Proposal.session is not None).all()
 
 
 @app.route("/presentations", methods=['GET'])
 @cross_origin()
 def scheduled_presentations_view():
-    prop_info = [presentation_to_json(prop) for prop in scheduled_presentations()]
+    prop_info = [
+        presentation_to_json(prop)
+        for prop in scheduled_presentations()
+    ]
     return jsonify(prop_info)
 
 

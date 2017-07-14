@@ -1,6 +1,8 @@
-from accuconf_cfp import db
-from accuconf_cfp.utils.proposals import SessionType, SessionCategory, ProposalState, SessionAudience
-from accuconf_cfp.utils.schedule import ConferenceDay, SessionSlot, QuickieSlot, Track, Room
+#  The accuconf name is created as an alias for the application package at run time.
+from accuconf import db
+
+from utils.proposals import SessionType, SessionCategory, ProposalState, SessionAudience
+from utils.schedule import ConferenceDay, SessionSlot, QuickieSlot, Track, Room
 
 
 class ProposalPresenter(db.Model):

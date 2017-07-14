@@ -1,6 +1,10 @@
-from accuconf_cfp import db
+#  The accuconf name is created as an alias for the application package at run time.
+from accuconf import db
 
-from accuconf_cfp.utils.roles import Role
+# PyCharm reports these as not used, and yet they are.
+from models.proposal import Comment, Proposal, Score
+
+from utils.roles import Role
 
 
 class User(db.Model):

@@ -2,12 +2,10 @@
 Test putting an instance the User model into the database and getting it out again.
 """
 
-import pytest
-
 # PyCharm reports this as unused, but it isn't.
 from common import database
 
-from accuconf_cfp.models import User
+from models.user import User
 
 user_data = (
     'a@b.c',

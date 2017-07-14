@@ -1,15 +1,16 @@
 import hashlib
+import sys
 
 from flask import Flask, redirect, render_template, request, session
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 
-from models import User
-
 try:
     from accuconf_config import Config
 except ImportError:
-    from .configuration import Config
+    from models.configuration import Config
+
+sys.modules['accuconf'] = sys.modules['accuconf_cfp']
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -20,6 +21,11 @@ Bootstrap(app)
 db = SQLAlchemy(app)
 
 year = 2018
+
+# app and db must be defined before these imports are executed as they are
+# referred to by these modules. These modules will import accuconf.
+from models.user import User
+from models.security import MathPuzzle
 
 
 def is_acceptable_route():
