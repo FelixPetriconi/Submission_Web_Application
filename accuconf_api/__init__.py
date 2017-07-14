@@ -9,8 +9,6 @@ try:
 except ImportError:
     from models.configuration import Config
 
-sys.modules['accuconf'] = sys.modules['accuconf_api']
-
 app = Flask(__name__)
 app.config.from_object(Config)
 app.secret_key = app.config['SECRET_KEY']
@@ -21,7 +19,9 @@ db = SQLAlchemy(app)
 year = 2018
 
 # app and db must be defined before these imports are executed as they are
-# referred to by these modules. These modules will import accuconf.
+# referred to by these modules. These modules will import accuconf which
+# must be set up.
+sys.modules['accuconf'] = sys.modules['accuconf_api']
 from models.proposal import Presenter, Proposal
 
 

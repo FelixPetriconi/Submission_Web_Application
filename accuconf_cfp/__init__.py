@@ -1,4 +1,5 @@
 import hashlib
+import random
 import sys
 
 from flask import Flask, redirect, render_template, request, session
@@ -9,8 +10,6 @@ try:
     from accuconf_config import Config
 except ImportError:
     from models.configuration import Config
-
-sys.modules['accuconf'] = sys.modules['accuconf_cfp']
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -23,7 +22,9 @@ db = SQLAlchemy(app)
 year = 2018
 
 # app and db must be defined before these imports are executed as they are
-# referred to by these modules. These modules will import accuconf.
+# referred to by these modules. These modules will import accuconf which
+# must be set up.
+sys.modules['accuconf'] = sys.modules['accuconf_cfp']
 from models.user import User
 from models.security import MathPuzzle
 
@@ -157,8 +158,8 @@ start preparing your proposal for the conference."""
         db.session.commit()
         return render_template("registration_success.html", page=page)
     elif request.method == "GET":
-        num_a = randint(10, 99)
-        num_b = randint(10, 99)
+        num_a = random.randint(10, 99)
+        num_b = random.randint(10, 99)
         question = MathPuzzle(num_a + num_b)
         db.session.add(question)
         db.session.commit()
