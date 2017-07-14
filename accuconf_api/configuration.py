@@ -1,1 +1,0 @@
-../accuconf_cfp/configuration.py
