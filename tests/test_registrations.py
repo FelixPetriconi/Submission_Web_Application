@@ -22,12 +22,12 @@ def registrant():
 
 
 def test_user_reg_basic(client, registrant):
-    post_and_check_content(client, '/register', registrant, values=('You have successfully registered', 'Please login'))
+    post_and_check_content(client, '/register', registrant, includes=('You have successfully registered', 'Please login'))
 
 
 def test_user_reg_dup(client, registrant):
     test_user_reg_basic(client, registrant)
-    post_and_check_content(client, '/register', registrant, values=('Duplicate user email',))
+    post_and_check_content(client, '/register', registrant, includes=('Duplicate user email',))
 
 
 def test_passphrase_short(client):

@@ -5,16 +5,16 @@ from accuconf_cfp.utils.roles import Role
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(100), nullable=False, unique=True)
-    passphrase = db.Column(db.String(200), nullable=False)
-    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(200), nullable=False, unique=True)
+    passphrase = db.Column(db.String(400), nullable=False)
+    name = db.Column(db.String(200), nullable=False)
     role = db.Column(db.Enum(Role), nullable=False)
-    phone = db.Column(db.String(18), nullable=False)
-    country = db.Column(db.String(5), nullable=False)
-    state = db.Column(db.String(10), nullable=True)
-    postal_code = db.Column(db.String(40), nullable=False)
+    phone = db.Column(db.String(18), nullable=False)  # ITU E.165 limits numbers to 15 digits
+    country = db.Column(db.String(5), nullable=False)  # ISO 3166-1 alpha-3 codes
+    state = db.Column(db.String(40), nullable=True)
+    postal_code = db.Column(db.String(20), nullable=False)
     town_city = db.Column(db.String(30), nullable=False)
-    street_address = db.Column(db.String(128), nullable=False)
+    street_address = db.Column(db.String(400), nullable=False)
     proposals = db.relationship('Proposal', back_populates='proposer')
     scores = db.relationship('Score', backref='scorer')
     comments = db.relationship('Comment', backref='commenter')
