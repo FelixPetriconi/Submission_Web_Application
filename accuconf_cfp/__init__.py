@@ -6,6 +6,8 @@ from flask import Flask, redirect, render_template, request, session
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 
+from utils.validator import validate_email
+
 try:
     from accuconf_config import Config
 except ImportError:
@@ -68,38 +70,37 @@ def register():
         if user is not None:
             edit_mode = True
     if request.method == "POST":
-        email = request.form["email"]
-        # In case that no user passphrase was provided, we don't update the field
-        passphrase = None
-        if len(request.form["passphrase"].strip()) > 0:
-            passphrase = request.form["passphrase"]
-        # TODO Should cpassphrase be handled like password and failure happen if they are not the same?
-        cpassphrase = request.form["cpassphrase"]
-        name = request.form["name"]
-        town_and_city = request.form["towncity"]
-        country = request.form["country"]
-        state = request.form["state"]
-        phone = request.form["phone"]
-        postal_code = request.form["postalcode"]
-        town_city = request.form['towncity']
-        street_address = request.form['streetaddress']
+        email = request.form["email"].strip()
+        passphrase = request.form["passphrase"].strip()
+        cpassphrase = request.form["cpassphrase"].strip()
+        name = request.form["name"].strip()
+        phone = request.form["phone"].strip()
+        country = request.form["country"].strip()
+        state = request.form["state"].strip()
+        postal_code = request.form["postalcode"].strip()
+        town_city = request.form['towncity'].strip()
+        street_address = request.form['streetaddress'].strip()
         encoded_passphrase = None
-        if type(passphrase) == str and len(passphrase):
+        if passphrase:
+            if not cpassphrase:
+                return render_template('registration_failure.html', page={'data': 'Passphrase given but no confirmation passphrase'})
+            if passphrase != cpassphrase:
+                return render_template('registration_failure.html', page={'data': 'Passphrase and confirmation passphrase dffer.'})
             encoded_passphrase = hashlib.sha256(passphrase.encode('utf-8')).hexdigest()
+        else:
+            if cpassphrase:
+                return render_template('registration_failure.html', page={'data': 'No passphrase given but even though confirmation passphrase given.'})
+            return render_template('registration_failure.html', page={'data': 'Neither passphrase nor confirmation passphrase entered.'})
         page = {}
         if edit_mode:
             user.email = email
             user.name = name
-            if encoded_passphrase:
-                user.passphrase = encoded_passphrase
             user.phone = phone
             user.country = country
             user.state = state
             user.postal_code = postal_code
             user.town_city = town_city
             user.street_address = street_address
-            if encoded_passphrase:
-                User.query.filter_by(email=user.email).update({'passphrase': encoded_passphrase })
             User.query.filter_by(email=user.email).update({
                 'email': email,
                 'name': name,
@@ -110,9 +111,14 @@ def register():
                 'town_city': town_city,
                 'street_address': street_address
             })
+            if encoded_passphrase:
+                user.passphrase = encoded_passphrase
+                User.query.filter_by(email=user.email).update({'passphrase': encoded_passphrase })
             page["title"] = "Account update successful"
             page["data"] = "Your account details were successful updated."
-        else:
+        else:  # edit_mode
+            # TODO This appears to assume that you have to be a registered user to register,
+            # and yet users can register. ¿que?
             if not validate_email(email):
                 page["title"] = "Registration failed"
                 page["data"] = """Registration failed: Invalid/Duplicate user email.
@@ -124,7 +130,7 @@ Please register again"""
                     (passphrase, 'passphrase'),
                     (cpassphrase, 'passphrase confirmation'),
                     (name, 'name'),
-                    (town_and_city, 'town and city'),
+                    (town_city, 'town/city'),
                     (phone, 'phone number'),
                     (postal_code, 'postal code'),
                     (street_address, 'street address'),):
@@ -138,7 +144,7 @@ Please register again"""
                     "data": ' '.join(errors),
                 }
                 return render_template("registration_failure.html", page=page)
-            else:
+            else:  # errors
                 new_user = User(
                     email,
                     encoded_passphrase,
@@ -157,7 +163,7 @@ proposals for the ACCU Conf. Please login and
 start preparing your proposal for the conference."""
         db.session.commit()
         return render_template("registration_success.html", page=page)
-    elif request.method == "GET":
+    else:  # request.method == "GET" is the only allowed option, but…
         num_a = random.randint(10, 99)
         num_b = random.randint(10, 99)
         question = MathPuzzle(num_a + num_b)

@@ -11,9 +11,9 @@ def registrant():
         'cpassphrase': 'Passphrase1',
         'name': 'User Name',
         'phone': '+011234567890',
-        'postcode': '123456',
         'country': 'India',
         'state': 'TamilNadu',
+        'postalcode': '123456',
         'towncity': 'Chennai',
         'streetaddress': 'Chepauk',
         'captcha': '1',
@@ -21,17 +21,23 @@ def registrant():
     }
 
 
-def test_user_auth_basic(client, registrant):
+def test_successful_login(client, registrant):
     post_and_check_content(client, '/register', registrant)
     post_and_check_content(client, '/login',
-                           {'email': 'a@b.c', 'passphrase': 'Passphrase1'},
-                           values=('ACCU Conference',),
+                           {'email': registrant.email, 'passphrase':  registrant.passphrase},
+                           includes=('ACCU Conference',),
                            follow_redirects=True)
 
 
-def test_user_auth_fail(client, registrant):
+def test_wrong_passphrase_causes_login_failure(client, registrant):
     post_and_check_content(client, '/register', registrant)
     post_and_check_content(client, '/login',
-                           {'email': 'a@b.c', 'passphrase': 'Passphrase2'},
-                           values=('Login',),
+                           {'email': registrant.email, 'passphrase': 'Passphrase2'},
+                           includes=('Login',),
                            follow_redirects=True)
+
+
+def test_update_user_name(client, registrant):
+    test_successful_login(client, registrant)
+    registrant['name'] = 'Some Dude'
+    post_and_check_content(client, '/register', registrant, includes=('Your account details were successful updated.',))

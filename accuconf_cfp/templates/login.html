@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}ACCU {{page.title}} Login{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="pagetitle">
+        ACCU {{page.year}} Login
+    </div>
+</div>
+<div class="row">
+    <div class="container-fluid">
+        <p class="alert" id="alert"></p>
+    </div>
+</div>
+<div class="row">
+    <div class="container-fluid">
+        <h3> Login </h3>
+        <form class="form-horizontal" action="{{url_for('login')}}" method="POST">
+            <div class="control-group">
+                <label for="email" class="col-md-3"> Email</label>
+                <div class="col-md-offset-1">
+                    <input type="text" name="email" id="email" placeholder="Email">
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="passphrase" class="col-md-3"> Passphrase</label>
+                <div class="col-md-offset-1">
+                    <input type="passphrase" name="passphrase" id="passphrase" placeholder="Passphrase">
+                </div>
+            </div>
+            <div class="control-group">
+                <button type="submit" class="btn btn-primary">Login</button>
+                <button type="reset" class="btn btn-default">Reset</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

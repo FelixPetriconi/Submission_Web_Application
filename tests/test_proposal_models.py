@@ -3,7 +3,7 @@ Test putting instances of various proposal related types into the database
 and retrieving values and creating new instances of equal value..
 """
 
-# import the fixture, PyCharm believes it isn't a used symbol, but it is.
+# Import the fixture, PyCharm believes it isn't a used symbol, but it is.
 from common import database
 
 from models.user import User

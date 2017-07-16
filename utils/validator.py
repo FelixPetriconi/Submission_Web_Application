@@ -4,7 +4,7 @@ import re
 def validate_email(email):
     email_pattern = re.compile("^([a-zA-Z0-9_.+-])+@(([a-zA-Z0-9-_])+\.)+([a-zA-Z0-9])+$")
     if email_pattern.search(email):
-        from accuconf.models import User
+        from models.user import User
         u = User.query.filter_by(email=email).first()
         if u:
             return False

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}ACCU {{page.year}} Call for Proposals{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="pagetitle">
+        ACCU {{page.year}} Call for Proposals
+    </div>
+</div>
+<div class="row">
+    <div class="container-fluid">
+        <p class="alert" id="alert"></p>
+    </div>
+</div>
+<div class="row">
+    <div class="container-fluid">
+        <div class="inconvenience">
+            <p>The ACCU {{page.year}} Call for Proposals is open, but is unimplemented just now.</p>
+            <p>At some point add the connection to Login and Registration pages.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Registration Success{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="pagetitle">
+        Registration successful
+    </div>
+</div>
+<div class="row">
+    <p class="first">
+        {{ page.data }}
+    </p>
+</div>
+{% endblock %}

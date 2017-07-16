@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Registration Failure{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="pagetitle">
+        Registration failure
+    </div>
+</div>
+<div class="row">
+    <div class="container-fluid">
+        <p class="first">
+            {{ page.data }}
+        </p>
+    </div>
+</div>
+{% endblock %}
