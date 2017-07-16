@@ -13,13 +13,13 @@ case $1 in
     cfp.testconference | cfp.conference )
         chmod -R go+rX accuconf*
         destination=conference@dennis.accu.org:/srv/$1.accu.org/public/htdocs/
-        rsync -rav --delete  --exclude=__pycache__/ accuconf_cfp $destination
+        rsync -rav --delete  --exclude=__pycache__/ accuconf_cfp models utils $destination
         scp accuconf_cfp.wsgi $destination
         ;;
     api.testconference | api.conference )
         chmod -R go+rX accuconf_api
         destination=conference@dennis.accu.org:/srv/$1.accu.org/public/htdocs/
-        rsync -rav --delete  --exclude=__pycache__/ accuconf_api $destination
+        rsync -rav --delete  --exclude=__pycache__/ accuconf_api models utils $destination
         scp accuconf_api.wsgi $destination
         ;;
     *)
