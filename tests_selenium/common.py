@@ -3,16 +3,33 @@ Various bits of code used in various places. It is assumed this file is imported
 """
 
 import pytest
-import sys
-from pathlib import PurePath
+import pathlib
+import subprocess
+import time
 
 from selenium import webdriver
 
-path_to_add = str(PurePath(__file__).parent.parent)
-if path_to_add not in sys.path:
-    sys.path.insert(0, path_to_add)
+this_directory = pathlib.PurePath(__file__).parent
 
-from accuconf import app, db
+host = 'localhost'
+port = '8001'
+
+base_url = 'http://{}:{}/'.format(host, port)
+
+
+@pytest.fixture(scope="session")
+def server():
+    process = subprocess.Popen('python3 {}'.format(this_directory / 'start_server.py'), shell=True)
+    time.sleep(0.5)  # Need a short while for the server to settle
+    process.poll()
+    assert process.returncode is None, process.returncode
+    yield
+    process.poll()
+    assert process.returncode is None, process.returncode
+    process.kill()
+    time.sleep(0.5)  # We need to give the OS chance to kill the process.
+    process.poll()
+    assert process.returncode == -9, process.returncode
 
 
 @pytest.fixture
@@ -20,14 +37,3 @@ def browser():
     driver = webdriver.PhantomJS()
     yield driver
     driver.quit()
-
-
-@pytest.fixture
-def database():
-    db.drop_all()
-    db.create_all()
-    yield db
-    db.drop_all()
-
-
-base_url = 'http://localhost:8000/'
