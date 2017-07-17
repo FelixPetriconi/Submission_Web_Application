@@ -1,0 +1,11 @@
+language: python
+python:
+  - "3.4"
+  - "3.5"
+  - "3.6"
+install:
+  - pip install --upgrade -r pip_runtime_requirements.txt
+  - pip install --upgrade -r pip_test_requirements.txt
+  - pip install --upgrade -r pip_admin_requirements.txt
+script:
+  - python -m pytest tests
