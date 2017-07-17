@@ -1,21 +1,14 @@
 import re
 
+from models.user import User
 
-def validate_email(email):
+
+def is_valid_new_email(email):
     email_pattern = re.compile("^([a-zA-Z0-9_.+-])+@(([a-zA-Z0-9-_])+\.)+([a-zA-Z0-9])+$")
     if email_pattern.search(email):
-        from models.user import User
-        u = User.query.filter_by(email=email).first()
-        if u:
-            return False
-        else:
-            return True
+        return not User.query.filter_by(email=email).first()
     else:
         return False
-
-
-def validate_passphrase(passphrase):
-    return re.search("\\d", passphrase) and re.search("[a-z]", passphrase) and re.search("[A-Z]", passphrase) and len(passphrase) >= 8
 
 
 def validate_proposal_data(proposal_data):

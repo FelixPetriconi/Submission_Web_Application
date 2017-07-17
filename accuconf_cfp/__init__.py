@@ -6,8 +6,6 @@ from flask import Flask, redirect, render_template, request, session
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 
-from utils.validator import validate_email
-
 try:
     from accuconf_config import Config
 except ImportError:
@@ -23,12 +21,16 @@ db = SQLAlchemy(app)
 
 year = 2018
 
-# app and db must be defined before these imports are executed as they are
-# referred to by these modules. These modules will import accuconf which
-# must be set up.
+# The shared packages use accuconf as the name of the application package.
+# must set this up. Don't use a proper DI for now, just use this (possibly
+# fragile) hack.
+#
+# NB Some of these imports rely on accuconf.app and accuconf.db so they must
+# be included after the definition of those symbols.
 sys.modules['accuconf'] = sys.modules['accuconf_cfp']
 from models.user import User
 from models.security import MathPuzzle
+from utils.validator import is_valid_new_email
 
 
 def _is_acceptable_route():
@@ -74,7 +76,7 @@ def register():
     assert check[1] is None
     edit_mode = False
     user = None
-    if session.get("email", False):  # Determines if the user is logged in.
+    if session.get("email", False):  # Determines if a user is logged in.
         user = User.query.filter_by(email=session["email"]).first()
         if user is not None:
             edit_mode = True
@@ -94,7 +96,7 @@ def register():
         town_city = request.form['towncity'].strip()
         street_address = request.form['streetaddress'].strip()
 
-
+        # TODO Probably should not check passphrases this way for logged in situation.
         if passphrase:
             if not cpassphrase:
                 return render_template('failure.html', page=_md(page, {'data': 'Passphrase given but no confirmation passphrase'}))
@@ -105,7 +107,6 @@ def register():
             if cpassphrase:
                 return render_template('failure.html', page=_md(page, {'data': 'No passphrase given but even though confirmation passphrase given.'}))
             return render_template('failure.html', page=_md(page, {'data': 'Neither passphrase nor confirmation passphrase entered.'}))
-
 
         if edit_mode:
             user.email = email
@@ -130,11 +131,9 @@ def register():
                 user.passphrase = encoded_passphrase
                 User.query.filter_by(email=user.email).update({'passphrase': encoded_passphrase })
             return render_template('success.html', page=_md(page, {'data': 'Your account details were successful updated.'}))
-        else:  # edit_mode
-            # TODO This appears to assume that you have to be a registered user to register,
-            # and yet users can register. ¿que?
-            if not validate_email(email):
-                return render_template("failure.html", page=_md(page, {'data': '''Registration failed: Invalid/Duplicate user email.
+        else:
+            if not is_valid_new_email(email):
+                return render_template("failure.html", page=_md(page, {'data': '''The email address was either invalid or already in use.
 Please register again.'''}))
             errors = [
                 field_name
@@ -155,7 +154,7 @@ Please register again.'''}))
  were not completed.
  
  Please register again.'''.format(' ,'.join(errors))}))
-            else:  # errors
+            else:
                 new_user = User(
                     email,
                     encoded_passphrase,
@@ -172,7 +171,7 @@ Please register again.'''}))
         return render_template("success.html", page={'type': 'Registration', 'data': '''You have successfully registered for submitting 
 proposals for the ACCU Conf. Please login and
 start preparing your proposal for the conference.'''})
-    else:  # request.method == "GET" is the only allowed option, but…
+    else:
         num_a = random.randint(10, 99)
         num_b = random.randint(10, 99)
         question = MathPuzzle(num_a + num_b)
@@ -216,7 +215,7 @@ def login():
             return redirect('/')
         else:
             return redirect('/login')
-    else:  # request.method == "GET":
+    else:
         return render_template("login.html", page={'year': year})
 
 

@@ -18,9 +18,12 @@ db = SQLAlchemy(app)
 
 year = 2018
 
-# app and db must be defined before these imports are executed as they are
-# referred to by these modules. These modules will import accuconf which
-# must be set up.
+# The shared packages use accuconf as the name of the application package.
+# must set this up. Don't use a proper DI for now, just use this (possibly
+# fragile) hack.
+#
+# NB Some of these imports rely on accuconf.app and accuconf.db so they must
+# be included after the definition of those symbols.
 sys.modules['accuconf'] = sys.modules['accuconf_api']
 from models.proposal import Presenter, Proposal
 

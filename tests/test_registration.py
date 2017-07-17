@@ -31,7 +31,7 @@ def test_successful_user_registration(client, registrant, monkeypatch):
 
 def test_attempted_duplicate_user_registration_fails(client, registrant, monkeypatch):
     test_successful_user_registration(client, registrant, monkeypatch)
-    post_and_check_content(client, '/register', registrant, includes=('Duplicate user email',))
+    post_and_check_content(client, '/register', registrant, includes=('The email address was either invalid or already in use.',))
 
 
 def test_passphrase_and_cpassphrase_present_but_differ(client, registrant, monkeypatch):
@@ -68,5 +68,5 @@ def test_invalid_email(client, registrant, monkeypatch):
     monkeypatch.setitem(app.config, 'CALL_OPEN', True)
     monkeypatch.setitem(app.config, 'MAINTENANCE', False)
     registrant['email'] = 'thing.flob.adob'
-    post_and_check_content(client, '/register', registrant, includes=('Invalid/Duplicate user email',))
+    post_and_check_content(client, '/register', registrant, includes=('The email address was either invalid or already in use',))
 
