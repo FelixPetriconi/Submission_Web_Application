@@ -28,6 +28,7 @@ def database():
         db.drop_all()
         db.create_all()
         yield db
+        db.session.rollback()
         db.drop_all()
 
 
@@ -41,6 +42,7 @@ def client():
         db.drop_all()
         db.create_all()
         yield app.test_client()
+        db.session.rollback()
         db.drop_all()
 
 
