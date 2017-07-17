@@ -45,11 +45,15 @@ def test_update_user_name(client, registrant):
     post_and_check_content(client, '/register', registrant, includes=('Your account details were successful updated.',))
 
 
+def test_logout_without_login_is_noop(client):
+    get_and_check_content(client, '/logout', code=302, includes=('Redirect', '<a href="/">',))
+
+
 def test_logged_in_user_can_logout_with_get(client, registrant):
     test_successful_login(client, registrant)
-    get_and_check_content(client, '/logout', code=302, includes=('/',))
+    get_and_check_content(client, '/logout', code=302, includes=('Redirect', '<a href="/">',))
 
 
 def test_logged_in_user_cannot_logout_with_post(client, registrant):
     test_successful_login(client, registrant)
-    post_and_check_content(client, '/logout', registrant, code=405, includes=('/',))
+    post_and_check_content(client, '/logout', registrant, code=405, includes=('Method Not Allowed',))
