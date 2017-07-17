@@ -31,7 +31,7 @@ from models.user import User
 from models.security import MathPuzzle
 
 
-def is_acceptable_route():
+def _is_acceptable_route():
     """Check the state of the application and return a pair.
 
     The first item of the pair is a Boolean stating whether the route is acceptable.
@@ -47,6 +47,15 @@ def is_acceptable_route():
     return (True, None)
 
 
+#  This code has to work on Python 3.4, so cannot use the lovely Python 3.5 and later stuff.
+#  Must have the ability to merge two dictionaries, but no 3.5 stuff so this.
+def _md(a, b):
+    """Merge to dictionaries into a distinct third one."""
+    rv = a.copy()
+    rv.update(b)
+    return rv
+
+
 @app.route('/')
 def index():
     page = {'year': year}
@@ -59,16 +68,20 @@ def index():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    check = is_acceptable_route()
+    check = _is_acceptable_route()
     if not check[0]:
         return check[1]
     assert check[1] is None
     edit_mode = False
     user = None
-    if session.get("id", False):
+    if session.get("id", False):  # Determines if the user is logged in.
         user = User.query.filter_by(email=session["id"]).first()
         if user is not None:
             edit_mode = True
+    page = {
+        'type': 'Registration',
+        'year': year,
+    }
     if request.method == "POST":
         email = request.form["email"].strip()
         passphrase = request.form["passphrase"].strip()
@@ -80,18 +93,20 @@ def register():
         postal_code = request.form["postalcode"].strip()
         town_city = request.form['towncity'].strip()
         street_address = request.form['streetaddress'].strip()
-        encoded_passphrase = None
+
+
         if passphrase:
             if not cpassphrase:
-                return render_template('registration_failure.html', page={'data': 'Passphrase given but no confirmation passphrase'})
+                return render_template('failure.html', page=_md(page, {'data': 'Passphrase given but no confirmation passphrase'}))
             if passphrase != cpassphrase:
-                return render_template('registration_failure.html', page={'data': 'Passphrase and confirmation passphrase dffer.'})
+                return render_template('failure.html', page=_md(page, {'data': 'Passphrase and confirmation passphrase dffer.'}))
             encoded_passphrase = hashlib.sha256(passphrase.encode('utf-8')).hexdigest()
         else:
             if cpassphrase:
-                return render_template('registration_failure.html', page={'data': 'No passphrase given but even though confirmation passphrase given.'})
-            return render_template('registration_failure.html', page={'data': 'Neither passphrase nor confirmation passphrase entered.'})
-        page = {}
+                return render_template('failure.html', page=_md(page, {'data': 'No passphrase given but even though confirmation passphrase given.'}))
+            return render_template('failure.html', page=_md(page, {'data': 'Neither passphrase nor confirmation passphrase entered.'}))
+
+
         if edit_mode:
             user.email = email
             user.name = name
@@ -114,18 +129,16 @@ def register():
             if encoded_passphrase:
                 user.passphrase = encoded_passphrase
                 User.query.filter_by(email=user.email).update({'passphrase': encoded_passphrase })
-            page["title"] = "Account update successful"
-            page["data"] = "Your account details were successful updated."
+            return render_template('success.html', page=_md(page, {'data': 'Your account details were successful updated.'}))
         else:  # edit_mode
             # TODO This appears to assume that you have to be a registered user to register,
             # and yet users can register. ¿que?
             if not validate_email(email):
-                page["title"] = "Registration failed"
-                page["data"] = """Registration failed: Invalid/Duplicate user email.
-Please register again"""
-                return render_template("registration_failure.html", page=page)
-            errors = []
-            for field, field_name in (
+                return render_template("failure.html", page=_md(page, {'data': '''Registration failed: Invalid/Duplicate user email.
+Please register again.'''}))
+            errors = [
+                field_name
+                for field, field_name in (
                     (email, 'email'),
                     (passphrase, 'passphrase'),
                     (cpassphrase, 'passphrase confirmation'),
@@ -133,17 +146,15 @@ Please register again"""
                     (town_city, 'town/city'),
                     (phone, 'phone number'),
                     (postal_code, 'postal code'),
-                    (street_address, 'street address'),):
-                if not field.strip():
-                    errors.append("The {} field was not filled in.".format(field_name))
+                    (street_address, 'street address'),)
+                if not field.strip()
+            ]
             if errors:
-                errors.append('')
-                errors.append("Please register again")
-                page = {
-                    "title": "Registration failed",
-                    "data": ' '.join(errors),
-                }
-                return render_template("registration_failure.html", page=page)
+                return render_template("failure.html", page=_md(page, {'data': '''The fields:
+{}
+ were not completed.
+ 
+ Please register again.'''.format(' ,'.join(errors))}))
             else:  # errors
                 new_user = User(
                     email,
@@ -157,12 +168,10 @@ Please register again"""
                     street_address,
                 )
                 db.session.add(new_user)
-            page["title"] = "Registration successful"
-            page["data"] = """You have successfully registered for submitting 
-proposals for the ACCU Conf. Please login and
-start preparing your proposal for the conference."""
         db.session.commit()
-        return render_template("registration_success.html", page=page)
+        return render_template("success.html", page={'type': 'Registration', 'data': '''You have successfully registered for submitting 
+proposals for the ACCU Conf. Please login and
+start preparing your proposal for the conference.'''})
     else:  # request.method == "GET" is the only allowed option, but…
         num_a = random.randint(10, 99)
         num_b = random.randint(10, 99)
@@ -188,14 +197,32 @@ start preparing your proposal for the conference."""
         return render_template("register.html", page=page)
 
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    check = is_acceptable_route()
+    check = _is_acceptable_route()
     if not check[0]:
         return check[1]
     assert check[1] is None
-    page = {'year': year}
-    return render_template('login.html', page=page)
+    if request.method == "POST":
+        email = request.form['email']
+        passphrase = request.form['passphrase']
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            return render_template('failure.html', page={'type': 'Login', 'year': year, 'data': 'Unknown user/passphrase combination.'})
+        passphrase_hash = hashlib.sha256(passphrase.encode("utf-8")).hexdigest()
+        if user.passphrase == passphrase_hash:
+            session['id'] = user.email
+            ##g.user = email
+            #  TODO  Change something so as to see the login state. Menu changes of course.
+            return redirect('/')
+        else:
+            return redirect('/login')
+    else:  # request.method == "GET":
+        return render_template("login.html", page={'year': year})
+
+
+
+
 
 
 # /navlinks for the dynamic left-side menu

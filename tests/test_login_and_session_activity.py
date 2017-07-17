@@ -24,15 +24,15 @@ def registrant():
 def test_successful_login(client, registrant):
     post_and_check_content(client, '/register', registrant)
     post_and_check_content(client, '/login',
-                           {'email': registrant.email, 'passphrase':  registrant.passphrase},
-                           includes=('ACCU Conference',),
+                           {'email': registrant['email'], 'passphrase':  registrant['passphrase']},
+                           includes=('Call for Proposals',),
                            follow_redirects=True)
 
 
 def test_wrong_passphrase_causes_login_failure(client, registrant):
     post_and_check_content(client, '/register', registrant)
     post_and_check_content(client, '/login',
-                           {'email': registrant.email, 'passphrase': 'Passphrase2'},
+                           {'email': registrant['email'], 'passphrase': 'Passphrase2'},
                            includes=('Login',),
                            follow_redirects=True)
 

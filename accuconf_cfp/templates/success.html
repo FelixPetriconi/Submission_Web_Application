@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block title %}Registration Success{% endblock %}
+{% block title %} {{ page.type }} Success {% endblock %}
 {% block head %}
   {{ super() }}
 {% endblock %}
 {% block content %}
 <div class="row">
     <div class="pagetitle">
-        Registration successful
+        ACCU {{ page.year }} – {{ page.type }} Successful
     </div>
 </div>
 <div class="row">
