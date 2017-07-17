@@ -8,6 +8,8 @@ import pytest
 
 from common import client, get_and_check_content, post_and_check_content
 
+from accuconf import app
+
 from models.user import User
 from models.proposal import Proposal
 from utils.proposals import SessionType
@@ -91,7 +93,9 @@ def proposal_multiple_presenters_and_leads():
     return proposal_data
 
 
-def test_ensure_registration_and_login(client, registration_data):
+def test_ensure_registration_and_login(client, registration_data, monkeypatch):
+    monkeypatch.setitem(app.config, 'CALL_OPEN', True)
+    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
     post_and_check_content(client, '/register', registration_data, includes=('You have successfully registered',))
     post_and_check_content(client, '/login', {'email': registration_data['email'], 'passphrase': registration_data['passphrase']}, code=302, includes=('Redirecting',))
     get_and_check_content(client, '/', includes=('ACCU', 'Call for Proposals',))
