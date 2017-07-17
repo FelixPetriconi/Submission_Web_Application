@@ -1,6 +1,6 @@
 import pytest
 
-from common import client, post_and_check_content
+from common import client, get_and_check_content, post_and_check_content
 
 
 @pytest.fixture
@@ -41,3 +41,13 @@ def test_update_user_name(client, registrant):
     test_successful_login(client, registrant)
     registrant['name'] = 'Some Dude'
     post_and_check_content(client, '/register', registrant, includes=('Your account details were successful updated.',))
+
+
+def test_logged_in_user_can_logout_with_get(client, registrant):
+    test_successful_login(client, registrant)
+    get_and_check_content(client, '/logout', code=302, includes=('/',))
+
+
+def test_logged_in_user_cannot_logout_with_post(client, registrant):
+    test_successful_login(client, registrant)
+    post_and_check_content(client, '/logout', registrant, code=405, includes=('/',))

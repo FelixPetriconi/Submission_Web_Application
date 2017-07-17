@@ -74,8 +74,8 @@ def register():
     assert check[1] is None
     edit_mode = False
     user = None
-    if session.get("id", False):  # Determines if the user is logged in.
-        user = User.query.filter_by(email=session["id"]).first()
+    if session.get("email", False):  # Determines if the user is logged in.
+        user = User.query.filter_by(email=session["email"]).first()
         if user is not None:
             edit_mode = True
     page = {
@@ -211,8 +211,7 @@ def login():
             return render_template('failure.html', page={'type': 'Login', 'year': year, 'data': 'Unknown user/passphrase combination.'})
         passphrase_hash = hashlib.sha256(passphrase.encode("utf-8")).hexdigest()
         if user.passphrase == passphrase_hash:
-            session['id'] = user.email
-            ##g.user = email
+            session['email'] = user.email
             #  TODO  Change something so as to see the login state. Menu changes of course.
             return redirect('/')
         else:
@@ -221,6 +220,10 @@ def login():
         return render_template("login.html", page={'year': year})
 
 
+@app.route('/logout')
+def logout():
+    session.pop('email', None)
+    return redirect('/')
 
 
 

@@ -13,7 +13,7 @@ from models.proposal import Proposal
 from utils.proposals import SessionType
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture()
 def registration_data():
     return {
         'email': 'a@b.c',
@@ -21,9 +21,9 @@ def registration_data():
         'cpassphrase': 'Passphrase1',
         'name': 'User Name',
         'phone': '+011234567890',
-        'postcode': '123456',
         'country': 'India',
         'state': 'TamilNadu',
+        'postalcode': '123456',
         'towncity': 'Chennai',
         'streetaddress': 'Chepauk',
         'captcha': '1',
@@ -31,10 +31,7 @@ def registration_data():
     }
 
 
-# TODO How come the following user data are OK without many of the fields
-
-
-@pytest.fixture(scope='function')
+@pytest.fixture()
 def proposal_single_presenter():
     return {
         'proposer': 'a@b.c',
@@ -56,7 +53,7 @@ lengthy proposal''',
     }
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture()
 def proposal_multiple_presenters_single_lead():
     return {
         'proposer': 'a@b.c',
@@ -86,7 +83,7 @@ lengthy proposal''',
     }
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture()
 def proposal_multiple_presenters_and_leads():
     proposal_data = proposal_multiple_presenters_single_lead()
     assert proposal_data['presenters'][1]['lead'] == 0
@@ -94,31 +91,21 @@ def proposal_multiple_presenters_and_leads():
     return proposal_data
 
 
-def test_user_can_register(client, registration_data):
-    post_and_check_content(client, '/register', registration_data, values=('You have successfully registered',))
-
-
-def test_user_cannot_register_twice(client, registration_data):
-    test_user_can_register(client, registration_data)
-    post_and_check_content(client, '/register', registration_data, values=('Registration failed',))
-
-
-def test_registered_user_can_login(client, registration_data):
-    test_user_can_register(client, registration_data)
-    post_and_check_content(client, '/login', {'usermail': registration_data['usermail'], 'passphrase': registration_data['passphrase']}, code=302, values=('Redirecting',))
-    get_and_check_content(client, '/', values=('ACCU Conference',))
-    # TODO How to check in the above that the left-side menu now has the proposals links?
+def test_ensure_registration_and_login(client, registration_data):
+    post_and_check_content(client, '/register', registration_data, includes=('You have successfully registered',))
+    post_and_check_content(client, '/login', {'email': registration_data['email'], 'passphrase': registration_data['passphrase']}, code=302, includes=('Redirecting',))
+    get_and_check_content(client, '/', includes=('ACCU', 'Call for Proposals',))
 
 
 def test_logged_in_user_can_get_submission_page(client, registration_data):
-    test_registered_user_can_login(client, registration_data)
-    get_and_check_content(client, '/submit_proposal', values=('Submit a proposal',))
+    test_ensure_registration_and_login(client, registration_data)
+    get_and_check_content(client, '/submit_proposal', includes=('Submit a proposal',))
 
 
 def test_logged_in_user_can_submit_a_single_presenter_proposal(client, registration_data, proposal_single_presenter):
-    test_registered_user_can_login(client, registration_data)
+    test_ensure_registration_and_login(client, registration_data)
     # TODO Why do we have to send JSON here but just used dictionaries previously?
-    rvd = post_and_check_content(client, '/upload_proposal', json.dumps(proposal_single_presenter), 'application/json', values=('success',))
+    rvd = post_and_check_content(client, '/upload_proposal', json.dumps(proposal_single_presenter), 'application/json', includes=('success',))
     response = json.loads(rvd)
     assert response['success']
     user = User.query.filter_by(email='a@b.c').all()
@@ -142,9 +129,9 @@ def test_logged_in_user_can_submit_a_single_presenter_proposal(client, registrat
 
 
 def test_logged_in_user_can_submit_multipresenter_single_lead_proposal(client, registration_data, proposal_multiple_presenters_single_lead):
-    test_registered_user_can_login(client, registration_data)
+    test_ensure_registration_and_login(client, registration_data)
     # TODO Why do we have to send JSON here but just used dictionaries previously?
-    rvd = post_and_check_content(client, '/upload_proposal', json.dumps(proposal_multiple_presenters_single_lead), 'application/json', values=('success',))
+    rvd = post_and_check_content(client, '/upload_proposal', json.dumps(proposal_multiple_presenters_single_lead), 'application/json', includes=('success',))
     response = json.loads(rvd)
     assert response['success']
     user = User.query.filter_by(email='a@b.c').all()
@@ -168,9 +155,9 @@ def test_logged_in_user_can_submit_multipresenter_single_lead_proposal(client, r
 
 
 def test_logged_in_user_cannot_submit_multipresenter_multilead_proposal(client, registration_data, proposal_multiple_presenters_and_leads):
-    test_registered_user_can_login(client, registration_data)
+    test_ensure_registration_and_login(client, registration_data)
     # TODO Why do we have to send JSON here but just used dictionaries previously?
-    rvd = post_and_check_content(client, '/upload_proposal', json.dumps(proposal_multiple_presenters_and_leads), 'application/json', values=('success',))
+    rvd = post_and_check_content(client, '/upload_proposal', json.dumps(proposal_multiple_presenters_and_leads), 'application/json', includes=('success',))
     response = json.loads(rvd)
     assert response["success"] is False
     assert "message" in response
