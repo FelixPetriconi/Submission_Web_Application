@@ -25,6 +25,8 @@ year = 2018
 # NB Some of these imports rely on accuconf.app and accuconf.db so they must
 # be included after the definition of those symbols.
 sys.modules['accuconf'] = sys.modules['accuconf_api']
+# Not apparently used but has to be loaded, and here is good.
+from models.user import User
 from models.proposal import Presenter, Proposal
 
 
