@@ -1,6 +1,6 @@
 import sys
 
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, redirect, render_template
 from flask_cors import cross_origin
 from flask_sqlalchemy import SQLAlchemy
 
@@ -75,6 +75,8 @@ def scheduled_presentations():
 @app.route("/presentations", methods=['GET'])
 @cross_origin()
 def scheduled_presentations_view():
+    if not app.config['API_ACCESS']:
+        return redirect('/')
     prop_info = [
         presentation_to_json(prop)
         for prop in scheduled_presentations()
@@ -85,6 +87,8 @@ def scheduled_presentations_view():
 @app.route("/presenters", methods=["GET"])
 @cross_origin()
 def schedule_presenters_view():
+    if not app.config['API_ACCESS']:
+        return redirect('/')
     scheduled_presenter_ids = {
         presenter.presenter.id
         for prop in scheduled_presentations()
