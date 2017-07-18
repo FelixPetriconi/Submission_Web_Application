@@ -6,13 +6,13 @@ import json
 
 import pytest
 
-from common import client, get_and_check_content, post_and_check_content
-
-from accuconf import app
+from configure import app, client
 
 from models.user import User
 from models.proposal import Proposal
 from utils.proposals import SessionType
+
+from common import get_and_check_content, post_and_check_content
 
 
 @pytest.fixture()

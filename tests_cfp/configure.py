@@ -18,11 +18,6 @@ if path_to_add not in sys.path:
 from accuconf_cfp import app, db
 
 
-@pytest.fixture(scope='module', autouse=True)
-def setup_accuconf():
-    sys.modules['accuconf'] = sys.modules['accuconf_cfp']
-
-
 @pytest.fixture
 def database():
     """

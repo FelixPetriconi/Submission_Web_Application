@@ -4,9 +4,8 @@ Tests for various uses of the /register route.
 
 import pytest
 
-from common import client, post_and_check_content
-
-from accuconf import app
+from configure import app, client
+from common import post_and_check_content
 
 
 @pytest.fixture
