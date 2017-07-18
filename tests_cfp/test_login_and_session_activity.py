@@ -1,7 +1,13 @@
 import pytest
 
-from configure import app, client
-from common import get_and_check_content, post_and_check_content
+# Apparently unused but loading has crucial side effects
+import configure
+
+from accuconf import app
+
+# PyCharm fails to spot the use of this symbol as a fixture.
+from test_utils.fixtures import client
+from test_utils.functions import get_and_check_content, post_and_check_content
 
 
 @pytest.fixture

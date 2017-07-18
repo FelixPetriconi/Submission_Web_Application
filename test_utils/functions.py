@@ -1,5 +1,5 @@
 """
-Various bits of code used in various places.
+Various bits of code used in various testing places.
 """
 
 

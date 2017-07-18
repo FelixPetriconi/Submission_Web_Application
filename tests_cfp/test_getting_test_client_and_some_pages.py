@@ -4,8 +4,14 @@ and that each route delivers up a page with some expected content without
 any unexpected content.
 """
 
-from configure import app, client
-from common import get_and_check_content
+# Apparently unused but loading has crucial side effects
+import configure
+
+from accuconf import app
+
+# PyCharm fails to spot the use of this symbol as a fixture.
+from test_utils.fixtures import client
+from test_utils.functions import get_and_check_content
 
 #  NB The word Register is almost certain to appear in the template.
 

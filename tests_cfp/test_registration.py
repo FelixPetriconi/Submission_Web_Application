@@ -4,8 +4,14 @@ Tests for various uses of the /register route.
 
 import pytest
 
-from configure import app, client
-from common import post_and_check_content
+# Apparently unused but loading has crucial side effects.
+import configure
+
+from accuconf import app
+
+# PyCharm fails to spot this is used as a fixture.
+from test_utils.fixtures import client
+from test_utils.functions import post_and_check_content
 
 
 @pytest.fixture

@@ -6,13 +6,18 @@ import json
 
 import pytest
 
-from configure import app, client
+# Apparently unused but loading has crucial side effects.
+import configure
+
+from accuconf import app
 
 from models.user import User
 from models.proposal import Proposal
 from utils.proposals import SessionType
 
-from common import get_and_check_content, post_and_check_content
+# PyCharm fails to spot this is used as a fixture.
+from test_utils.fixtures import client
+from test_utils.functions import get_and_check_content, post_and_check_content
 
 
 @pytest.fixture()
