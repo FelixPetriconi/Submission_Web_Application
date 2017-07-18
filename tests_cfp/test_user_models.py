@@ -2,8 +2,11 @@
 Test putting an instance the User model into the database and getting it out again.
 """
 
-# PyCharm reports this as unused, but it isn't.
-from common import database
+# Apparently unused but has required side effects.
+import configure
+
+# PyCharm doesn't notice the use as a fixture.
+from test_utils.fixtures import database
 
 from models.user import User
 

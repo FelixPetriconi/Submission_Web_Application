@@ -12,7 +12,7 @@ from selenium import webdriver
 this_directory = pathlib.PurePath(__file__).parent
 
 host = 'localhost'
-port = '8001'
+port = '65530'
 
 base_url = 'http://{}:{}/'.format(host, port)
 
@@ -20,7 +20,7 @@ base_url = 'http://{}:{}/'.format(host, port)
 @pytest.fixture(scope="session")
 def server():
     process = subprocess.Popen('python3 {}'.format(this_directory / 'start_server.py'), shell=True)
-    time.sleep(0.5)  # Need a short while for the server to settle
+    time.sleep(2)  # Need a short while for the server to settle, 0.5 works locally but Travis-CI needs longer.
     process.poll()
     assert process.returncode is None, process.returncode
     yield

@@ -4,21 +4,16 @@ and that each route delivers up a page with some expected content without
 any unexpected content.
 """
 
-from common import client, get_and_check_content
+# Apparently unused but loading has crucial side effects
+import configure
 
-import sys
-from pathlib import PurePath
+from accuconf import app
 
-path_to_add = str(PurePath(__file__).parent.parent)
-if path_to_add not in sys.path:
-    sys.path.insert(0, path_to_add)
+# PyCharm fails to spot the use of this symbol as a fixture.
+from test_utils.fixtures import client
+from test_utils.functions import get_and_check_content
 
-from accuconf_cfp import app
-
-#  NB app is a global variable with only one per test session so back out of any state changes.
-#  This is made easy by using the pytest monkeypatch fixture.
-
-#  The word Register is almost certain to appear in the template.
+#  NB The word Register is almost certain to appear in the template.
 
 
 def test_the_top_page_closed(client, monkeypatch):

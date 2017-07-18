@@ -3,12 +3,15 @@ Test putting instances of various proposal related types into the database
 and retrieving values and creating new instances of equal value..
 """
 
-# Import the fixture, PyCharm believes it isn't a used symbol, but it is.
-from common import database
+# Apparently unused but loading has crucial side effects
+import configure
 
 from models.user import User
 from models.proposal import Proposal, Presenter, ProposalPresenter, Score, Comment
 from utils.proposals import SessionType, ProposalState, SessionCategory, SessionAudience
+
+# PyCharm believes it isn't a used symbol, but it is.
+from test_utils.fixtures import database
 
 user_data = (
     'abc@b.c',

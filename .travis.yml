@@ -8,4 +8,5 @@ install:
   - pip install --upgrade -r pip_test_requirements.txt
   - pip install --upgrade -r pip_admin_requirements.txt
 script:
-  - python -m pytest tests
+  - python -m pytest tests_cfp
+  - python -m pytest tests_cfp__selenium
