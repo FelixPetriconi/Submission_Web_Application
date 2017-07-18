@@ -1,4 +1,5 @@
 # The Python packages required for testing.
 
 pytest
-hypothesis
+
+selenium
