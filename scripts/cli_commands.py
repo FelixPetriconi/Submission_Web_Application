@@ -26,16 +26,18 @@ from reportlab.platypus.flowables import HRFlowable
 # This must be imported here even though it may not be explicitly used in this file.
 import click
 
-file_directory = Path(__file__).absolute().parent
+file_directory = Path(__file__).parent
 sys.path.insert(0, str(file_directory.parent))
 
-from accuconf import app, db
-from accuconf.models import User, ProposalPresenter, Proposal, Presenter, Score, Comment
-from accuconf.utils.proposals import SessionType, ProposalState, SessionCategory, SessionAudience
-from accuconf.utils.schedule import ConferenceDay, SessionSlot, QuickieSlot, Track, Room
-from accuconf.utils.roles import Role
+from accuconf_cfp import app, db
+from models.user import User
+from models.proposal import ProposalPresenter, Proposal, Presenter, Score, Comment
+from utils.proposals import SessionType, ProposalState, SessionCategory, SessionAudience
+from utils.schedule import ConferenceDay, SessionSlot, QuickieSlot, Track, Room
+from utils.roles import Role
 
 start_date = date(2018, 4, 10)  # The day of the full-day pre-conference workshops
+
 
 @app.cli.command()
 def create_database():
