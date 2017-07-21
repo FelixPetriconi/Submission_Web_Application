@@ -17,7 +17,7 @@
 <div class="row">
     <div class="container-fluid">
         <h3> Login </h3>
-        <form class="form-horizontal" action="{{url_for('login')}}" method="POST">
+        <form class="form-horizontal" action="/login" method="POST">
             <div class="control-group">
                 <label for="email" class="col-md-3"> Email</label>
                 <div class="col-md-offset-1">
@@ -27,7 +27,7 @@
             <div class="control-group">
                 <label for="passphrase" class="col-md-3"> Passphrase</label>
                 <div class="col-md-offset-1">
-                    <input type="passphrase" name="passphrase" id="passphrase" placeholder="Passphrase">
+                    <input type="password" name="passphrase" id="passphrase" placeholder="Passphrase">
                 </div>
             </div>
             <div class="control-group">
