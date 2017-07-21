@@ -40,7 +40,7 @@ start_date = date(2018, 4, 10)  # The day of the full-day pre-conference worksho
 
 
 @app.cli.command()
-def create_database():
+def db_init():
     """
     Create an initial database.
     """
