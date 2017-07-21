@@ -2,12 +2,16 @@ import sys
 
 from flask import Flask, jsonify, redirect, render_template
 from flask_cors import cross_origin
+from flask_nav import Nav
+from flask_nav.elements import Navbar
 from flask_sqlalchemy import SQLAlchemy
 
 try:
     from accuconf_config import Config
 except ImportError:
     from models.configuration import Config
+
+year = 2018
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -16,7 +20,9 @@ app.logger.info(app.url_map)
 
 db = SQLAlchemy(app)
 
-year = 2018
+nav = Nav()
+nav.register_element('top_nav', Navbar(''))
+nav.init_app(app)
 
 # The shared packages use accuconf as the name of the application package.
 # must set this up. Don't use a proper DI for now, just use this (possibly
