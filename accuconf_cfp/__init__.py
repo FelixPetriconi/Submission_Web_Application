@@ -13,6 +13,8 @@ try:
 except ImportError:
     from models.configuration import Config
 
+year = 2018
+
 app = Flask(__name__)
 app.config.from_object(Config)
 app.secret_key = app.config['SECRET_KEY']
@@ -20,8 +22,6 @@ app.logger.info(app.url_map)
 
 # Bootstrap(app)
 db = SQLAlchemy(app)
-
-year = 2018
 
 # The shared packages use accuconf as the name of the application package.
 # must set this up. Don't use a proper DI for now, just use this (possibly
@@ -41,7 +41,7 @@ def _top_nav():
     entries = []
     if app.config['CALL_OPEN'] and not logged_in:
         entries.append(View('Register', 'register'))
-    if (app.config['CALL_OPEN'] or app.config['REVIEWING_ALLOWED']) and not logged_in:
+    if (app.config['CALL_OPEN'] or app.config['REVIEWING_ALLOWED']) and not logged_in and request.path != '/register':
         entries.append(View('Login', 'login'))
     return Navbar('', *entries)
 
