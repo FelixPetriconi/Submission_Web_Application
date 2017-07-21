@@ -3,7 +3,9 @@ import random
 import sys
 
 from flask import Flask, redirect, render_template, request, session
-from flask_bootstrap import Bootstrap
+# from flask_bootstrap import Bootstrap
+from flask_nav import Nav
+from flask_nav.elements import Navbar, View
 from flask_sqlalchemy import SQLAlchemy
 
 try:
@@ -16,7 +18,7 @@ app.config.from_object(Config)
 app.secret_key = app.config['SECRET_KEY']
 app.logger.info(app.url_map)
 
-Bootstrap(app)
+# Bootstrap(app)
 db = SQLAlchemy(app)
 
 year = 2018
@@ -31,6 +33,22 @@ sys.modules['accuconf'] = sys.modules['accuconf_cfp']
 from models.user import User
 from models.security import MathPuzzle
 from utils.validator import is_valid_new_email
+
+
+def _top_nav():
+    """The callable that delivers the left-side menu for the current state ."""
+    logged_in = 'email' in session and session['email']
+    entries = []
+    if app.config['CALL_OPEN'] and not logged_in:
+        entries.append(View('Register', 'register'))
+    if (app.config['CALL_OPEN'] or app.config['REVIEWING_ALLOWED']) and not logged_in:
+        entries.append(View('Login', 'login'))
+    return Navbar('', *entries)
+
+
+nav = Nav()
+nav.register_element('top_nav', _top_nav)
+nav.init_app(app)
 
 
 def _is_acceptable_route():
@@ -152,7 +170,7 @@ Please register again.'''}))
                 return render_template("failure.html", page=_md(page, {'data': '''The fields:
 {}
  were not completed.
- 
+
  Please register again.'''.format(' ,'.join(errors))}))
             else:
                 new_user = User(
@@ -168,7 +186,7 @@ Please register again.'''}))
                 )
                 db.session.add(new_user)
         db.session.commit()
-        return render_template("success.html", page={'type': 'Registration', 'data': '''You have successfully registered for submitting 
+        return render_template("success.html", page={'type': 'Registration', 'data': '''You have successfully registered for submitting
 proposals for the ACCU Conf. Please login and
 start preparing your proposal for the conference.'''})
     else:
@@ -223,10 +241,3 @@ def login():
 def logout():
     session.pop('email', None)
     return redirect('/')
-
-
-
-
-# /navlinks for the dynamic left-side menu
-
-# /current_user ????

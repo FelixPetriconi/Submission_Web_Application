@@ -41,11 +41,10 @@
                             </span>
                         </div>
                         <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
-                            <ul class="nav navbar-nav" id="navigation-links">
-                                <!-- This is the attachment point for the dynamically constructed menu -->
-                            </ul>
+                            <div class="nav navbar-nav" id="navigation-links">
+                                {{ nav.top_nav.render() }}
+                            </div>
                         </div>
-                        <!-- {{ accuconf.previous_conferences() }} -->
                     </nav>
                 </div> <!-- End div.row for nav -->
                 <div class="hidden-xs">
@@ -134,36 +133,5 @@
                 </div>
           </div>
         </div> <!--  End of div.row -->
-        <script type="text/template" id="navlinks-template">
-            <li> <a href="<%= href %>"><%= title %></a> </li>
-        </script>
-        <script type="text/javascript">
-            $(document).ready(function() {
-                $("#greeter-row").hide();
-                var navlinksTemplate = _.template($("#navlinks-template").html());
-                $.ajax({
-                    url: "navlinks",
-                    method: "GET",
-                    contentType: "application/json",
-                    success: function(jsonData) {
-                        $.each(jsonData, function(idx, item) {
-                            if (item[2]) { $("#navigation-links").append(navlinksTemplate({"href": item[1], "title": item[0]})); }
-                        });
-                    }
-                });
-                $.ajax({
-                    url: "/current_user",
-                    method: "GET",
-                    contentType: "application/json",
-                    success: function(data) {
-                        if (data.user_id.length) {
-                            $("#greeter").text("Hello " + data.first_name + " " + data.last_name);
-                            // Uncomment this when needed.
-                            // $("#greeter-row").show();
-                        }
-                    }
-                });
-            });
-        </script>
     </body>
 </html>
