@@ -41,26 +41,16 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="firstname" class="control-label col-sm-3">First Name</label>
+                <label for="name" class="control-label col-sm-3">Name</label>
                 <div class="col-sm-offset-1">
-                    <input id="firstname" name="firstname" type="text" value="{{ page.first_name }}"
-                           placeholder="First Name" aria-describedby="firstnamealert">
-                    <span class="help-block" id="firstnamealert"></span>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="lastname" class="control-label col-sm-3">Last Name</label>
-                <div class="col-sm-offset-1">
-                    <input id="lastname" name="lastname" type="text" value="{{ page.last_name }}"
-                           placeholder="Last Name" aria-describedby="lastnamealert">
-                    <span class="help-block" id="lastnamealert"></span>
+                    <input id="name" name="name" type="text" value="{{ page.name }}" placeholder="Name" aria-describedby="namealert">
+                    <span class="help-block" id="namealert"></span>
                 </div>
             </div>
             <div class="form-group">
                 <label for="phone" class="control-label col-sm-3">Phone number with ISD code</label>
                 <div class="col-sm-offset-1">
-                    <input id="phone" name="phone" value="{{ page.phone }}"
-                           placeholder="+44 20 1234 5678" aria-describedby="phonealert">
+                    <input id="phone" name="phone" value="{{ page.phone }}" placeholder="+44 20 1234 5678" aria-describedby="phonealert">
                     <span class="help-block" id="phonealert"></span>
                 </div>
             </div>
@@ -100,12 +90,6 @@
                 <div class="col-sm-offset-1">
                     <input type="text" id="streetaddress" name="streetaddress" value="{{ page.street_address }}" placeholder="Street Address">
                     <span class="help-block" id="streetaddressalert"></span>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="bio" class="control-label col-sm-3">Short bio</label>
-                <div class="col-sm-offset-1">
-                    <textarea rows="10" cols="60" name="bio" id="bio" placeholder="Short biography">{{ page.bio }}</textarea>
                 </div>
             </div>
             {% if page.mode !='edit_mode' %}
