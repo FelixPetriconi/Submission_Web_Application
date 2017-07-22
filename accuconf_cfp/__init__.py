@@ -37,6 +37,8 @@ from utils.validator import is_valid_new_email
 
 def _top_nav():
     """The callable that delivers the left-side menu for the current state ."""
+    if app.config['MAINTENANCE']:
+        return Navbar('')
     logged_in = 'email' in session and session['email']
     entries = []
     if app.config['CALL_OPEN'] and not logged_in:
