@@ -41,9 +41,9 @@ def _top_nav():
         return Navbar('')
     logged_in = 'email' in session and session['email']
     entries = []
-    if app.config['CALL_OPEN'] and not logged_in:
+    if app.config['CALL_OPEN'] and not logged_in and request.path != '/register':
         entries.append(View('Register', 'register'))
-    if (app.config['CALL_OPEN'] or app.config['REVIEWING_ALLOWED']) and not logged_in and request.path != '/register':
+    if (app.config['CALL_OPEN'] or app.config['REVIEWING_ALLOWED']) and not logged_in and request.path != '/login':
         entries.append(View('Login', 'login'))
     return Navbar('', *entries)
 
