@@ -35,6 +35,7 @@ accuconf_config.py
 .cache/
 .benchmarks/
 .hypothesis/
+.coverage
 
 # Selenium related stuff
 ghostdriver.log
