@@ -12,9 +12,9 @@ shared data model, and shared utilities.
 
 The submission application:
 
-. Allows people to register as users.
-. Allows registered users to login and submit session proposals.
-. Allows registered users who are designated reviewers to review the submitted proposals.
+1. Allows people to register as users.
+1. Allows registered users to login and submit session proposals.
+1. Allows registered users who are designated reviewers to review the submitted proposals.
 
 The schedule application provides a RESTful API to access the final conference schedule data. The API is
 designed for
