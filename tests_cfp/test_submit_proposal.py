@@ -15,6 +15,7 @@ from models.user import User
 from models.proposal import Proposal
 from utils.proposals import SessionType
 
+from test_utils.constants import login_menu_item, register_menu_item
 # PyCharm fails to spot this is used as a fixture.
 from test_utils.fixtures import client
 from test_utils.functions import get_and_check_content, post_and_check_content
@@ -103,12 +104,17 @@ def test_ensure_registration_and_login(client, registration_data, monkeypatch):
     monkeypatch.setitem(app.config, 'MAINTENANCE', False)
     post_and_check_content(client, '/register', registration_data, includes=('You have successfully registered',))
     post_and_check_content(client, '/login', {'email': registration_data['email'], 'passphrase': registration_data['passphrase']}, code=302, includes=('Redirecting',))
-    get_and_check_content(client, '/', includes=('ACCU', 'Call for Proposals',))
 
 
-def XXX_test_logged_in_user_can_get_submission_page(client, registration_data):
-    test_ensure_registration_and_login(client, registration_data)
-    get_and_check_content(client, '/submit_proposal', includes=('Submit a proposal',))
+def test_not_logged_in_user_cannot_get_submission_page(client, monkeypatch):
+    monkeypatch.setitem(app.config, 'CALL_OPEN', True)
+    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+    get_and_check_content(client, '/submit', includes=('Failure', 'Must be logged in to submit a proposal.', login_menu_item, register_menu_item))
+
+
+def test_logged_in_user_can_get_submission_page(client, registration_data, monkeypatch):
+    test_ensure_registration_and_login(client, registration_data, monkeypatch)
+    get_and_check_content(client, '/submit', includes=('Submit',), excludes=(login_menu_item, register_menu_item))
 
 
 def XXX_test_logged_in_user_can_submit_a_single_presenter_proposal(client, registration_data, proposal_single_presenter):

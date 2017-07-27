@@ -243,3 +243,29 @@ def login():
 def logout():
     session.pop('email', None)
     return redirect('/')
+
+
+@app.route('/submit', methods=['GET', 'POST'])
+def submit():
+    check = _is_acceptable_route()
+    if not check[0]:
+        return check[1]
+    assert check[1] is None
+    if request.method == 'POST':
+        pass
+    else:
+        if session.get('email', False):
+            user = User.query.filter_by(email=session['email']).first()
+            if user:
+                return render_template('submit.html', page={
+                    'title': 'Submit a proposal for ACCU {}'.format(year),
+                    'name': user.name,
+                    'proposer': {
+                        'email': user.email,
+                        'name': user.name,
+                        'bio': 'A human being.',
+                        'country': user.country,
+                        'state': user.state,
+                    }
+                })
+        return render_template('failure.html', page={'data': 'Must be logged in to submit a proposal.'})

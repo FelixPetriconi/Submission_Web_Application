@@ -5,6 +5,7 @@ import configure
 
 from accuconf import app
 
+from test_utils.constants import login_menu_item, register_menu_item
 # PyCharm fails to spot the use of this symbol as a fixture.
 from test_utils.fixtures import client
 from test_utils.functions import get_and_check_content, post_and_check_content
@@ -31,9 +32,9 @@ def registrant():
 def test_successful_login(client, registrant, monkeypatch):
     monkeypatch.setitem(app.config, 'CALL_OPEN', True)
     monkeypatch.setitem(app.config, 'MAINTENANCE', False)
-    post_and_check_content(client, '/register', registrant)
+    post_and_check_content(client, '/register', registrant, includes=(login_menu_item,), excludes=(register_menu_item,))
     post_and_check_content(client, '/login',
-                           {'email': registrant['email'], 'passphrase':  registrant['passphrase']},
+                           {'email': registrant['email'], 'passphrase': registrant['passphrase']},
                            code=302,
                            includes=('Redirecting', '<a href="/">',),
                            )
@@ -42,29 +43,30 @@ def test_successful_login(client, registrant, monkeypatch):
 def test_wrong_passphrase_causes_login_failure(client, registrant, monkeypatch):
     monkeypatch.setitem(app.config, 'CALL_OPEN', True)
     monkeypatch.setitem(app.config, 'MAINTENANCE', False)
-    post_and_check_content(client, '/register', registrant)
+    post_and_check_content(client, '/register', registrant, includes=(login_menu_item,), excludes=(register_menu_item,))
     post_and_check_content(client, '/login',
                            {'email': registrant['email'], 'passphrase': 'Passphrase2'},
                            code=302,
-                           includes=('Redirect', '<a href="/login">',),
+                           includes=('Redirecting', '<a href="/login">',),
                            )
 
 
 def test_update_user_name(client, registrant, monkeypatch):
     test_successful_login(client, registrant, monkeypatch)
     registrant['name'] = 'Some Dude'
-    post_and_check_content(client, '/register', registrant, includes=('Your account details were successful updated.',))
+    # TODO Isn't this the wrong menu?
+    post_and_check_content(client, '/register', registrant, includes=('Your account details were successful updated.',), excludes=(login_menu_item, register_menu_item,))
 
 
 def test_logout_without_login_is_noop(client, monkeypatch):
     monkeypatch.setitem(app.config, 'CALL_OPEN', True)
     monkeypatch.setitem(app.config, 'MAINTENANCE', False)
-    get_and_check_content(client, '/logout', code=302, includes=('Redirect', '<a href="/">',))
+    get_and_check_content(client, '/logout', code=302, includes=('Redirecting', '<a href="/">',))
 
 
 def test_logged_in_user_can_logout_with_get(client, registrant, monkeypatch):
     test_successful_login(client, registrant, monkeypatch)
-    get_and_check_content(client, '/logout', code=302, includes=('Redirect', '<a href="/">',))
+    get_and_check_content(client, '/logout', code=302, includes=('Redirecting', '<a href="/">',))
 
 
 def test_logged_in_user_cannot_logout_with_post(client, registrant, monkeypatch):
