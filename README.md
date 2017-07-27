@@ -1,5 +1,6 @@
 [![Licence](https://img.shields.io/badge/license-GPL_3-green.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![Build Status](https://travis-ci.org/ACCUConf/ACCUConf_Submission_Web_Application.svg?branch=master)](https://travis-ci.org/ACCUConf/ACCUConf_Submission_Web_Application)
+[![Coverage Status](https://coveralls.io/repos/github/ACCUConf/ACCUConf_Submission_Web_Application/badge.svg?branch=master)](https://coveralls.io/github/ACCUConf/ACCUConf_Submission_Web_Application)
 
 # ACCUConf Web Applications
 
@@ -11,9 +12,9 @@ shared data model, and shared utilities.
 
 The submission application:
 
-1. Allows people to register as users.
-1. Allows registered users to login and submit session proposals.
-1. Allows registered users who are designated reviewers to review the submitted proposals.
+. Allows people to register as users.
+. Allows registered users to login and submit session proposals.
+. Allows registered users who are designated reviewers to review the submitted proposals.
 
 The schedule application provides a RESTful API to access the final conference schedule data. The API is
 designed for
