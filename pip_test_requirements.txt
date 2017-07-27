@@ -4,4 +4,6 @@ pytest
 pytest-pep8
 pytest-cov
 
+python-coveralls
+
 selenium
