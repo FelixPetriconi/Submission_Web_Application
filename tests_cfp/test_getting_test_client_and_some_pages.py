@@ -51,7 +51,7 @@ def test_the_registration_page_call_open(client, monkeypatch):
     assert client is not None
     monkeypatch.setitem(app.config, 'CALL_OPEN', True)
     monkeypatch.setitem(app.config, 'MAINTENANCE', False)
-    get_and_check_content(client, '/register', 200, ('ACCU', 'Register'), ('Login', 'Maintenance'))
+    get_and_check_content(client, '/register', 200, ('ACCU', 'Register'), ('Maintenance',))
 
 
 def test_the_login_page_call_open(client, monkeypatch):

@@ -41,9 +41,9 @@ def _top_nav():
         return Navbar('')
     logged_in = 'email' in session and session['email']
     entries = []
-    if app.config['CALL_OPEN'] and not logged_in:
+    if app.config['CALL_OPEN'] and not logged_in and request.path != '/register':
         entries.append(View('Register', 'register'))
-    if (app.config['CALL_OPEN'] or app.config['REVIEWING_ALLOWED']) and not logged_in and request.path != '/register':
+    if (app.config['CALL_OPEN'] or app.config['REVIEWING_ALLOWED']) and not logged_in and request.path != '/login':
         entries.append(View('Login', 'login'))
     return Navbar('', *entries)
 
@@ -243,3 +243,29 @@ def login():
 def logout():
     session.pop('email', None)
     return redirect('/')
+
+
+@app.route('/submit', methods=['GET', 'POST'])
+def submit():
+    check = _is_acceptable_route()
+    if not check[0]:
+        return check[1]
+    assert check[1] is None
+    if request.method == 'POST':
+        pass
+    else:
+        if session.get('email', False):
+            user = User.query.filter_by(email=session['email']).first()
+            if user:
+                return render_template('submit.html', page={
+                    'title': 'Submit a proposal for ACCU {}'.format(year),
+                    'name': user.name,
+                    'proposer': {
+                        'email': user.email,
+                        'name': user.name,
+                        'bio': 'A human being.',
+                        'country': user.country,
+                        'state': user.state,
+                    }
+                })
+        return render_template('failure.html', page={'data': 'Must be logged in to submit a proposal.'})

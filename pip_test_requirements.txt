@@ -1,5 +1,7 @@
 # The Python packages required for testing.
 
 pytest
+pytest-pep8
+pytest-cov
 
 selenium
