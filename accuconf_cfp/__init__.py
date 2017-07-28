@@ -149,7 +149,7 @@ def register():
             })
             if encoded_passphrase:
                 user.passphrase = encoded_passphrase
-                User.query.filter_by(email=user.email).update({'passphrase': encoded_passphrase })
+                User.query.filter_by(email=user.email).update({'passphrase': encoded_passphrase})
             return render_template('success.html', page=_md(page, {'data': 'Your account details were successful updated.'}))
         else:
             if not is_valid_new_email(email):
@@ -202,7 +202,7 @@ start preparing your proposal for the conference.'''})
             'email': user.email if edit_mode else '',
             'name': user.name if edit_mode else '',
             'phone': user.phone if edit_mode else '',
-            'country': user.country if edit_mode else 'GBR', # UK shall be the default
+            'country': user.country if edit_mode else 'GBR',  # UK shall be the default
             'state': user.state if edit_mode else '',
             'postal_code': user.postal_code if edit_mode else '',
             'town_city': user.town_city if edit_mode else '',
