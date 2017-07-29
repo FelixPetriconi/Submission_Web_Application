@@ -46,8 +46,8 @@ def test_wrong_passphrase_causes_login_failure(client, registrant, monkeypatch):
     post_and_check_content(client, '/register', registrant, includes=(login_menu_item,), excludes=(register_menu_item,))
     post_and_check_content(client, '/login',
                            {'email': registrant['email'], 'passphrase': 'Passphrase2'},
-                           code=302,
-                           includes=('Redirecting', '<a href="/login">',),
+                           code=200,
+                           includes=('Failure', 'Login was not successful.',),
                            )
 
 
