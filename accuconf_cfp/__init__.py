@@ -2,6 +2,8 @@ import hashlib
 import random
 import sys
 
+import pycountry
+
 from flask import Flask, jsonify, redirect, render_template, request, session
 # from flask_bootstrap import Bootstrap
 from flask_nav import Nav
@@ -34,6 +36,9 @@ from models.user import User
 from models.proposal import Proposal, ProposalPresenter, Presenter, SessionType
 from models.security import MathPuzzle
 from utils.validator import is_valid_new_email, validate_proposal_data
+
+
+countries = {country.alpha_3: country.official_name for country in pycountry.countries}
 
 
 def is_logged_in():
@@ -199,7 +204,6 @@ start preparing your proposal for the conference.'''})
         db.session.add(question)
         db.session.commit()
         return render_template("register.html", page=md(page, {
-            'mode': 'edit_mode' if edit_mode else 'register',
             'email': user.email if edit_mode else '',
             'name': user.name if edit_mode else '',
             'phone': user.phone if edit_mode else '',
@@ -213,6 +217,7 @@ start preparing your proposal for the conference.'''})
             'question': question.id,
             'puzzle': '{} + {}'.format(num_a, num_b),
             'submit_button': 'Save' if edit_mode else 'Register',
+            'countries': list(countries.values()),
         }))
 
 
