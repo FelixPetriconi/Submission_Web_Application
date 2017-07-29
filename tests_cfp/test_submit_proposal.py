@@ -117,10 +117,10 @@ def test_logged_in_user_can_get_submission_page(client, registration_data, monke
     get_and_check_content(client, '/submit', includes=('Submit',), excludes=(login_menu_item, register_menu_item))
 
 
-def XXX_test_logged_in_user_can_submit_a_single_presenter_proposal(client, registration_data, proposal_single_presenter):
-    test_ensure_registration_and_login(client, registration_data)
+def XXX__test_logged_in_user_can_submit_a_single_presenter_proposal(client, registration_data, proposal_single_presenter, monkeypatch):
+    test_ensure_registration_and_login(client, registration_data, monkeypatch)
     # TODO Why do we have to send JSON here but just used dictionaries previously?
-    rvd = post_and_check_content(client, '/upload_proposal', json.dumps(proposal_single_presenter), 'application/json', includes=('success',))
+    rvd = post_and_check_content(client, '/submit', json.dumps(proposal_single_presenter), 'application/json', includes=('success',))
     response = json.loads(rvd)
     assert response['success']
     user = User.query.filter_by(email='a@b.c').all()

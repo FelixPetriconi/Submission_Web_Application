@@ -7,3 +7,5 @@ Flask-Cors
 SQLAlchemy
 Flask_SQLAlchemy
 Flask-Migrate
+
+pycountry

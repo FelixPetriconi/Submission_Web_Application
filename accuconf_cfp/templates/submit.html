@@ -160,9 +160,7 @@
                             <div class="form-group">
                                 <label for="add-presenter-country" class="control-label col-sm-2">Country</label>
                                 <div class="col-sm-4">
-                                    <select name="add-presenter-country" id="add-presenter-country"
-                                            onchange="javascript:loadState('add-presenter-country', 'add-presenter-states', 'add-presenter-state')"
-                                            onmouseup="this.onchange()" onkeyup="this.onchange()">
+                                    <select name="add-presenter-country" id="add-presenter-country">
                                     </select>
                                 </div>
                             </div>
@@ -201,37 +199,5 @@
             <a href=""> <span class="glyphicon glyphicon-remove" aria-hidden="true" onclick="return deleteRow('<%= sno %>');"></span> </a>
         </td>
     </tr>
-</script>
-<script type="text/javascript">
- var countryData;
- $(document).ready(function() {
-     $.ajax({
-         method: 'GET',
-         url: "/proposals/static/assets/data/countries.json",
-         success: function(data, textStatus, jqXHR) {
-             var country_sel = $('#country');
-             data.sort(function(a, b) {
-                 var aUpper = a.name.toUpperCase();
-                 var bUpper = b.name.toUpperCase();
-                 if ( aUpper < bUpper ) {
-                     return -1;
-                 }
-                 if (aUpper > bUpper) {
-                     return 1;
-                 }
-                 return 0;
-             });
-             countryData = data;
-             $('#p_ctry_1').html();
-             $.each(data, function(name, data) {
-                 $('#p_ctry_1').append('<option value="' + data.alpha3 + '">'
-                                     + data.a_name + '</option>');
-                 $('#add-presenter-country').append('<option value="' + data.alpha3 + '">'
-                                                  + data.a_name + '</option>');
-             });
-         },
-         dataType: "json"
-     });
- });
 </script>
 {% endblock %}

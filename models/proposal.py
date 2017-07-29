@@ -4,6 +4,8 @@ from accuconf import db
 from utils.proposals import SessionType, SessionCategory, ProposalState, SessionAudience
 from utils.schedule import ConferenceDay, SessionSlot, QuickieSlot, Track, Room
 
+# TODO Replace the use of Association Objects directly with use of Association Proxy.
+
 
 class ProposalPresenter(db.Model):
     proposal_id = db.Column(db.Integer, db.ForeignKey('proposal.id'), primary_key=True)
