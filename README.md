@@ -43,9 +43,9 @@ as well. The admin requirements are for using the scaffolded admin interface to 
 
 Running the submission application is then a matter of executing:
 
-    ./accuconf_cfp.py
+    ./run_cfp.py
 
-This should set the submission application running on localhost:8001. The state of the application is
+This should set the submission application running on localhost:8000. The state of the application is
 determined at application start time. The default is the "off" state, so should just put up a "not open"
 message..
 
