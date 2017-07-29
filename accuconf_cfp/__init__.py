@@ -37,8 +37,7 @@ from models.proposal import Proposal, ProposalPresenter, Presenter, SessionType
 from models.security import MathPuzzle
 from utils.validator import is_valid_new_email, validate_proposal_data
 
-
-countries = {country.alpha_3: country.name for country in pycountry.countries}
+countries = {country.name: country.alpha_3 for country in pycountry.countries}
 
 
 def is_logged_in():
@@ -217,7 +216,7 @@ start preparing your proposal for the conference.'''})
             'question': question.id,
             'puzzle': '{} + {}'.format(num_a, num_b),
             'submit_button': 'Save' if edit_mode else 'Register',
-            'countries': list(countries.values()),
+            'countries': list(countries.keys()),
         }))
 
 

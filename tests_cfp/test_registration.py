@@ -12,7 +12,7 @@ from accuconf import app
 from test_utils.constants import login_menu_item, register_menu_item
 # PyCharm fails to spot this is used as a fixture.
 from test_utils.fixtures import client
-from test_utils.functions import post_and_check_content
+from test_utils.functions import get_and_check_content, post_and_check_content
 
 
 @pytest.fixture
@@ -31,6 +31,12 @@ def registrant():
         'captcha': '1',
         'question': '12',
     }
+
+
+def test_registration_page_has_some_countries(client, monkeypatch):
+    monkeypatch.setitem(app.config, 'CALL_OPEN', True)
+    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+    get_and_check_content(client, '/register', includes=('Register', 'United Kingdom'), excludes=(register_menu_item, 'GBR'))
 
 
 def test_successful_user_registration(client, registrant, monkeypatch):
