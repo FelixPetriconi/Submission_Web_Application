@@ -9,8 +9,7 @@ from accuconf import app, db
 
 @pytest.fixture
 def database():
-    """
-    Deliver up the database associated with the application.
+    """Deliver up the database associated with the application.
     """
     app.config['TESTING'] = True
     with app.app_context():
@@ -23,8 +22,7 @@ def database():
 
 @pytest.fixture()
 def client():
-    """
-    A Werkzeug client in testing mode with a newly created database.
+    """A Werkzeug client in testing mode with a newly created database.
     """
     app.config['TESTING'] = True
     with app.app_context():
