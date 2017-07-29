@@ -38,7 +38,7 @@ from models.security import MathPuzzle
 from utils.validator import is_valid_new_email, validate_proposal_data
 
 
-countries = {country.alpha_3: country.official_name for country in pycountry.countries}
+countries = {country.alpha_3: country.name for country in pycountry.countries}
 
 
 def is_logged_in():
