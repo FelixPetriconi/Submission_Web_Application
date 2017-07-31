@@ -19,29 +19,35 @@ from models.score import Score
 
 
 @pytest.mark.parametrize('user_data', (
+    # A user with all fields set.
     {
         'email': 'a@b.c',
         'passphrase': 'passphrase',
         'name': 'User Name',
         'country': 'Some Country',
         'state': 'Some State',
-        'postalcode': 'Postcode',
-        'towncity': 'Town or City',
-        'address': 'Street Address',
+        'postal_code': 'Postcode',
+        'town_city': 'Town or City',
+        'street_address': 'Street Address',
         'phone': '+01234567890',
     },
+    # A user with only the mandatory fields set, relying on the defaults
+    # for the missing fields.
     {
         'email': 'a@b.c',
         'passphrase': 'passphrase',
         'name': 'User Name',
         'country': 'Some Country',
-        'state': None,
-        'postalcode': 'Postcode',
-        'towncity': 'Town or City',
-        'address': 'Street Address',
+        'postal_code': 'Postcode',
+        'town_city': 'Town or City',
+        'street_address': 'Street Address',
     }))
 def test_user_in_database(user_data, database):
-    u = User(*user_data)
+    """Ensure that we can put a user with no proposals or other data into the database.
+
+    Having users with proposals, scores and comments comes later.
+    """
+    u = User(**user_data)
     database.session.add(u)
     database.session.commit()
     query_result = User.query.filter_by(email=u.email).all()
