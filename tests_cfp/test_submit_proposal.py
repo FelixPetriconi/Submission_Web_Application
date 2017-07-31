@@ -119,7 +119,6 @@ def test_logged_in_user_can_get_submission_page(client, registration_data, monke
 
 def XXX__test_logged_in_user_can_submit_a_single_presenter_proposal(client, registration_data, proposal_single_presenter, monkeypatch):
     test_ensure_registration_and_login(client, registration_data, monkeypatch)
-    # TODO Why do we have to send JSON here but just used dictionaries previously?
     rvd = post_and_check_content(client, '/submit', json.dumps(proposal_single_presenter), 'application/json', includes=('success',))
     response = json.loads(rvd)
     assert response['success']
@@ -145,7 +144,6 @@ def XXX__test_logged_in_user_can_submit_a_single_presenter_proposal(client, regi
 
 def XXX_test_logged_in_user_can_submit_multipresenter_single_lead_proposal(client, registration_data, proposal_multiple_presenters_single_lead):
     test_ensure_registration_and_login(client, registration_data)
-    # TODO Why do we have to send JSON here but just used dictionaries previously?
     rvd = post_and_check_content(client, '/upload_proposal', json.dumps(proposal_multiple_presenters_single_lead), 'application/json', includes=('success',))
     response = json.loads(rvd)
     assert response['success']
@@ -171,7 +169,6 @@ def XXX_test_logged_in_user_can_submit_multipresenter_single_lead_proposal(clien
 
 def XXX_test_logged_in_user_cannot_submit_multipresenter_multilead_proposal(client, registration_data, proposal_multiple_presenters_and_leads):
     test_ensure_registration_and_login(client, registration_data)
-    # TODO Why do we have to send JSON here but just used dictionaries previously?
     rvd = post_and_check_content(client, '/upload_proposal', json.dumps(proposal_multiple_presenters_and_leads), 'application/json', includes=('success',))
     response = json.loads(rvd)
     assert response["success"] is False
