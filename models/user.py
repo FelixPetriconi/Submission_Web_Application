@@ -1,9 +1,6 @@
 #  The accuconf name is created as an alias for the application package at run time.
 from accuconf import db
 
-# PyCharm reports these as not used, and yet they are.
-from models.proposal import Comment, Proposal, Score
-
 from utils.roles import Role
 
 
@@ -20,8 +17,8 @@ class User(db.Model):
     street_address = db.Column(db.String(400), nullable=False)
     phone = db.Column(db.String(18), nullable=True)  # ITU E.165 limits numbers to 15 digits
     proposals = db.relationship('Proposal', back_populates='proposer')
-    scores = db.relationship('Score', backref='scorer')
-    comments = db.relationship('Comment', backref='commenter')
+    scores = db.relationship('Score', back_populates='scorer')
+    comments = db.relationship('Comment', back_populates='commenter')
 
     def __init__(self, email, passphrase, name, country, state, postal_code, town_city, street_address, phone=None, role=Role.user):
         self.email = email
