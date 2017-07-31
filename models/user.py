@@ -20,7 +20,7 @@ class User(db.Model):
     scores = db.relationship('Score', back_populates='scorer')
     comments = db.relationship('Comment', back_populates='commenter')
 
-    def __init__(self, email, passphrase, name, country, state, postal_code, town_city, street_address, phone=None, role=Role.user):
+    def __init__(self, email, passphrase, name, country, postal_code, town_city, street_address, state=None, phone=None, role=Role.user):
         self.email = email
         self.passphrase = passphrase
         self.name = name
