@@ -9,7 +9,7 @@ import configure
 from models.user import User
 from models.proposal import Proposal, Presenter, ProposalPresenter
 from models.score import Score, Comment
-from utils.proposals import SessionType, ProposalState, SessionCategory, SessionAudience
+from models.proposal_types import SessionType, ProposalState, SessionCategory, SessionAudience
 
 # PyCharm believes it isn't a used symbol, but it is.
 from test_utils.fixtures import database

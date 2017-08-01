@@ -1,7 +1,7 @@
 #  The accuconf name is created as an alias for the application package at run time.
 from accuconf import db
 
-from utils.roles import Role
+from models.role_types import Role
 
 
 class User(db.Model):
