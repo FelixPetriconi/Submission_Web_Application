@@ -3,7 +3,6 @@ from sqlalchemy.ext.associationproxy import association_proxy
 #  The accuconf name is created as an alias for the application package at run time.
 from accuconf import db
 
-
 from utils.proposals import SessionType, SessionCategory, ProposalState, SessionAudience
 from utils.schedule import ConferenceDay, SessionSlot, QuickieSlot, Track, Room
 
@@ -29,8 +28,9 @@ class Proposal(db.Model):
     quickie_slot = db.Column(db.Enum(QuickieSlot)) # Only not empty if session_type == quickie.
     track = db.Column(db.Enum(Track))
     room = db.Column(db.Enum(Room))
-    slides_pdf = db.Column(db.String(80))
-    video_url = db.Column(db.String(128))
+    # slides_pdf and video_url can only be completed after the conference.
+    slides_pdf = db.Column(db.String(100))
+    video_url = db.Column(db.String(100))
 
     def __init__(self, proposer, title, session_type, text, notes='',
                  audience=SessionAudience.all, category=SessionCategory.not_sure, status=ProposalState.submitted,

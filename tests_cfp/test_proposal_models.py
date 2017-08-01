@@ -20,9 +20,9 @@ user_data = {
     'name': 'User Name',
     'country': 'IND',
     'state': 'KARNATAKA',
-    'postalcode': '560093',
-    'towncity': 'Town',
-    'address': 'Address',
+    'postal_code': '560093',
+    'town_city': 'Town',
+    'street_address': 'Address',
     'phone': '+01234567890',
 }
 
@@ -44,48 +44,49 @@ proposal_data = {
 
 
 def test_putting_proposal_in_database(database):
-    user = User(*user_data)
-    proposal = Proposal(user, *proposal_data)
-    presenter = Presenter(*presenter_data)
-    proposal_presenter = ProposalPresenter(proposal, presenter, True)
-    # proposal.presenters.append(proposal_presenter)
-    # presenter.proposals.append(proposal_presenter)
+    user = User(**user_data)
+    proposal = Proposal(user, **proposal_data)
+    presenter = Presenter(**presenter_data)
+    ProposalPresenter(proposal, presenter, True)
+    assert proposal.presenters[0] == presenter
+    assert presenter.proposals[0] == proposal
+    presenter.is_lead = True
     database.session.add(user)
     database.session.add(proposal)
     database.session.add(presenter)
-    database.session.add(proposal_presenter)
     database.session.commit()
-    query_result = Proposal.query.filter_by(proposer_id=user.id).all()
+    query_result = Proposal.query.filter_by(proposer=user).all()
     assert len(query_result) == 1
     proposal = query_result[0]
     assert proposal.proposer.email == user.email
-    assert (proposal.title, proposal.session_type, proposal.text, proposal.notes, proposal.audience, proposal.category) == proposal_data
+    assert {
+        'title': proposal.title,
+        'session_type': proposal.session_type,
+        'text': proposal.text, 'notes': proposal.notes,
+        'audience': proposal.audience,
+        'category': proposal.category} == proposal_data
     assert proposal.status == ProposalState.submitted
     assert len(proposal.presenters) == 1
     proposal_presenter = proposal.presenters[0]
     is_lead = proposal_presenter.is_lead
     assert is_lead
-    proposal_presenter = proposal_presenter.presenter
     assert (proposal_presenter.email, proposal_presenter.name) == (user.email, user.name)
 
 
 def test_adding_review_and_comment_to_proposal_in_database(database):
-    user = User(*user_data)
-    proposal = Proposal(user, *proposal_data)
-    presenter = Presenter(*presenter_data)
-    proposal_presenter = ProposalPresenter(proposal, presenter, True)
-    proposal.presenters.append(proposal_presenter)
-    presenter.proposals.append(proposal_presenter)
+    user = User(**user_data)
+    proposal = Proposal(user, **proposal_data)
+    presenter = Presenter(**presenter_data)
+    ProposalPresenter(proposal, presenter, True)
     score = Score(proposal, user, 10)
     comment = Comment(proposal, user, 'Perfect')
     database.session.add(user)
     database.session.add(proposal)
     database.session.add(presenter)
-    database.session.add(proposal_presenter)
     database.session.add(score)
     database.session.add(comment)
     database.session.commit()
-    query_result = Proposal.query.filter_by(proposer_id=user.id).all()
+    query_result = Proposal.query.filter_by(proposer=user).all()
     assert len(query_result) == 1
     proposal = query_result[0]
     assert proposal.scores is not None
