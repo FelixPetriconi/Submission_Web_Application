@@ -17,7 +17,7 @@ port = '65530'
 base_url = 'http://{}:{}/'.format(host, port)
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope='module', autouse=True)
 def server():
     # NB do not spawn with a shell since then you can't terminate the server.
     process = subprocess.Popen(('python3', '{}'.format(this_directory / 'start_server.py')))

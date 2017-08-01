@@ -34,7 +34,6 @@ db = SQLAlchemy(app)
 sys.modules['accuconf'] = sys.modules['accuconf_cfp']
 from models.user import User
 from models.proposal import Proposal, ProposalPresenter, Presenter, SessionType
-from models.security import MathPuzzle
 from utils.validator import is_valid_new_email, validate_proposal_data
 
 countries = {country.name: country.alpha_3 for country in pycountry.countries}
@@ -199,9 +198,6 @@ start preparing your proposal for the conference.'''})
     else:
         num_a = random.randint(10, 99)
         num_b = random.randint(10, 99)
-        question = MathPuzzle(num_a + num_b)
-        db.session.add(question)
-        db.session.commit()
         return render_template("register.html", page=md(page, {
             'email': user.email if edit_mode else '',
             'name': user.name if edit_mode else '',
@@ -213,7 +209,6 @@ start preparing your proposal for the conference.'''})
             'street_address': user.street_address if edit_mode else '',
             'title': 'Account Information' if edit_mode else 'Register',
             'data': 'Here you can edit your account information' if edit_mode else 'Register here for submitting proposals to ACCU Conference',
-            'question': question.id,
             'puzzle': '{} + {}'.format(num_a, num_b),
             'submit_button': 'Save' if edit_mode else 'Register',
             'countries': list(countries.keys()),
@@ -278,7 +273,6 @@ def submit():
                         proposal_data.get('abstract').strip()
                     )
                     db.session.add(proposal)
-                    # db.session.commit()
                     presenters_data = proposal_data.get('presenters')
                     for presenter_data in presenters_data:
                         presenter = Presenter(
@@ -288,17 +282,8 @@ def submit():
                             presenter_data['country'],
                             presenter_data['state'],
                         )
+                        ProposalPresenter(proposal, presenter, presenter_data['lead'])
                         db.session.add(presenter)
-                        # db.session.commit()
-                        proposal_presenter = ProposalPresenter(
-                            proposal.id, presenter.id,
-                            proposal, presenter,
-                            presenter_data['lead'],
-                        )
-                        proposal.presenters.append(proposal_presenter)
-                        presenter.proposals.append(proposal_presenter)
-                        db.session.add(proposal_presenter)
-                        # db.session.commit()
                     db.session.commit()
                     response['success'] = True
                     response['message'] = '''Thank you, you have successfully submitted a proposal for the ACCU {} conference!
