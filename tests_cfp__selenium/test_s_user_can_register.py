@@ -2,8 +2,11 @@ import time
 
 import pytest
 
+from flask import url_for
+
+# NB PyCharm doesn't know about fixtures so browser appears unused whe it is used.
 # NB server is an session scope autouse fixture that no test needs direct access to.
-from common import base_url, browser, server
+from common import browser, server
 
 
 @pytest.fixture
@@ -11,6 +14,7 @@ def registrant():
     return {
         'email': 'a@b.c',
         'passphrase': 'Passphrase1',
+        'cpassphrase': 'Passphrase1',
         'name': 'User Name',
         'phone': '+011234567890',
         'country': 'India',
@@ -29,8 +33,8 @@ def test_user_can_successfully_register(browser, registrant):
 
     browser.find_element_by_id('email').send_keys(registrant['email'])
     browser.find_element_by_id('name').send_keys(registrant['name'])
-    browser.find_element_by_id('password').send_keys(registrant['password'])
-    browser.find_element_by_id('cpassword').send_keys(registrant['password'])
+    browser.find_element_by_id('passphrase').send_keys(registrant['passphrase'])
+    browser.find_element_by_id('cpassphrase').send_keys(registrant['cpassphrase'])
     browser.find_element_by_id('submit').click()
     time.sleep(1)
 
