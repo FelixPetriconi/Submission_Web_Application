@@ -13,6 +13,7 @@ from accuconf import app
 
 from models.user import User
 from models.proposal import Proposal
+from models.score import Score  # TODO Why is this needed?
 from utils.proposals import SessionType
 
 from test_utils.constants import login_menu_item, register_menu_item
@@ -117,7 +118,7 @@ def test_logged_in_user_can_get_submission_page(client, registration_data, monke
     get_and_check_content(client, '/submit', includes=('Submit',), excludes=(login_menu_item, register_menu_item))
 
 
-def XXX__test_logged_in_user_can_submit_a_single_presenter_proposal(client, registration_data, proposal_single_presenter, monkeypatch):
+def XXX_test_logged_in_user_can_submit_a_single_presenter_proposal(client, registration_data, proposal_single_presenter, monkeypatch):
     test_ensure_registration_and_login(client, registration_data, monkeypatch)
     rvd = post_and_check_content(client, '/submit', json.dumps(proposal_single_presenter), 'application/json', includes=('success',))
     response = json.loads(rvd)
@@ -134,10 +135,8 @@ def XXX__test_logged_in_user_can_submit_a_single_presenter_proposal(client, regi
     assert len(user.proposals) == 1
     p = user.proposals[0]
     assert len(p.presenters) == 1
-    proposal_presenter = p.presenters[0]
-    presenter = proposal_presenter.presenter
-    is_lead = proposal_presenter.is_lead
-    assert is_lead
+    presenter = p.presenters[0]
+    assert presenter.is_lead
     assert presenter.email == user.email
     assert proposal.session_type == SessionType.quickie
 
