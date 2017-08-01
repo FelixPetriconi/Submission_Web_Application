@@ -9,7 +9,7 @@ install:
   - pip install --upgrade -r pip_admin_requirements.txt
 script:
   - python -m pytest tests_cfp --cov accuconf_cfp
-  - python -m pytest tests_cfp__selenium --cov accuconf_cfp
+  # - python -m pytest tests_cfp__selenium --cov accuconf_cfp
   - python -m pytest tests_api --cov accuconf_api
 after_success:
   coveralls

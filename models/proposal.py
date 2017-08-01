@@ -1,30 +1,10 @@
+from sqlalchemy.ext.associationproxy import association_proxy
+
 #  The accuconf name is created as an alias for the application package at run time.
 from accuconf import db
 
 from utils.proposals import SessionType, SessionCategory, ProposalState, SessionAudience
 from utils.schedule import ConferenceDay, SessionSlot, QuickieSlot, Track, Room
-
-# TODO Replace the use of Association Objects directly with use of Association Proxy.
-
-
-class ProposalPresenter(db.Model):
-    proposal_id = db.Column(db.Integer, db.ForeignKey('proposal.id'), primary_key=True)
-    presenter_id = db.Column(db.Integer, db.ForeignKey('presenter.id'), primary_key=True)
-    proposal = db.relationship('Proposal', back_populates='presenters')
-    presenter = db.relationship('Presenter', back_populates='proposals')
-    is_lead = db.Column(db.Boolean, nullable=False)
-
-    #  When using an association object rather than just an association table, it seems
-    #  the keys have to be set manually. This likely indicates something wrong with
-    #  this code as this has never had to be done in other cases. this just seems wrong.
-    #
-    # TODO Fix this.
-    def __init__(self, proposal_id, presenter_id, proposal, presenter, is_lead):
-        self.proposal_id = proposal_id
-        self.presenter_id = presenter_id
-        self.proposal = proposal
-        self.presenter = presenter
-        self.is_lead = is_lead
 
 
 class Proposal(db.Model):
@@ -35,11 +15,11 @@ class Proposal(db.Model):
     session_type = db.Column(db.Enum(SessionType), nullable=False)
     text = db.Column(db.Text, nullable=False)
     notes = db.Column(db.Text, nullable=True)
-    presenters = db.relationship(ProposalPresenter, back_populates='proposal')
+    presenters = association_proxy('proposal_presenters', 'presenter')
     audience = db.Column(db.Enum(SessionAudience), nullable=False)
     category = db.Column(db.Enum(SessionCategory), nullable=False)
-    scores = db.relationship('Score', backref='proposal')
-    comments = db.relationship('Comment', backref='proposal')
+    scores = db.relationship('Score', back_populates='proposal')
+    comments = db.relationship('Comment', back_populates='proposal')
     status = db.Column(db.Enum(ProposalState), nullable=False)
     # day, session, quickie_slot, track, room, slides_pdf, video_url are only non empty
     # when status is accepted.
@@ -48,8 +28,9 @@ class Proposal(db.Model):
     quickie_slot = db.Column(db.Enum(QuickieSlot)) # Only not empty if session_type == quickie.
     track = db.Column(db.Enum(Track))
     room = db.Column(db.Enum(Room))
-    slides_pdf = db.Column(db.String(80))
-    video_url = db.Column(db.String(128))
+    # slides_pdf and video_url can only be completed after the conference.
+    slides_pdf = db.Column(db.String(100))
+    video_url = db.Column(db.String(100))
 
     def __init__(self, proposer, title, session_type, text, notes='',
                  audience=SessionAudience.all, category=SessionCategory.not_sure, status=ProposalState.submitted,
@@ -74,14 +55,14 @@ class Proposal(db.Model):
 
 class Presenter(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(64), nullable=False, unique=True)
-    name = db.Column(db.String(96), nullable=False)
+    email = db.Column(db.String(200), nullable=False, unique=True)
+    name = db.Column(db.String(200), nullable=False)
     bio = db.Column(db.Text(), nullable=False)
     country = db.Column(db.String(5), nullable=False)  # Use ISO 3 character codes
-    state = db.Column(db.String(20), nullable=False)
-    proposals = db.relationship(ProposalPresenter, back_populates='presenter')
+    state = db.Column(db.String(40), nullable=True)
+    proposals = association_proxy('presenter_proposals', 'proposal')
 
-    def __init__(self, email, name, bio, country, state):
+    def __init__(self, email, name, bio, country, state=None):
         self.email = email
         self.name = name
         self.bio = bio
@@ -89,25 +70,16 @@ class Presenter(db.Model):
         self.state = state
 
 
-class Score(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    proposal_id = db.Column(db.Integer, db.ForeignKey('proposal.id'))
-    scorer_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    score = db.Column(db.Integer)
+class ProposalPresenter(db.Model):
+    proposal_id = db.Column(db.Integer, db.ForeignKey('proposal.id'), primary_key=True)
+    presenter_id = db.Column(db.Integer, db.ForeignKey('presenter.id'), primary_key=True)
+    proposal = db.relationship(Proposal, backref='proposal_presenters')
+    presenter = db.relationship(Presenter, backref='presenter_proposals')
+    is_lead = db.Column(db.Boolean, nullable=False)
 
-    def __init__(self, proposal, scorer, score):
+    def __init__(self, proposal, presenter, is_lead):
         self.proposal = proposal
-        self.scorer = scorer
-        self.score = score
+        self.presenter = presenter
+        self.is_lead = is_lead
 
 
-class Comment(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    proposal_id = db.Column(db.Integer, db.ForeignKey('proposal.id'))
-    commenter_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    comment = db.Column(db.Text)
-
-    def __init__(self, proposal, commenter, comment):
-        self.proposal = proposal
-        self.commenter = commenter
-        self.comment = comment
