@@ -3,8 +3,8 @@ from sqlalchemy.ext.associationproxy import association_proxy
 #  The accuconf name is created as an alias for the application package at run time.
 from accuconf import db
 
-from utils.proposals import SessionType, SessionCategory, ProposalState, SessionAudience
-from utils.schedule import ConferenceDay, SessionSlot, QuickieSlot, Track, Room
+from models.proposal_types import SessionType, SessionCategory, ProposalState, SessionAudience
+from models.schedule_types import ConferenceDay, SessionSlot, QuickieSlot, Track, Room
 
 
 class Proposal(db.Model):

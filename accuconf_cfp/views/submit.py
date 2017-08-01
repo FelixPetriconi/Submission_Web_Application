@@ -1,13 +1,11 @@
 from flask import jsonify, render_template, request, session
 
 from accuconf_cfp import app, db, year
-from accuconf_cfp.utils import is_acceptable_route, is_logged_in, md
+from accuconf_cfp.utils import is_acceptable_route, is_logged_in, md, validate_proposal_data
 
 from models.user import User
 from models.proposal import Presenter, Proposal, ProposalPresenter
-
-from utils.proposals import SessionType
-from utils.validator import validate_proposal_data
+from models.proposal_types import SessionType
 
 
 @app.route('/submit', methods=['GET', 'POST'])

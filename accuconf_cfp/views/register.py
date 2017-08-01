@@ -5,11 +5,9 @@ from flask import render_template, request, session
 
 from accuconf_cfp import app, countries, db, year
 
-from accuconf_cfp.utils import is_acceptable_route, is_logged_in, md
+from accuconf_cfp.utils import is_acceptable_route, is_logged_in, md, is_valid_new_email
 
 from models.user import User
-
-from utils.validator import is_valid_new_email
 
 
 @app.route('/register', methods=['GET', 'POST'])

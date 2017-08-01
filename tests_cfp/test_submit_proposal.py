@@ -14,7 +14,7 @@ from accuconf import app
 from models.user import User
 from models.proposal import Proposal
 from models.score import Score  # TODO Why is this needed?
-from utils.proposals import SessionType
+from models.proposal_types import SessionType
 
 from test_utils.constants import login_menu_item, register_menu_item
 # PyCharm fails to spot this is used as a fixture.

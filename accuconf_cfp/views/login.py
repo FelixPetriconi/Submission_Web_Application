@@ -16,6 +16,7 @@ def login():
     if not check[0]:
         return check[1]
     assert check[1] is None
+    # TODO What to do if the user is currently logged in?
     page = {
         'type': 'Login',
         'year': year,
