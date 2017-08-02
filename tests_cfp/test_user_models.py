@@ -12,17 +12,21 @@ from test_utils.fixtures import database
 
 from models.user import User
 
+from accuconf_cfp.utils import hash_passphrase
+
 # Apparently this class has to be loaded for things to work at runtime.
 # This is sort of understandable, but only if Comment and Proposal also
 # have to be imported. Yet they do not, so confusion exists.
 from models.score import Score
+
+passphrase = hash_passphrase('Some pass phrase or other.')
 
 
 @pytest.mark.parametrize('user_data', (
     # A user with all fields set.
     {
         'email': 'a@b.c',
-        'passphrase': 'passphrase',
+        'passphrase': passphrase,
         'name': 'User Name',
         'country': 'Some Country',
         'state': 'Some State',
@@ -35,17 +39,18 @@ from models.score import Score
     # for the missing fields.
     {
         'email': 'a@b.c',
-        'passphrase': 'passphrase',
+        'passphrase': passphrase,
         'name': 'User Name',
         'country': 'Some Country',
         'postal_code': 'Postcode',
         'town_city': 'Town or City',
         'street_address': 'Street Address',
     }))
-def test_user_in_database(user_data, database):
+def test_putting_user_data_into_database(user_data, database):
     """Ensure that we can put a user with no proposals or other data into the database.
 
-    Having users with proposals, scores and comments comes later.
+    Having users with proposals, scores and comments comes later,
+    this is simulating registration activity in the database.
     """
     u = User(**user_data)
     database.session.add(u)

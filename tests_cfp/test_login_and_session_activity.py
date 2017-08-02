@@ -1,3 +1,5 @@
+import json
+
 import pytest
 
 # Apparently unused but loading has crucial side effects
@@ -5,70 +7,112 @@ import configure
 
 from accuconf import app
 
+from accuconf_cfp.utils import hash_passphrase
+
+from models.user import User
+
 from test_utils.constants import login_menu_item, register_menu_item
 # PyCharm fails to spot the use of this symbol as a fixture.
 from test_utils.fixtures import client
 from test_utils.functions import get_and_check_content, post_and_check_content
+
+from models.score import Score  # TODO Why is this needed here?
 
 
 @pytest.fixture
 def registrant():
     return {
         'email': 'a@b.c',
-        'passphrase': 'Passphrase1',
-        'cpassphrase': 'Passphrase1',
+        'passphrase': hash_passphrase('Passphrase for this user.'),
         'name': 'User Name',
         'phone': '+011234567890',
         'country': 'India',
         'state': 'TamilNadu',
-        'postalcode': '123456',
-        'towncity': 'Chennai',
-        'streetaddress': 'Chepauk',
-        'captcha': '1',
-        'question': '12'
+        'postal_code': '123456',
+        'town_city': 'Chennai',
+        'street_address': 'Chepauk',
     }
 
 
-def test_successful_login(client, registrant, monkeypatch):
+def test_user_can_register(client, registrant, monkeypatch):
     monkeypatch.setitem(app.config, 'CALL_OPEN', True)
     monkeypatch.setitem(app.config, 'MAINTENANCE', False)
-    post_and_check_content(client, '/register', registrant, includes=(login_menu_item,), excludes=(register_menu_item,))
+    user = User.query.filter_by(email=registrant['email']).all()
+    assert len(user) == 0
+    post_and_check_content(client, '/register', json.dumps(registrant), 'application/json',
+                           includes=('You have successfully registered', 'Please login', login_menu_item,),
+                           excludes=(register_menu_item,),
+                           )
+    user = User.query.filter_by(email=registrant['email']).all()
+    assert len(user) == 1
+    assert user[0].email == registrant['email']
+    assert user[0].passphrase == registrant['passphrase']
+
+
+def test_cannot_login_using_form_submission(client, registrant, monkeypatch):
+    test_user_can_register(client, registrant, monkeypatch)
     post_and_check_content(client, '/login',
                            {'email': registrant['email'], 'passphrase': registrant['passphrase']},
-                           code=302,
-                           includes=('Redirecting', '<a href="/">',),
+                           includes=('Failure', register_menu_item),
+                           excludes=(login_menu_item,),
+                           )
+
+
+def test_successful_login(client, registrant, monkeypatch):
+    test_user_can_register(client, registrant, monkeypatch)
+    post_and_check_content(client, '/login',
+                           json.dumps({'email': registrant['email'], 'passphrase': registrant['passphrase']}), 'application/json',
+                           includes=('Successful',),
+                           excludes=(login_menu_item, register_menu_item),
                            )
 
 
 def test_wrong_passphrase_causes_login_failure(client, registrant, monkeypatch):
-    monkeypatch.setitem(app.config, 'CALL_OPEN', True)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
-    post_and_check_content(client, '/register', registrant, includes=(login_menu_item,), excludes=(register_menu_item,))
+    test_user_can_register(client, registrant, monkeypatch)
     post_and_check_content(client, '/login',
-                           {'email': registrant['email'], 'passphrase': 'Passphrase2'},
-                           code=200,
-                           includes=('Failure', 'Login was not successful.',),
+                           json.dumps({'email': registrant['email'], 'passphrase': 'Passphrase2'}), 'application/json',
+                           includes=('Failure', 'User/passphrase not recognised.', register_menu_item),
+                           excludes=(login_menu_item,),
                            )
 
 
 def test_update_user_name(client, registrant, monkeypatch):
     test_successful_login(client, registrant, monkeypatch)
     registrant['name'] = 'Some Dude'
-    # TODO Isn't this the wrong menu?
-    post_and_check_content(client, '/register', registrant, includes=('Your account details were successful updated.',), excludes=(login_menu_item, register_menu_item,))
+    post_and_check_content(client, '/register', json.dumps(registrant), 'application/json',
+                           includes=('Your account details were successful updated.',),
+                           excludes=(login_menu_item, register_menu_item,),
+                           )
 
 
 def test_logout_without_login_is_noop(client, monkeypatch):
     monkeypatch.setitem(app.config, 'CALL_OPEN', True)
     monkeypatch.setitem(app.config, 'MAINTENANCE', False)
-    get_and_check_content(client, '/logout', code=302, includes=('Redirecting', '<a href="/">',))
+    get_and_check_content(client, '/logout',
+                          code=302,
+                          includes=('Redirecting', '<a href="/">'),
+                          )
 
 
 def test_logged_in_user_can_logout_with_get(client, registrant, monkeypatch):
     test_successful_login(client, registrant, monkeypatch)
-    get_and_check_content(client, '/logout', code=302, includes=('Redirecting', '<a href="/">',))
+    get_and_check_content(client, '/logout',
+                          code=302,
+                          includes=('Redirecting', '<a href="/">'),
+                          )
 
 
-def test_logged_in_user_cannot_logout_with_post(client, registrant, monkeypatch):
+def test_logged_in_user_cannot_logout_with_form_post(client, registrant, monkeypatch):
     test_successful_login(client, registrant, monkeypatch)
-    post_and_check_content(client, '/logout', registrant, code=405, includes=('Method Not Allowed',))
+    post_and_check_content(client, '/logout', registrant,
+                           code=405,
+                           includes=('Method Not Allowed',),
+                           )
+
+
+def test_logged_in_user_cannot_logout_with_json_post(client, registrant, monkeypatch):
+    test_successful_login(client, registrant, monkeypatch)
+    post_and_check_content(client, '/logout', json.dumps(registrant), 'application/json',
+                           code=405,
+                           includes=('Method Not Allowed',),
+                           )

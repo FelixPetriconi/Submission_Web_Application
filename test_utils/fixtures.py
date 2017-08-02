@@ -27,8 +27,12 @@ def database():
 @pytest.fixture()
 def client():
     """A Werkzeug client in testing mode with a newly created database.
+
+    Whatever the location of the database for the current configuration,
+    override it for the tests.
     """
     app.config['TESTING'] = True
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
     with app.app_context():
         db.drop_all()
         db.create_all()

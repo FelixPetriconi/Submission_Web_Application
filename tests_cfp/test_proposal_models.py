@@ -1,6 +1,6 @@
 """
 Test putting instances of various proposal related types into the database
-and retrieving values and creating new instances of equal value..
+and retrieving values and creating new instances of equal value.
 """
 
 # Apparently unused but loading has crucial side effects
@@ -14,9 +14,11 @@ from models.proposal_types import SessionType, ProposalState, SessionCategory, S
 # PyCharm believes it isn't a used symbol, but it is.
 from test_utils.fixtures import database
 
+from accuconf_cfp.utils import hash_passphrase
+
 user_data = {
     'email': 'abc@b.c',
-    'passphrase': 'passphrase',
+    'passphrase': hash_passphrase('This is an interesting passphrase.'),
     'name': 'User Name',
     'country': 'IND',
     'state': 'KARNATAKA',
@@ -44,6 +46,12 @@ proposal_data = {
 
 
 def test_putting_proposal_in_database(database):
+    """Put a proposal item into the database.
+
+    A proposal has to be submitted by a user so tehre must be a user.
+    Proposals must also have at least one presenter, by default the user is
+    the lead presenter.
+    """
     user = User(**user_data)
     proposal = Proposal(user, **proposal_data)
     presenter = Presenter(**presenter_data)
@@ -74,6 +82,12 @@ def test_putting_proposal_in_database(database):
 
 
 def test_adding_review_and_comment_to_proposal_in_database(database):
+    """A reviewed proposal has a score and possible a comment added.
+
+    Put a proposal with user and presenter into the database. Although this is not
+    allowed in the application have the user score and comment on their proposal
+    to show that this all works in the database.
+    """
     user = User(**user_data)
     proposal = Proposal(user, **proposal_data)
     presenter = Presenter(**presenter_data)
