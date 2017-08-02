@@ -1,13 +1,30 @@
-import hashlib
 import random
 
 from flask import render_template, request, session
 
 from accuconf_cfp import app, countries, db, year
 
-from accuconf_cfp.utils import is_acceptable_route, is_logged_in, md, is_valid_new_email
+from accuconf_cfp.utils import hash_passphrase, is_acceptable_route, is_logged_in, is_valid_email, md
 
 from models.user import User
+
+
+def validate_registration_data(registration_data):
+    """Check that all the submitted registration data is correct.
+
+    A validation has happened client-side, so this is just repeating checks
+    that are already known to have passed, there is no way this should ever
+    fail,
+    """
+    if not registration_data:
+        return False, 'No JSON data returned.'
+    mandatory_keys = ['email', 'name', 'passphrase', 'country', 'state', 'postal_code', 'street_address', 'phone']
+    missing_keys = [key for key in mandatory_keys if key not in registration_data]
+    if missing_keys:
+        return False, 'Missing keys in registration data: {}'.format(missing_keys)
+    if not is_valid_email(registration_data['email']):
+        return False, 'The email address is invalid.'
+    return True, None
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -16,87 +33,28 @@ def register():
     if not check[0]:
         return check[1]
     assert check[1] is None
-    user = None
-    if is_logged_in():
-        user = User.query.filter_by(email=session['email']).first()
+    user = User.query.filter_by(email=session['email']).first() if is_logged_in() else None
     edit_mode = bool(user)
     page = {
         'type': 'Registration',
         'year': year,
     }
     if request.method == 'POST':
-        email = request.form['email'].strip()
-        passphrase = request.form['passphrase'].strip()
-        cpassphrase = request.form['cpassphrase'].strip()
-        name = request.form['name'].strip()
-        phone = request.form['phone'].strip()
-        country = request.form['country'].strip()
-        state = request.form['state'].strip()
-        postal_code = request.form['postalcode'].strip()
-        town_city = request.form['towncity'].strip()
-        street_address = request.form['streetaddress'].strip()
-
-        # TODO Probably should not check passphrases this way for logged in situation.
-        if passphrase:
-            if not cpassphrase:
-                return render_template('failure.html', page=md(page, {'data': 'Passphrase given but no confirmation passphrase'}))
-            if passphrase != cpassphrase:
-                return render_template('failure.html', page=md(page, {'data': 'Passphrase and confirmation passphrase dffer.'}))
-            encoded_passphrase = hashlib.sha256(passphrase.encode('utf-8')).hexdigest()
-        else:
-            if cpassphrase:
-                return render_template('failure.html', page=md(page, {'data': 'No passphrase given but even though confirmation passphrase given.'}))
-            return render_template('failure.html', page=md(page, {'data': 'Neither passphrase nor confirmation passphrase entered.'}))
-
+        registration_data = request.json
+        status, message = validate_registration_data(registration_data)
+        if not status:
+            # NB This should never be executed.
+            return render_template('failure.html', page=md(page, {'data': message}))
+        if not edit_mode:
+            if not registration_data['passphrase']:
+                return render_template('failure.html', page=md(page, {'data': 'No passphrase for new registration.'}))
+            if User.query.filter_by(email=registration_data['email']).first():
+                return render_template('failure.html', page=md(page, {'data': 'The email address is already in use.'}))
         if edit_mode:
-            User.query.filter_by(email=email).update({
-                'email': email,
-                'name': name,
-                'phone': phone,
-                'country': country,
-                'state': state,
-                'postal_code': postal_code,
-                'town_city': town_city,
-                'street_address': street_address
-            })
-            if encoded_passphrase:
-                user.passphrase = encoded_passphrase
-                User.query.filter_by(email=user.email).update({'passphrase': encoded_passphrase})
+            User.query.filter_by(email=registration_data['email']).update(registration_data)
+            db.session.commit()
             return render_template('success.html', page=md(page, {'data': 'Your account details were successful updated.'}))
-        else:
-            if not is_valid_new_email(email):
-                return render_template("failure.html", page=md(page, {'data': '''The email address was either invalid or already in use.
-Please register again.'''}))
-            errors = [
-                field_name
-                for field, field_name in (
-                    (email, 'email'),
-                    (passphrase, 'passphrase'),
-                    (cpassphrase, 'passphrase confirmation'),
-                    (name, 'name'),
-                    (town_city, 'town/city'),
-                    (phone, 'phone number'),
-                    (postal_code, 'postal code'),
-                    (street_address, 'street address'),)
-                if not field.strip()
-            ]
-            if errors:
-                return render_template("failure.html", page=md(page, {'data': '''The fields:
-{}
- were not completed.
-
- Please register again.'''.format(' ,'.join(errors))}))
-            db.session.add(User(
-                email,
-                encoded_passphrase,
-                name,
-                phone,
-                country,
-                state,
-                postal_code,
-                town_city,
-                street_address,
-            ))
+        db.session.add(User(**registration_data))
         db.session.commit()
         return render_template("success.html", page={'type': 'Registration', 'data': '''You have successfully registered for submitting
 proposals for the ACCU Conf. Please login and
