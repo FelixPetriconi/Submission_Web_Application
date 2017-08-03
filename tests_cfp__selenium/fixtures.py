@@ -1,5 +1,5 @@
 """
-Various bits of code used in various places. It is assumed this file is imported into all tests.
+Various fixtures used in the test modules.
 """
 
 import pytest
@@ -9,18 +9,11 @@ import time
 
 from selenium import webdriver
 
-this_directory = pathlib.PurePath(__file__).parent
-
-host = 'localhost'
-port = '65530'
-
-base_url = 'http://{}:{}/'.format(host, port)
-
 
 @pytest.fixture(scope='module', autouse=True)
 def server():
     # NB do not spawn with a shell since then you can't terminate the server.
-    process = subprocess.Popen(('python3', '{}'.format(this_directory / 'start_server.py')))
+    process = subprocess.Popen(('python3', '{}'.format(pathlib.PurePath(__file__).parent / 'start_server.py')))
     time.sleep(1)  # Need a short while for the server to settle, 0.5 works locally but Travis-CI needs longer.
     process.poll()
     assert process.returncode is None, 'Server start return code {}'.format(process.returncode)
