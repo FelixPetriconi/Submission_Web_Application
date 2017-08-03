@@ -1,3 +1,6 @@
+# Apparently unused but has required side effects.
+import configure
+
 import accuconf_cfp.utils as utils
 
 
