@@ -1,16 +1,14 @@
 function isValidEmail(email) {
-  var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-_])+\.)+([a-zA-Z0-9])+$/;
+  const regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-_])+\.)+([a-zA-Z0-9])+$/;
   return regex.test(email);
 }
 
 function isValidPassphrase(password) {
-    if (password.length < 8) { return false; }
-    return true;
+    return password.length >= 8;
 }
 
 function isValidName(name) {
-    if (name.length < 1) { return false;}
-    return true;
+    return name.length > 1;
 }
 
 function isValidPhone(phone) {
@@ -38,18 +36,18 @@ function isValidCaptcha(captcha) {
 }
 
 function validateRegistrationData() {
-    var email = $('#email').val();
-    var passphrase = $('#passphrase').val();
-    var cpassphrase = $('#cpassphrase').val();
-    var name = $('#name').val();
-    var phone = $('#phone').val();
-    var country = $('#country').val();
-    var state = $('#state').val();
-    var postalCode = $('#postal_code').val();
-    var streetAddress =  $('#street_address').val();
-    var question = $('#question').val();
-    var captcha = $('#captcha').val();
-    var submit = $('#submit');
+    const email = $('#email').val();
+    const passphrase = $('#passphrase').val();
+    const cpassphrase = $('#cpassphrase').val();
+    const name = $('#name').val();
+    const phone = $('#phone').val();
+    const country = $('#country').val();
+    const state = $('#state').val();
+    const postalCode = $('#postal_code').val();
+    const streetAddress =  $('#street_address').val();
+    const question = $('#question').val();
+    const captcha = $('#captcha').val();
+    const submit = $('#submit');
     if (!isValidEmail(email)) {
         $('#emailalert').text("Email should be of the format user@example.com");
         return false;
@@ -107,7 +105,7 @@ function registerUser() {
 }
 
 function checkDuplicate() {
-    var email = $('#email').val();
+    const email = $('#email').val();
     if (!isValidEmail(email)) {
         $('#emailalert').text("Please provide a valid email address");
         $('#submit').attr("disabled", true);
@@ -115,7 +113,7 @@ function checkDuplicate() {
         $('#emailalert').text();
         $('#submit').removeAttr("disabled");
     }
-    var url = "/proposals/check/" + email;
+    const url = "/proposals/check/" + email;
     $.ajax({
         type: "GET",
         url: url,
@@ -145,12 +143,12 @@ function hidehelp() {
 
 
 function addPresenterOld() {
-    var presenter = $('#presenter').val();
+    const presenter = $('#presenter').val();
     if (!isValidEmail(presenter)) {
         return false;
     }
-    var presenters_sel = $('#presenters');
-    var allPresenters = [];
+    const presenters_sel = $('#presenters');
+    const allPresenters = [];
     $('#presenters option').each(function() {
         console.log($(this).val());
         allPresenters.push($(this).val());
@@ -170,34 +168,34 @@ function addPresenterOld() {
 }
 
 function addPresenter(tableId) {
-    var presenter_tbl_loc = '#' + tableId;
-    var presenter_loc = presenter_tbl_loc + '> tbody > tr';
-    var count = $(presenter_loc).length;
-    var onChangeString = "javascript:loadState('p_ctry_" + count + "', 'p_states_" + count + "', 'p_state_" + count + "', true);";
+    const presenter_tbl_loc = '#' + tableId;
+    const presenter_loc = presenter_tbl_loc + '> tbody > tr';
+    const count = $(presenter_loc).length;
+    const onChangeString = "javascript:loadState('p_ctry_" + count + "', 'p_states_" + count + "', 'p_state_" + count + "', true);";
 
-    var htmlString = "<tr> <td class=\"narrow\"> <input type=\"radio\" name=\"lead\" id=\"lead\" value=\"" + count +  "\"> </td> <td> <input type=\"text\" name=\"p_email_" + count + "\" id=\"p_email_" + count + "\" placeholder=\"Email Address\"> </td>  <td> <input type=\"text\" name=\"p_fname_" + count + "\" id=\"p_fname_" + count + "\" placeholder=\"First Name\"> </td> <td> <input type=\"text\" name=\"p_lname_" + count + "\" id=\"p_lname_" + count + "\" placeholder=\"Last Name\"> </td>  <td> <select class=\"widetable\" name=\"p_ctry_" + count + "\" id=\"p_ctry_" + count + "\" onchange=\"" + onChangeString + "\" onkeyup=\"this.onchange();\" onmouseup=\"this.onchange();\"> </td> <td> <input type=\"text\" name=\"p_state_" + count + "\" id=\"p_state_" + count + "\" placeholder=\"State\"> </td> <td style=\"display: none;\"> <select class=\"widetable\" name=\"p_states_" + count + "\" id=\"p_states_" + count + "\"> </td> <td> <button type=\"button\" class=\"adder\" onclick=\"javascript:addPresenter('presenterstable');\">+</button> </td> </tr>";
+    const htmlString = "<tr> <td class=\"narrow\"> <input type=\"radio\" name=\"lead\" id=\"lead\" value=\"" + count +  "\"> </td> <td> <input type=\"text\" name=\"p_email_" + count + "\" id=\"p_email_" + count + "\" placeholder=\"Email Address\"> </td>  <td> <input type=\"text\" name=\"p_fname_" + count + "\" id=\"p_fname_" + count + "\" placeholder=\"First Name\"> </td> <td> <input type=\"text\" name=\"p_lname_" + count + "\" id=\"p_lname_" + count + "\" placeholder=\"Last Name\"> </td>  <td> <select class=\"widetable\" name=\"p_ctry_" + count + "\" id=\"p_ctry_" + count + "\" onchange=\"" + onChangeString + "\" onkeyup=\"this.onchange();\" onmouseup=\"this.onchange();\"> </td> <td> <input type=\"text\" name=\"p_state_" + count + "\" id=\"p_state_" + count + "\" placeholder=\"State\"> </td> <td style=\"display: none;\"> <select class=\"widetable\" name=\"p_states_" + count + "\" id=\"p_states_" + count + "\"> </td> <td> <button type=\"button\" class=\"adder\" onclick=\"javascript:addPresenter('presenterstable');\">+</button> </td> </tr>";
 
     $(presenter_tbl_loc).find('tbody')
         .append(htmlString);
-    var options = $('#p_ctry_1 > option').clone();
-    var new_loc = '#p_ctry_' + count;
+    const options = $('#p_ctry_1 > option').clone();
+    const new_loc = '#p_ctry_' + count;
     $(new_loc).append(options);
 }
 
 function uploadProposal() {
-    var proposalTitle = $('#title').val();
-    var proposal = $('#proposal').val();
-    var proposalType = $('#proposaltype').val();
-    var presenterRows = $("#presenters-body tr");
-    var proposer = $("#def_email").text();
-    var presenters = [];
-    var leadId = $('input[name=lead]:checked', '#proposalform').val();
+    const proposalTitle = $('#title').val();
+    const proposal = $('#proposal').val();
+    const proposalType = $('#proposaltype').val();
+    const presenterRows = $("#presenters-body tr");
+    const proposer = $("#def_email").text();
+    const presenters = [];
+    const leadId = $('input[name=lead]:checked', '#proposalform').val();
     if (leadId === undefined) {
         leadId = 1;
     }
     $("#presenters-body > tr").each(function(idx) {
-        var cells = $(this).find('td');
-        var presenter = {
+        const cells = $(this).find('td');
+        const presenter = {
             "lead": (leadId == (idx + 1)) ? 1 : 0,
             "email" : cells[2].innerText,
             "fname" : cells[3].innerText,
@@ -207,7 +205,7 @@ function uploadProposal() {
         };
         presenters.push(presenter);
     });
-    var proposalData = {
+    const proposalData = {
         "title": proposalTitle,
         "abstract": proposal,
         "proposer": proposer,
@@ -242,22 +240,16 @@ function validatePresenter(details) {
 }
 
 function addNewPresenter() {
-    var email = $("#add-presenter-email").val();
-    var fname = $("#add-presenter-fname").val();
-    var lname = $("#add-presenter-lname").val();
-    var ctry = $("#add-presenter-country").val();
-    var state_sel = $("#add-presenter-states").val();
-    var state_txt = $("#add-presenter-state").val();
-    var state;
-    if (state_txt.length) {
-        state = state_txt;
-    } else {
-        state = state_sel;
-    }
-    var presenters = $("#presenters-body");
-    var trCnt = $("#presenters-body tr").length;
-    var sno = trCnt + 1;
-    var presenterRow = _.template($("#presenters-row-template").html());
+    const email = $("#add-presenter-email").val();
+    const fname = $("#add-presenter-fname").val();
+    const lname = $("#add-presenter-lname").val();
+    const ctry = $("#add-presenter-country").val();
+    const state_sel = $("#add-presenter-states").val();
+    const state_txt = $("#add-presenter-state").val();
+    const presenters = $("#presenters-body");
+    const trCnt = $("#presenters-body tr").length;
+    const sno = trCnt + 1;
+    const presenterRow = _.template($("#presenters-row-template").html());
     presenters.append(presenterRow({"sno": sno, "email": email, "fname": fname, "lname": lname, "ctry": ctry, "state": state}));
     resetModal();
     $("#add-presenter-modal").modal('hide');
@@ -271,8 +263,8 @@ function resetModal() {
 }
 
 function deleteRow(rowIdx) {
-    var presenters = $("#presenters-body");
-    var msg = $("#presenters-body tr:eq(1)").text();
+    const presenters = $("#presenters-body");
+    const msg = $("#presenters-body tr:eq(1)").text();
     alert(msg);
 }
 
@@ -284,12 +276,12 @@ function showDefaultPointer(element) {
     element.css("cursor", "default");
 }
 
-
+/*
 function uploadReview(button) {
-    var button = button.value;
-    var score = $("#score").val();
-    var comment = $("#comment").val();
-    var reviewData = {
+    const button = button.value;
+    const score = $("#score").val();
+    const comment = $("#comment").val();
+    const reviewData = {
         "button" : button,
         "score" : score,
         "comment" : comment
@@ -311,10 +303,12 @@ function uploadReview(button) {
 
     return true;
 }
-
+*/
 
 // Apparently this is needed for Node execution.
 if (typeof exports !== 'undefined') {
     exports.isValidEmail = isValidEmail;
     exports.isValidPassphrase = isValidPassphrase;
+    exports.isValidName = isValidName;
+    exports.isValidPhone = isValidPhone;
 }
