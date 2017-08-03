@@ -50,6 +50,8 @@ def register():
                 return render_template('failure.html', page=md(page, {'data': 'No passphrase for new registration.'}))
             if User.query.filter_by(email=registration_data['email']).first():
                 return render_template('failure.html', page=md(page, {'data': 'The email address is already in use.'}))
+        if registration_data['passphrase']:
+            registration_data['passphrase'] = hash_passphrase(registration_data['passphrase'])
         if edit_mode:
             User.query.filter_by(email=registration_data['email']).update(registration_data)
             db.session.commit()
