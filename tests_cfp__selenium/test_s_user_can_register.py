@@ -4,8 +4,11 @@ import pytest
 
 from flask import url_for
 
+from configuration import base_url
+
+# NB PyCharm can't tell these are used as fixtures, but they are.
 # NB server is an session scope autouse fixture that no test needs direct access to.
-from common import base_url, browser, server
+from fixtures import browser, server
 
 
 @pytest.fixture
@@ -30,6 +33,6 @@ def XXX_test_user_can_successfully_register(browser, registrant):
     for key, value in registrant.items():
         browser.find_element_by_id(key).send_keys(value)
     browser.find_element_by_id('submit').click()
-    time.sleep(2)
+    time.sleep(1)
     # assert 'success.html' in browser.current_url
     # assert 'You have successfully registered.' in browser.page_source

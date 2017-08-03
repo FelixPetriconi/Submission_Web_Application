@@ -1,5 +1,8 @@
+from configuration import base_url
+
+# NB PyCharm can't tell these are used as fixtures, but they are.
 # NB server is an session scope autouse fixture that no test needs direct access to.
-from common import base_url, browser, server
+from fixtures import browser, server
 
 
 def test_can_get_root(browser):

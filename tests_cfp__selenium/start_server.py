@@ -1,7 +1,7 @@
 import pathlib
 import sys
 
-import common
+from configuration import host, port
 
 sys.path.insert(0, str(pathlib.PurePath(__file__).parent.parent))
 
@@ -14,4 +14,4 @@ app.config['MAINTENANCE'] = False
 db.drop_all()
 db.create_all()
 
-app.run(host=common.host, port=common.port, debug=False)
+app.run(host=host, port=port, debug=False)
