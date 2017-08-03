@@ -24,7 +24,7 @@ def registrant():
     }
 
 
-def test_user_can_successfully_register(browser, registrant):
+def XXX_test_user_can_successfully_register(browser, registrant):
     browser.get(base_url + 'register')
     assert 'Registration' in browser.page_source
     for key, value in registrant.items():

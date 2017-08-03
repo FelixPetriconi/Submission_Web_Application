@@ -36,5 +36,4 @@ def server():
 def browser():
     driver = webdriver.PhantomJS()
     yield driver
-    if driver:
-        driver.quit()
+    driver.quit()
