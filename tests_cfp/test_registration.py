@@ -94,5 +94,5 @@ def test_invalid_email(client, registrant, monkeypatch):
     monkeypatch.setitem(app.config, 'MAINTENANCE', False)
     registrant['email'] = 'thing.flob.adob'
     post_and_check_content(client, '/register', json.dumps(registrant), 'application/json',
-                           includes=('The email address is invalid.', login_menu_item),
+                           includes=('Validation failed for the following keys:', 'email', login_menu_item),
                            excludes=(register_menu_item,))
