@@ -23,3 +23,12 @@ describe('passphrases checking works as expected', () => {
         assert(accuconf.isValidPassphrase('a nice lengthy förmé'));
     });
 });
+
+describe('name validation works correctly', () => {
+    it('valid name correctly passes', () => {
+        assert(accuconf.isValidName('Russel Winder'));
+    });
+    it('invalid name correctly fails',  () => {
+        assert(!accuconf.isValidName('r'));
+    });
+});
