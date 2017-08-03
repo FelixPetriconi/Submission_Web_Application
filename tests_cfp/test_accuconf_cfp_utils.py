@@ -13,10 +13,6 @@ def test_hash_passphrase():
     assert utils.hash_passphrase('Hello World.') == 'fee4e02329c0e1c9005d0590f4773d8e519e0cda859775ac9c83641e3a960c57e7ad461354e4860722b6e3c161e493e04f5ef07d9169ff7bdab659d6a57cc316'
 
 
-def test_is_acceptable_route_default():
-    assert utils.is_acceptable_route()[0]
-
-
 def test_is_acceptable_route_maintenance(monkeypatch):
     monkeypatch.setitem(app.config, 'MAINTENANCE', True)
     assert not utils.is_acceptable_route()[0]
@@ -36,7 +32,7 @@ def test_is_logged_in_default():
 def test_is_logged_in_forced():
     with app.test_request_context('/'):
         session['email'] = 'russel@winder.org.uk'
-        assert utils.is_acceptable_route()[0]
+        assert utils.is_logged_in()
 
 
 def test_reasonable_email():
