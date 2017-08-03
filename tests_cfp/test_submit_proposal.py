@@ -133,10 +133,11 @@ def test_logged_in_user_can_get_submission_page(client, registration_data, monke
                           )
 
 
-def XXX_test_logged_in_user_can_submit_a_single_presenter_proposal(client, registration_data, proposal_single_presenter, monkeypatch):
+def test_logged_in_user_can_submit_a_single_presenter_proposal(client, registration_data, proposal_single_presenter, monkeypatch):
     test_ensure_registration_and_login(client, registration_data, monkeypatch)
     rvd = post_and_check_content(client, '/submit', json.dumps(proposal_single_presenter), 'application/json',
                                  includes=('success',),
+                                 excludes=(login_menu_item, register_menu_item),
                                  )
     response = json.loads(rvd)
     assert response['success']
@@ -144,24 +145,28 @@ def XXX_test_logged_in_user_can_submit_a_single_presenter_proposal(client, regis
     assert len(user) == 1
     user = user[0]
     assert user is not None
-    proposal = Proposal.query.filter_by(proposer_id=user.id).all()
-    assert len(proposal) == 1
-    proposal = proposal[0]
-    assert proposal is not None
-    assert user.proposals is not None
     assert len(user.proposals) == 1
-    p = user.proposals[0]
-    assert len(p.presenters) == 1
-    presenter = p.presenters[0]
-    assert presenter.is_lead
-    assert presenter.email == user.email
+    proposal = user.proposals[0]
+    assert proposal is not None
     assert proposal.session_type == SessionType.quickie
+    assert len(proposal.presenters) == 1
+    presenter = proposal.presenters[0]
+    assert presenter.email == user.email
+    assert len(proposal.proposal_presenters) == 1
+    p = proposal.proposal_presenters[0]
+    assert p.proposal == proposal
+    assert p.presenter == presenter
+    assert p.is_lead
+    assert len(presenter.presenter_proposals) == 1
+    pp = presenter.presenter_proposals[0]
+    assert p == pp
 
 
-def XXX_test_logged_in_user_can_submit_multipresenter_single_lead_proposal(client, registration_data, proposal_multiple_presenters_single_lead):
-    test_ensure_registration_and_login(client, registration_data)
-    rvd = post_and_check_content(client, '/upload_proposal', json.dumps(proposal_multiple_presenters_single_lead), 'application/json',
+def test_logged_in_user_can_submit_multipresenter_single_lead_proposal(client, registration_data, proposal_multiple_presenters_single_lead, monkeypatch):
+    test_ensure_registration_and_login(client, registration_data, monkeypatch)
+    rvd = post_and_check_content(client, '/submit', json.dumps(proposal_multiple_presenters_single_lead), 'application/json',
                                  includes=('success',),
+                                 excludes=(login_menu_item, register_menu_item),
                                  )
     response = json.loads(rvd)
     assert response['success']
@@ -169,26 +174,25 @@ def XXX_test_logged_in_user_can_submit_multipresenter_single_lead_proposal(clien
     assert len(user) == 1
     user = user[0]
     assert user is not None
-    proposal = Proposal.query.filter_by(proposer_id=user.id).all()
-    assert len(proposal) == 1
-    proposal = proposal[0]
+    assert len(user.proposals) == 1
+    proposal = user.proposals[0]
     assert proposal is not None
-    assert user.proposals is not None
-    p = user.proposals[0]
-    assert len(p.presenters) == 2
-    if p.presenters[0].is_lead:
-        assert p.presenters[0].presenter.email == user.email
-        assert p.presenters[1].presenter.email == 'p2@b.c'
-    else:
-        assert p.presenters[0].presenter.email == 'p2@b.c'
-        assert p.presenters[1].presenter.email == user.email
     assert proposal.session_type == SessionType.miniworkshop
+    assert len(proposal.presenters) == 2
+    assert len(proposal.proposal_presenters) == 2
+    if proposal.proposal_presenters[0].is_lead:
+        assert proposal.presenters[0].email == user.email
+        assert proposal.presenters[1].email == 'p2@b.c'
+    else:
+        assert proposal.presenters[0].email == 'p2@b.c'
+        assert proposal.presenters[1].email == user.email
 
 
-def XXX_test_logged_in_user_cannot_submit_multipresenter_multilead_proposal(client, registration_data, proposal_multiple_presenters_and_leads):
-    test_ensure_registration_and_login(client, registration_data)
-    rvd = post_and_check_content(client, '/upload_proposal', json.dumps(proposal_multiple_presenters_and_leads), 'application/json',
+def test_logged_in_user_cannot_submit_multipresenter_multilead_proposal(client, registration_data, proposal_multiple_presenters_and_leads, monkeypatch):
+    test_ensure_registration_and_login(client, registration_data, monkeypatch)
+    rvd = post_and_check_content(client, '/submit', json.dumps(proposal_multiple_presenters_and_leads), 'application/json',
                                  includes=('success',),
+                                 excludes=(login_menu_item, register_menu_item),
                                  )
     response = json.loads(rvd)
     assert response["success"] is False
@@ -199,5 +203,3 @@ def XXX_test_logged_in_user_cannot_submit_multipresenter_multilead_proposal(clie
     user = user[0]
     assert user is not None
     assert len(user.proposals) == 0
-    proposal = Proposal.query.filter_by(proposer_id=user.id).all()
-    assert len(proposal) == 0
