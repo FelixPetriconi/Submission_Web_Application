@@ -13,12 +13,12 @@ from accuconf import app
 
 from models.user import User
 
-from accuconf_cfp.utils import hash_passphrase
-
 from test_utils.constants import login_menu_item, register_menu_item
 # PyCharm fails to spot this is used as a fixture.
 from test_utils.fixtures import client
 from test_utils.functions import get_and_check_content, post_and_check_content
+
+from accuconf_cfp.utils import hash_passphrase
 
 # TODO For some reason we have to import the class Score, why?
 from models.score import Score
@@ -28,7 +28,7 @@ from models.score import Score
 def registrant():
     return {
         'email': 'a@b.c',
-        'passphrase': hash_passphrase('Passphrase for someone'),
+        'passphrase': 'Passphrase for someone',
         'name': 'User Name',
         'phone': '+011234567890',
         'country': 'India',
@@ -70,7 +70,7 @@ def test_successful_user_registration(client, registrant, monkeypatch):
     user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 1
     assert user[0].email == registrant['email']
-    assert user[0].passphrase == registrant['passphrase']
+    assert user[0].passphrase == hash_passphrase(registrant['passphrase'])
 
 
 def test_attempted_duplicate_user_registration_fails(client, registrant, monkeypatch):
@@ -94,5 +94,5 @@ def test_invalid_email(client, registrant, monkeypatch):
     monkeypatch.setitem(app.config, 'MAINTENANCE', False)
     registrant['email'] = 'thing.flob.adob'
     post_and_check_content(client, '/register', json.dumps(registrant), 'application/json',
-                           includes=('The email address is invalid.', login_menu_item),
+                           includes=('Validation failed for the following keys:', 'email', login_menu_item),
                            excludes=(register_menu_item,))

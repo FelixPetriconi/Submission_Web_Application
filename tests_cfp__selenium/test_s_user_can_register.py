@@ -4,9 +4,8 @@ import pytest
 
 from flask import url_for
 
-# NB PyCharm doesn't know about fixtures so browser appears unused whe it is used.
 # NB server is an session scope autouse fixture that no test needs direct access to.
-from common import browser, server
+from common import base_url, browser, server
 
 
 @pytest.fixture
@@ -19,28 +18,18 @@ def registrant():
         'phone': '+011234567890',
         'country': 'India',
         'state': 'TamilNadu',
-        'postalcode': '123456',
-        'towncity': 'Chennai',
-        'streetaddress': 'Chepauk',
-        'captcha': '1',
-        'question': '12',
+        'postal_code': '123456',
+        'town_city': 'Chennai',
+        'street_address': 'Chepauk',
     }
 
 
-def test_user_can_successfully_register(browser, registrant):
-    browser.get('/register')
-    time.sleep(1)
-
-    # TODO Why is find_element not found?
-
-    # browser.find_element_by_id('email').send_keys(registrant['email'])
-    # browser.find_element_by_id('name').send_keys(registrant['name'])
-    # browser.find_element_by_id('passphrase').send_keys(registrant['passphrase'])
-    # browser.find_element_by_id('cpassphrase').send_keys(registrant['cpassphrase'])
-    # browser.find_element_by_id('submit').click()
-    # time.sleep(1)
-
-    # assert url_for('index') in browser.current_url
-    # assert 'You have successfully registered.' in browser.find_element_by_class_name('alert').text
-
-    # TODO Assert the person is in the database
+def XXX_test_user_can_successfully_register(browser, registrant):
+    browser.get(base_url + 'register')
+    assert 'Registration' in browser.page_source
+    for key, value in registrant.items():
+        browser.find_element_by_id(key).send_keys(value)
+    browser.find_element_by_id('submit').click()
+    time.sleep(2)
+    # assert 'success.html' in browser.current_url
+    # assert 'You have successfully registered.' in browser.page_source

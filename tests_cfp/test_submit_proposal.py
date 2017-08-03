@@ -28,7 +28,7 @@ from accuconf_cfp.utils import hash_passphrase
 def registration_data():
     return {
         'email': 'a@b.c',
-        'passphrase': hash_passphrase('Passphrase for this user.'),
+        'passphrase': 'Passphrase for this user.',
         'name': 'User Name',
         'phone': '+011234567890',
         'country': 'India',
@@ -109,7 +109,7 @@ def test_ensure_registration_and_login(client, registration_data, monkeypatch):
                            )
     user = User.query.filter_by(email=registration_data['email']).all()
     assert len(user) == 1
-    assert user[0].passphrase == registration_data['passphrase']
+    assert user[0].passphrase == hash_passphrase(registration_data['passphrase'])
     post_and_check_content(client, '/login', json.dumps({'email': registration_data['email'], 'passphrase': registration_data['passphrase']}), 'application/json',
                            code=200,
                            includes=('Successful',),

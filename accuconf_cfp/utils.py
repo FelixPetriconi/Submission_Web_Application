@@ -9,7 +9,7 @@ import re
 
 from flask import redirect, session
 
-from accuconf_cfp import app
+from accuconf_cfp import app, countries
 
 
 def hash_passphrase(text):
@@ -43,8 +43,39 @@ def is_logged_in():
 
 def is_valid_email(email):
     """A purported email address in in valid format."""
-    email_pattern = re.compile("^([a-zA-Z0-9_.+-])+@(([a-zA-Z0-9-_])+\.)+([a-zA-Z0-9])+$")
-    return email_pattern.search(email)
+    return bool(re.compile(r'^([a-zA-Z0-9_.+-])+@(([a-zA-Z0-9-_])+\.)+([a-zA-Z0-9])+$').search(email))
+
+
+def is_valid_passphrase(passphrase):
+    """Passphrases are required to be eight or more characters."""
+    return len(passphrase) >= 8
+
+
+def is_valid_name(name):
+    """Names are required to be 2 or more characters."""
+    return len(name) > 1
+
+
+def is_valid_phone(phone):
+    """Phone numbers are required to conform to ITU rules."""
+    return bool(re.compile(r'^\+?[0-9 ]+').search(phone))
+
+
+def is_valid_country(country):
+    """The country must be from the current official list as per pycountry."""
+    return country in countries
+
+
+def is_valid_state(state):
+    return True
+
+
+def is_valid_postal_code(postal_code):
+    return True
+
+
+def is_valid_street_address(street_address):
+    return True
 
 
 #  This code has to work on Python 3.4, so cannot use the lovely Python 3.5 and later stuff.

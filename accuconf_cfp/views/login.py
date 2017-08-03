@@ -1,9 +1,7 @@
 from flask import redirect, render_template, request, session
 
 from accuconf_cfp import app, year
-from accuconf_cfp.utils import hash_passphrase, is_acceptable_route, is_valid_email
-
-from accuconf_cfp.utils import md
+from accuconf_cfp.utils import hash_passphrase, is_acceptable_route, is_valid_email, md
 
 from models.user import User
 
@@ -18,7 +16,7 @@ def validate_login_data(login_data):
     if not is_valid_email(login_data['email']):
         return False, 'The email address is invalid.'
     user = User.query.filter_by(email=login_data['email']).first()
-    if not user or user.passphrase != login_data['passphrase']:
+    if not user or user.passphrase != hash_passphrase(login_data['passphrase']):
         return False, 'User/passphrase not recognised.'
     return user, None
 

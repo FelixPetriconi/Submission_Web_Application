@@ -14,11 +14,9 @@ from models.proposal_types import SessionType, ProposalState, SessionCategory, S
 # PyCharm believes it isn't a used symbol, but it is.
 from test_utils.fixtures import database
 
-from accuconf_cfp.utils import hash_passphrase
-
 user_data = {
     'email': 'abc@b.c',
-    'passphrase': hash_passphrase('This is an interesting passphrase.'),
+    'passphrase': 'This is an interesting passphrase.',
     'name': 'User Name',
     'country': 'IND',
     'state': 'KARNATAKA',

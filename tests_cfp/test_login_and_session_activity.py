@@ -7,14 +7,14 @@ import configure
 
 from accuconf import app
 
-from accuconf_cfp.utils import hash_passphrase
-
 from models.user import User
 
 from test_utils.constants import login_menu_item, register_menu_item
 # PyCharm fails to spot the use of this symbol as a fixture.
 from test_utils.fixtures import client
 from test_utils.functions import get_and_check_content, post_and_check_content
+
+from accuconf_cfp.utils import hash_passphrase
 
 from models.score import Score  # TODO Why is this needed here?
 
@@ -23,7 +23,7 @@ from models.score import Score  # TODO Why is this needed here?
 def registrant():
     return {
         'email': 'a@b.c',
-        'passphrase': hash_passphrase('Passphrase for this user.'),
+        'passphrase': 'Passphrase for this user.',
         'name': 'User Name',
         'phone': '+011234567890',
         'country': 'India',
@@ -46,7 +46,7 @@ def test_user_can_register(client, registrant, monkeypatch):
     user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 1
     assert user[0].email == registrant['email']
-    assert user[0].passphrase == registrant['passphrase']
+    assert user[0].passphrase == hash_passphrase(registrant['passphrase'])
 
 
 def test_cannot_login_using_form_submission(client, registrant, monkeypatch):
