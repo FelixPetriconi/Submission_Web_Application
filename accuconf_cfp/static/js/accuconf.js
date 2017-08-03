@@ -65,6 +65,9 @@ function validateRegistrationData() {
     if (!isValidState(state)) {
         return false;
     }
+    if (!isValidStreetAddress(streetAddress)) {
+        return false;
+    }
     if (!isValidPostalCode(postalCode)) {
         return false;
     }
@@ -188,7 +191,7 @@ function uploadProposal() {
     const presenterRows = $("#presenters-body tr");
     const proposer = $("#def_email").text();
     const presenters = [];
-    const leadId = $('input[name=lead]:checked', '#proposalform').val();
+    let leadId = $('input[name=lead]:checked', '#proposalform').val();
     if (leadId === undefined) {
         leadId = 1;
     }
