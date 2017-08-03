@@ -13,94 +13,94 @@
 </div>
 <div class="row">
     <div class="container-fluid">
-        <form class="form-horizontal" id="registrationForm" method="POST" action="/register">
+        <form class="form-horizontal" id="registrationForm" method="POST">
             <div class="form-group">
                 <label for="email" class="control-label col-sm-3">Email</label>
                 <div class="col-sm-offset-1">
-                    <input type="text" id="email" name="email" placeholder="Email" value="{{ page.email }}" aria-describedby="emailhelp">
-                    <span class="help-block" id="emailhelp"></span>
+                    <input type="text" id="email" name="email" placeholder="Email" value="{{ page.email }}" aria-describedby="email_help">
+                    <span class="help-block" id="email_help"></span>
                 </div>
             </div>
             <div class="form-group">
                 <label for="passphrase" class="control-label col-sm-3">Passphrase</label>
                 <div class="col-sm-offset-1">
-                    <input type="password" id="passphrase" name="passphrase" placeholder="Passphrase" aria-describedby="passphrasealert">
-                    <span class="help-block" id="passphrasealert"></span>
+                    <input type="password" id="passphrase" name="passphrase" placeholder="Passphrase" aria-describedby="passphrase_alert">
+                    <span class="help-block" id="passphrase_alert"></span>
                 </div>
             </div>
             <div class="form-group">
                 <label for="cpassphrase" class="control-label col-sm-3">Retype Passphrase</label>
                 <div class="col-sm-offset-1">
-                    <input type="password"  id="cpassphrase" name="cpassphrase" placeholder="Retype Passphrase" aria-describedby="cpassphrasealert">
-                    <span class="help-block" id="cpassphrasealert"></span>
+                    <input type="password"  id="cpassphrase" name="cpassphrase" placeholder="Retype Passphrase" aria-describedby="cpassphrase_alert">
+                    <span class="help-block" id="cpassphrase_alert"></span>
                 </div>
             </div>
             <div class="form-group">
                 <label for="name" class="control-label col-sm-3">Name</label>
                 <div class="col-sm-offset-1">
-                    <input type="text" id="name" name="name" value="{{ page.name }}" placeholder="Name" aria-describedby="namealert">
-                    <span class="help-block" id="namealert"></span>
+                    <input type="text" id="name" name="name" value="{{ page.name }}" placeholder="Name" aria-describedby="name_alert">
+                    <span class="help-block" id="name_alert"></span>
                 </div>
             </div>
             <div class="form-group">
                 <label for="phone" class="control-label col-sm-3">Phone number with ISD code</label>
                 <div class="col-sm-offset-1">
-                    <input type="text" id="phone" name="phone" value="{{ page.phone }}" placeholder="+44 20 1234 5678" aria-describedby="phonealert">
-                    <span class="help-block" id="phonealert"></span>
+                    <input type="text" id="phone" name="phone" value="{{ page.phone }}" placeholder="+44 20 1234 5678" aria-describedby="phone_alert">
+                    <span class="help-block" id="phone_alert"></span>
                 </div>
             </div>
             <div class="form-group">
                 <label for="country" class="control-label col-sm-3">Country</label>
                 <div class="col-sm-offset-1">
-                    <select id="country" name="country"  aria-describedby="countryalert">
-                        {% for x in countries %}
+                    <select id="country" name="country"  aria-describedby="country_alert">
+                        {% for x in  page.countries   %}
                         <option value="{{ x }}">{{ x }}</option>
                         {% endfor %}
                     </select>
-                    <span class="help-block" id="countryalert"></span>
+                    <span class="help-block" id="country_alert"></span>
                 </div>
             </div>
             <div class="form-group">
                 <label for="state" class="control-label col-sm-3">State/Province</label>
                 <div class="col-sm-offset-1">
-                    <input type="text" id="state" name="state" value="{{ page.state }}" placeholder="State/Province">
-                    <span class="help-block" id="statealert"></span>
+                    <input type="text" id="state" name="state" value="{{ page.state }}" placeholder="State/Province" aria-describedby="state_alert">
+                    <span class="help-block" id="state_alert"></span>
                 </div>
             </div>
             <div class="form-group">
-                <label for="postalcode" class="control-label col-sm-3">Postal/Pin/Zip Code</label>
+                <label for="postal_code" class="control-label col-sm-3">Postal/Pin/Zip Code</label>
                 <div class="col-sm-offset-1">
-                    <input type="text" id="postalcode" name="postalcode" value="{{ page.postal_code }}" placeholder="Postal/Pin/Zip code">
-                    <span class="help-block" id="postalcodealert"></span>
+                    <input type="text" id="postal_code" name="postal_code" value="{{ page.postal_code }}" placeholder="Postal/Pin/Zip code" aria-describedby="postal_code_alert">
+                    <span class="help-block" id="postal_code_alert"></span>
                 </div>
             </div>
             <div class="form-group">
-                <label for="towncity" class="control-label col-sm-3">Town/City</label>
+                <label for="town_city" class="control-label col-sm-3">Town/City</label>
                 <div class="col-sm-offset-1">
-                    <input type="text" id="towncity" name="towncity" value="{{ page.town_city }}" placeholder="Town/City">
-                    <span class="help-block" id="towncityalert"></span>
+                    <input type="text" id="town_city" name="town_city" value="{{ page.town_city }}" placeholder="Town/City" aria-describedby="town_city_alert">
+                    <span class="help-block" id="town_city_alert"></span>
                 </div>
             </div>
             <div class="form-group">
-                <label for="streetaddress" class="control-label col-sm-3">Street Address</label>
+                <label for="street_address" class="control-label col-sm-3">Street Address</label>
                 <div class="col-sm-offset-1">
-                    <input type="text" id="streetaddress" name="streetaddress" value="{{ page.street_address }}" placeholder="Street Address">
-                    <span class="help-block" id="streetaddressalert"></span>
+                    <input type="text" id="street_address" name="street_address" value="{{ page.street_address }}" placeholder="Street Address" aria-describedby="street_address_alert">
+                    <span class="help-block" id="street_address_alert"></span>
                 </div>
             </div>
-            {% if page.mode !='edit_mode' %}
+            {% if page.mode != 'edit_mode' %}
                 <div class="form-group">
                     <label for="captcha" class="control-label col-sm-3">Solve this puzzle</label>
                     <label for="captcha" class="puzzle" class="col-sm-3"> {{ page.puzzle }} </label>
                     <div class="col-sm-offset-1">
                         <input type="hidden" id="captcha" name="captcha" value="{{ page.question }}">
                         <input type="text" id="puzzle" name="puzzle" placeholder="Solve" class="puzzle">
-                        <span class="form-alert pull-right" id="captchaalert"></span>
+                        <span class="form-alert pull-right" id="captcha_alert"></span>
                     </div>
                 </div>
             {% endif %}
             <div class="form-group">
-                <button type="submit" id="submit"  class="btn btn-primary" onclick="javascript:submitProposal();">Register</button>
+                <button type="submit" id="submit"  class="btn btn-primary" onclick="javascript:registerUser();">Register</button>
                 <button type="reset" class="btn btn-default">Reset</button>
             </div>
         </form>
