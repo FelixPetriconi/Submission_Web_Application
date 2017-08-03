@@ -75,5 +75,5 @@ start preparing your proposal for the conference.'''})
             'data': 'Here you can edit your account information' if edit_mode else 'Register here for submitting proposals to ACCU Conference',
             'puzzle': '{} + {}'.format(num_a, num_b),
             'submit_button': 'Save' if edit_mode else 'Register',
-            'countries': list(countries.keys()),
+            'countries': sorted(list(countries.keys())),
         }))
