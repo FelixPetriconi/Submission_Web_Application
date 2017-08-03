@@ -12,8 +12,7 @@ function isValidName(name) {
 }
 
 function isValidPhone(phone) {
-    if (/[^0-9\-\+]+/.test(phone)) {return false;}
-    return true;
+    return /\+?[0-9 ]+/.test(phone);
 }
 
 function isValidState(state) {

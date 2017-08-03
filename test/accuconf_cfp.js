@@ -4,10 +4,10 @@ const accuconf = require('../accuconf_cfp/static/js/accuconf.js');
 const assert = require('assert');
 
 describe('email validation works correctly', () => {
-    it('valid email correctly passes', () => {
+    it('valid email passes', () => {
         assert(accuconf.isValidEmail('russel@winder.org.uk'));
     });
-    it('invalid email correctly fails',  () => {
+    it('no @ symbol fails',  () => {
         assert(!accuconf.isValidEmail('russel.winder.org.uk'));
     });
 });
@@ -25,10 +25,35 @@ describe('passphrases checking works as expected', () => {
 });
 
 describe('name validation works correctly', () => {
-    it('valid name correctly passes', () => {
+    it('long name passes', () => {
         assert(accuconf.isValidName('Russel Winder'));
     });
-    it('invalid name correctly fails',  () => {
+    it('name too short fails',  () => {
         assert(!accuconf.isValidName('r'));
+    });
+});
+
+describe('phone number validation works correctly', () => {
+    // Phone numbers should obey ITU rules.
+    it('with country code and spaces passes', () => {
+        assert(accuconf.isValidPhone('+44 20 7585 2200'));
+    });
+    it('with country code and no spaces passes', () => {
+        assert(accuconf.isValidPhone('+442075852200'));
+    });
+    it('with no country code and spaces passes', () => {
+        assert(accuconf.isValidPhone('020 7585 2200'));
+    });
+    it('with no country code and no spaces passes', () => {
+        assert(accuconf.isValidPhone('02075852200'));
+    });
+    it('with country code and dashes fails', () => {
+        assert(accuconf.isValidPhone('+44-20-7585-2200'));
+    });
+    it('with no country code and dashes fails', () => {
+        assert(accuconf.isValidPhone('020-7585-2200'));
+    });
+    it('with letters correctly fails',  () => {
+        assert(!accuconf.isValidPhone('xxxxxxxx'));
     });
 });
