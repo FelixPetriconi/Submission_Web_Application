@@ -13,7 +13,7 @@
 </div>
 <div class="row">
     <div class="container-fluid">
-        <form class="form-horizontal" id="proposalform" method="POST" action="/submit" onsubmit="return false;">
+        <form class="form-horizontal" id="proposalform" method="POST">
             <div class="form-group">
                 <label for="title" class="control-label col-sm-3">Title</label>
                 <div class="col-sm-8">
@@ -92,8 +92,7 @@
                                         <td class="col-sm-1"> # </td>
                                         <td class="col-sm-1"> Lead </td>
                                         <td class="col-sm-2"> Email </td>
-                                        <td class="col-sm-2"> First Name </td>
-                                        <td class="col-sm-2"> Second Name </td>
+                                        <td class="col-sm-2"> Name </td>
                                         <td class="col-sm-2"> Country </td>
                                         <td class="col-sm-2"> State </td>
                                         <td class="col-sm-1"> Delete </td>
@@ -104,8 +103,7 @@
                                         <td align="center" id="def_seq"> 1 </td>
                                         <td class="narrow"> <input type="radio" name="lead" id="lead" value="1"> </td>
                                         <td align="center" id="def_email"> {{ page.proposer.email }} </td>
-                                        <td align="center" id="def_fname"> {{ page.proposer.first_name }} </td>
-                                        <td align="center" id="def_lname"> {{ page.proposer.last_name }} </td>
+                                        <td align="center" id="def_name"> {{ page.proposer.name }} </td>
                                         <td align="center" id="def_country"> {{ page.proposer.country }} </td>
                                         <td align="center" id="def_state"> {{ page.proposer.state }} </td>
                                         <!-- <td align="center" id="def_del">
@@ -126,7 +124,7 @@
                 <input type="text" name="tags" id="tags" placeholder="Category" data-role="tagsinput">
             </div>
             <div class="form-group">
-                <button type="submit" class="btn btn-primary" onclick="javascript:uploadProposal();">Submit</button>
+                <button type="submit" class="btn btn-primary" onclick="javascript:submitProposal();">Submit</button>
                 <button type="reset" class="btn btn-default">Reset</button>
             </div>
         </form>
@@ -146,15 +144,9 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="add-presenter-fname" class="control-label col-sm-2">First Name</label>
+                                <label for="add-presenter-name" class="control-label col-sm-2">Name</label>
                                 <div class="col-sm-4">
-                                    <input type="text" name="add-presenter-fname" id="add-presenter-fname">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="add-presenter-lname" class="control-label col-sm-2">Last Name</label>
-                                <div class="col-sm-4">
-                                    <input type="text" name="add-presenter-lname" id="add-presenter-lname">
+                                    <input type="text" name="add-presenter-name" id="add-presenter-name">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -193,7 +185,7 @@
         <td class="narrow"> <input type="radio" name="lead" id="lead" value="<%= sno  %>"> </td>
         <td align="center" id="p_email_<%= sno %>"> <%= email %> </td>
         <td align="center" id="p_name_<%= sno %>"> <%= name %> </td>
-        <td align="center" id="p_country_<%= sno %>"> <%= ctry %> </td>
+        <td align="center" id="p_country_<%= sno %>"> <%= country %> </td>
         <td align="center" id="p_state_<%= sno %>"> <%= state %></td>
         <td align="center" id="p_del_<%= sno %>">
             <a href=""> <span class="glyphicon glyphicon-remove" aria-hidden="true" onclick="return deleteRow('<%= sno %>');"></span> </a>

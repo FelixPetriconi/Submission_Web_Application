@@ -1,81 +1,88 @@
 function isValidEmail(email) {
-  const regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-_])+\.)+([a-zA-Z0-9])+$/;
-  return regex.test(email);
+  return  /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-_])+\.)+([a-zA-Z0-9])+$/.test(email)
 }
 
 function isValidPassphrase(password) {
-    return password.length >= 8;
+    return password.length >= 8
 }
 
 function isValidName(name) {
-    return name.length > 1;
+    return name.length > 1
 }
 
 function isValidPhone(phone) {
-    return /\+?[0-9 ]+/.test(phone);
+    return /\+?[0-9 ]+/.test(phone)
+}
+
+function isValidCountry(country) {
+    const countryList = $('#country')
+    for (let i = 0; i < countryList.options.length; i++) {
+        if (country === countryList.options[i].text) { return true }
+    }
+    return false
 }
 
 function isValidState(state) {
-    return true;
+    return true
 }
 
-function isValidPostalCode(code) {
-    if (/[^0-9a-zA-Z\s]/.test(code)) {return false;}
-    return true;
+function isValidPostalCode(postal_code) {
+    return true
 }
 
-function isValidStreetAddress(code) {
-    if (/[^0-9a-zA-Z\s]/.test(code)) {return false;}
-    return true;
+function isValidStreetAddress(street_address) {
+    return true
 }
 
 function isValidCaptcha(captcha) {
-    if (/\d+/.test(captcha)) {return true;}
-    return false;
+    return true
 }
 
 function validateRegistrationData() {
-    const email = $('#email').val();
-    const passphrase = $('#passphrase').val();
-    const cpassphrase = $('#cpassphrase').val();
-    const name = $('#name').val();
-    const phone = $('#phone').val();
-    const country = $('#country').val();
-    const state = $('#state').val();
-    const postalCode = $('#postal_code').val();
-    const streetAddress =  $('#street_address').val();
-    const question = $('#question').val();
-    const captcha = $('#captcha').val();
-    const submit = $('#submit');
+    const email = $('#email').val()
+    const passphrase = $('#passphrase').val()
+    const cpassphrase = $('#cpassphrase').val()
+    const name = $('#name').val()
+    const phone = $('#phone').val()
+    const country = $('#country').val()
+    const state = $('#state').val()
+    const postalCode = $('#postal_code').val()
+    const streetAddress =  $('#street_address').val()
+    const question = $('#question').val()
+    const captcha = $('#captcha').val()
+    const submit = $('#submit')
     if (!isValidEmail(email)) {
-        $('#emailalert').text("Email should be of the format user@example.com");
-        return false;
+        $('#emailalert').text("Email should be of the format user@example.com")
+        return false
     } else {
-        $('#emailalert').text();
+        $('#emailalert').text()
     }
     if (!isValidPassphrase(passphrase)) {
-        return false;
+        return false
     }
     if (!isValidName(name)) {
-        return false;
+        return false
     }
     if (!isValidPhone(phone)) {
-        return false;
+        return false
+    }
+    if (!isValidCountry(country)) {
+        return false
     }
     if (!isValidState(state)) {
-        return false;
+        return false
     }
     if (!isValidStreetAddress(streetAddress)) {
-        return false;
+        return false
     }
     if (!isValidPostalCode(postalCode)) {
-        return false;
+        return false
     }
     if (!isValidCaptcha(captcha)) {
-        return false;
+        return false
     }
-    submit.disabled = false;
-    return true;
+    submit.disabled = false
+    return true
 }
 
 function registerUser() {
@@ -95,42 +102,40 @@ function registerUser() {
             }),
             dataType: 'json',
             contentType: "application/json",
-            success: function(data) {
-                alert(data.valid);
+            success: (data) => {
+                alert(data.valid)
             }
         });
-        return true;
+        return true
     } else {
-        alert ("Invalid");
-        return false;
+        alert ("Invalid")
+        return false
     }
 }
 
-function checkDuplicate() {
+function checkDuplicateEmail() {
     const email = $('#email').val();
     if (!isValidEmail(email)) {
-        $('#emailalert').text("Please provide a valid email address");
+        $('#emailalert').text("Please provide a valid email address.");
         $('#submit').attr("disabled", true);
     } else {
         $('#emailalert').text();
         $('#submit').removeAttr("disabled");
     }
-    const url = "/proposals/check/" + email;
     $.ajax({
-        type: "GET",
-        url: url,
+        type: 'GET',
+        url: '/checkDuplicateEmail/' + email,
         dataType: "json",
-        success: function(data) {
+        success: (data) => {
             if (data.duplicate === true) {
-                $('#emailalert').text("User id already exists!!!");
-                $('#submit').attr("disabled", true);
+                $('#emailalert').text("This email address is already in use.")
+                $('#submit').attr("disabled", true)
             } else {
-                $('#emailalert').text("");
-                $('#submit').removeAttr("disabled");
+                $('#emailalert').text("")
+                $('#submit').removeAttr("disabled")
             }
         }
-    });
-
+    })
 }
 
 function notify(message) {
@@ -184,7 +189,7 @@ function addPresenter(tableId) {
     $(new_loc).append(options);
 }
 
-function uploadProposal() {
+function submitProposal() {
     const proposalTitle = $('#title').val();
     const proposal = $('#proposal').val();
     const proposalType = $('#proposaltype').val();
@@ -309,8 +314,12 @@ function uploadReview(button) {
 
 // Apparently this is needed for Node execution.
 if (typeof exports !== 'undefined') {
-    exports.isValidEmail = isValidEmail;
-    exports.isValidPassphrase = isValidPassphrase;
-    exports.isValidName = isValidName;
-    exports.isValidPhone = isValidPhone;
+    exports.isValidEmail = isValidEmail
+    exports.isValidPassphrase = isValidPassphrase
+    exports.isValidName = isValidName
+    exports.isValidPhone = isValidPhone
+    exports.isValidCountry = isValidCountry
+    exports.isValidState = isValidState
+    exports.isValidPostalCode = isValidPostalCode
+    exports.isValidStreetAddress = isValidStreetAddress
 }
