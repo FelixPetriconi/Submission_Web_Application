@@ -14,12 +14,12 @@ function isValidPhone(phone) {
     return /^\+?[0-9 ]+$/.test(phone)
 }
 
-function isValidCountry(country) {
-    const countryList = $('#country')
-    for (let i = 0; i < countryList.options.length; i++) {
-        if (country === countryList.options[i].text) { return true }
-    }
-    return false
+function isValidStreetAddress(street_address) {
+    return true
+}
+
+function isValidTownCity(townCity) {
+    return true
 }
 
 function isValidState(state) {
@@ -30,8 +30,12 @@ function isValidPostalCode(postal_code) {
     return /^[A-Z0-9 ]+$/.test(postal_code)
 }
 
-function isValidStreetAddress(street_address) {
-    return true
+function isValidCountry(country) {
+    const countryList = $('#country')
+    for (let i = 0; i < countryList.options.length; i++) {
+        if (country === countryList.options[i].text) { return true }
+    }
+    return false
 }
 
 function getRandomInt(min, max) {
@@ -62,11 +66,11 @@ function validateRegistrationData() {
     const cpassphrase = $('#cpassphrase').val()
     const name = $('#name').val()
     const phone = $('#phone').val()
-    const country = $('#country').val()
+    const streetAddress =  $('#street_address').val()
+    const townCity =  $('#town_city').val()
     const state = $('#state').val()
     const postalCode = $('#postal_code').val()
-    const streetAddress =  $('#street_address').val()
-    const question = $('#question').val()
+	const country = $('#country').val()
 	const puzzleValue = $('#puzzle').val()
 	let returnCode = true
     if (!isValidEmail(email)) {
@@ -82,7 +86,7 @@ function validateRegistrationData() {
     	$('#passphrase_alert').text()
     }
     if (!isValidPassphrase(cpassphrase)) {
-    	$('#cpassphrase_alert').text('Conformation passphrase is not valid.')
+    	$('#cpassphrase_alert').text('Confirmation passphrase is not valid.')
         returnCode = false
     } else {
     	$('#cpassphrase_alert').text()
@@ -105,11 +109,17 @@ function validateRegistrationData() {
     } else {
     	$('#phone_alert').text()
     }
-    if (!isValidCountry(country)) {
-	    $('#country_alert').text('Invalid country.')
+    if (!isValidStreetAddress(streetAddress)) {
+	    $('#street_address_alert').text('Invalid street address.')
         returnCode = false
     } else {
-    	$('#country_alert').text()
+    	$('#street_address_alert').text()
+    }
+    if (!isValidTownCity(townCity)) {
+	    $('#town_city_alert').text('Invalid town/city.')
+        returnCode = false
+    } else {
+    	$('#town_city_alert').text()
     }
     if (!isValidState(state)) {
     	$('#state_alert').text('Invalid state.')
@@ -118,16 +128,16 @@ function validateRegistrationData() {
     	$('#state_alert').text()
     }
     if (!isValidPostalCode(postalCode)) {
-   	$('#postal_code_alert').text('Invalid postal code.')
+	    $('#postal_code_alert').text('Invalid postal code.')
         returnCode = false
     } else {
     	$('#postal_code_alert').text()
     }
-    if (!isValidStreetAddress(streetAddress)) {
-   	$('#street_address_alert').text('Invalid street address.')
+    if (!isValidCountry(country)) {
+	    $('#country_alert').text('Invalid country.')
         returnCode = false
     } else {
-    	$('#street_address_alert').text()
+    	$('#country_alert').text()
     }
     if (!isPuzzleResultCorrect(puzzleValue)) {
      	$('#puzzle_alert').text('Incorrect value given.')
@@ -135,8 +145,8 @@ function validateRegistrationData() {
     } else {
     	$('#puzzle_alert').text()
     }
-   submit.disabled = ! returnCode
-    return returnCode
+	submit.disabled = ! returnCode
+	return returnCode
 }
 
 function clearAlerts() {
@@ -145,10 +155,11 @@ function clearAlerts() {
 	$('#cpassphrase_alert').text()
 	$('#name_alert').text()
 	$('#phone_number_alert').text()
-	$('#country_alert').text()
+	$('#street_address_alert').text()
+	$('#town_city_alert').text()
 	$('#state_alert').text()
 	$('#postal_code_alert').text()
-	$('#street_address_alert').text()
+	$('#country_alert').text()
 	$('#puzzle_alert').text()
 	return true;
 }
@@ -156,20 +167,21 @@ function clearAlerts() {
 function registerUser() {
     if (validateRegistrationData()) {
         $.ajax({
-            method: "POST",
-            url: "/register",
+            method: 'POST',
+            url: '/register',
             data: JSON.stringify({
-                "email": $('#email').val(),
-                "passphrase": $('#passphrase').val(),
-                "name": $('#name').val(),
-                "phone": $('#phone').val(),
-                "country": $('#country').val(),
-                "state": $('#state').val(),
-                "postal_code": $('#postal_code').val(),
-                "street_address": $('#street_address').val(),
+                'email': $('#email').val(),
+                'passphrase': $('#passphrase').val(),
+                'name': $('#name').val(),
+                'phone': $('#phone').val(),
+                'street_address': $('#street_address').val(),
+                'town_city': $('#town_city').val(),
+                'state': $('#state').val(),
+                'postal_code': $('#postal_code').val(),
+                'country': $('#country').val(),
             }),
             dataType: 'json',
-            contentType: "application/json",
+            contentType: 'application/json',
             success: (data) => {
                 alert(data)
             },
@@ -400,10 +412,11 @@ if (typeof exports !== 'undefined') {
     exports.isValidPassphrase = isValidPassphrase
     exports.isValidName = isValidName
     exports.isValidPhone = isValidPhone
-    exports.isValidCountry = isValidCountry
+    exports.isValidStreetAddress = isValidStreetAddress
+    exports.isValidTownCity = isValidTownCity
     exports.isValidState = isValidState
     exports.isValidPostalCode = isValidPostalCode
-    exports.isValidStreetAddress = isValidStreetAddress
+    exports.isValidCountry = isValidCountry
 	exports.setPuzzle = setPuzzle
 	exports.isPuzzleResultCorrect = isPuzzleResultCorrect
 }

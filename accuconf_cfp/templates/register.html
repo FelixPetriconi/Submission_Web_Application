@@ -51,14 +51,17 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="country" class="control-label col-sm-3">Country</label>
+                <label for="street_address" class="control-label col-sm-3">Street Address</label>
                 <div class="col-sm-offset-1">
-                    <select id="country" name="country"  aria-describedby="country_alert">
-                        {% for x in  page.countries   %}
-                        <option value="{{ x }}">{{ x }}</option>
-                        {% endfor %}
-                    </select>
-                    <span class="help-block" id="country_alert"></span>
+                    <input type="text" id="street_address" name="street_address" value="{{ page.street_address }}" placeholder="Street Address" aria-describedby="street_address_alert">
+                    <span class="help-block" id="street_address_alert"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="town_city" class="control-label col-sm-3">Town/City</label>
+                <div class="col-sm-offset-1">
+                    <input type="text" id="town_city" name="town_city" value="{{ page.town_city }}" placeholder="Town/City" aria-describedby="town_city_alert">
+                    <span class="help-block" id="town_city_alert"></span>
                 </div>
             </div>
             <div class="form-group">
@@ -76,17 +79,14 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="town_city" class="control-label col-sm-3">Town/City</label>
+                <label for="country" class="control-label col-sm-3">Country</label>
                 <div class="col-sm-offset-1">
-                    <input type="text" id="town_city" name="town_city" value="{{ page.town_city }}" placeholder="Town/City" aria-describedby="town_city_alert">
-                    <span class="help-block" id="town_city_alert"></span>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="street_address" class="control-label col-sm-3">Street Address</label>
-                <div class="col-sm-offset-1">
-                    <input type="text" id="street_address" name="street_address" value="{{ page.street_address }}" placeholder="Street Address" aria-describedby="street_address_alert">
-                    <span class="help-block" id="street_address_alert"></span>
+                    <select id="country" name="country"  aria-describedby="country_alert">
+                        {% for x in  page.countries   %}
+                        <option value="{{ x }}">{{ x }}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="help-block" id="country_alert"></span>
                 </div>
             </div>
             {% if page.mode != 'edit_mode' %}
