@@ -1,9 +1,16 @@
 dist: trusty
+sudo: true
 language: python
 python:
   - "3.4"
 #  - "3.5"
 #  - "3.6"
+before_install:
+  - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+  - sudo dpkg -i google-chrome-stable_current_amd64.deb
+  - wget https://chromedriver.storage.googleapis.com/2.31/chromedriver_linux64.zip
+  - unzip chromedriver_linux64.zip
+  - sudo cp chromedriver /usr/bin
 install:
   - pip install --upgrade -r pip_runtime_requirements.txt
   - pip install --upgrade -r pip_test_requirements.txt
