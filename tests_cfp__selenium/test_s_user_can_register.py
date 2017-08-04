@@ -1,5 +1,7 @@
 import pytest
 
+from selenium.common.exceptions import TimeoutException
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
@@ -50,19 +52,19 @@ def XXX_test_user_can_successfully_register(driver, registrant):
     assert 'Registration Success' in element.text
 
 
-def test_malformed_email_causes_local_failure(driver, registrant, monkeypatch):
-    monkeypatch.setitem(registrant, 'email', 'a.b.c')
+@pytest.mark.parametrize(('key', 'value', 'message'), (
+    ('email', 'a.b.c', 'Email should be of the format user@example.com'),
+    ('passphrase', 'hum', 'Passphrase and confirmation passphrase not the same.'),
+    ('cpassphrase', 'dedum', 'Confirmation passphrase is not valid.'),
+    ('name', 'R', 'Invalid name.'),
+    ('phone', 'blurb', 'Invalid phone number.'),
+    ('postal_code', 'Fubar', 'Invalid postal code.'),
+    # ('country', 'Fubar', 'Invalid country.'),
+))
+def test_single_error_causing_local_failure(key, value, message, driver, registrant, monkeypatch):
+    monkeypatch.setitem(registrant, key, value)
     submit_data_to_register_page(driver, registrant)
     wait = WebDriverWait(driver, 2)
-    assert wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Registration'))
-    # assert wait.until(ecs.text_to_be_present_in_element((By.ID, 'alert'), 'Problem with form, not submitting.'))
-    assert wait.until(ecs.text_to_be_present_in_element((By.ID, 'email_alert'), 'Email should be of the format user@example.com'))
-
-
-def test_inconsistent_passphrases_causes_local_failure(driver, registrant, monkeypatch):
-    monkeypatch.setitem(registrant, 'cpassphrase', 'Burble')
-    submit_data_to_register_page(driver, registrant)
-    wait = WebDriverWait(driver, 2)
-    assert wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Registration'))
-    # assert wait.until(ecs.text_to_be_present_in_element((By.ID, 'alert'), 'Problem with form, not submitting.'))
-    assert wait.until(ecs.text_to_be_present_in_element((By.ID, 'passphrase_alert'), 'Passphrase and confirmation passphrase not the same.'))
+    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Registration'))
+    # wait.until(ecs.text_to_be_present_in_element((By.ID, 'alert'), 'Problem with form, not submitting.'))
+    wait.until(ecs.text_to_be_present_in_element((By.ID, key + '_alert'), message))
