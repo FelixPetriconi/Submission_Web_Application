@@ -43,26 +43,26 @@ def submit_data_to_register_page(driver, registrant):
 
 def XXX_test_user_can_successfully_register(driver, registrant):
     submit_data_to_register_page(driver, registrant)
-    element = WebDriverWait(driver, 4).until(
+    element = WebDriverWait(driver, 2).until(
         ecs.presence_of_element_located((By.CLASS_NAME, 'pagetitle'))
     )
     assert 'XXXX' in driver.find_element_by_id('content').text
     assert 'Registration Success' in element.text
 
 
-def XXX_test_malformed_email_causes_failure(driver, registrant, monkeypatch):
+def test_malformed_email_causes_local_failure(driver, registrant, monkeypatch):
     monkeypatch.setitem(registrant, 'email', 'a.b.c')
     submit_data_to_register_page(driver, registrant)
-    wait = WebDriverWait(driver, 4)
+    wait = WebDriverWait(driver, 2)
     assert wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Registration'))
-    assert wait.until(ecs.text_to_be_present_in_element((By.ID, 'alert'), 'Problem with form, not submitting.'))
+    # assert wait.until(ecs.text_to_be_present_in_element((By.ID, 'alert'), 'Problem with form, not submitting.'))
     assert wait.until(ecs.text_to_be_present_in_element((By.ID, 'email_alert'), 'Email should be of the format user@example.com'))
 
 
-def XXX_test_inconsistent_passphrases_causes_failure(driver, registrant, monkeypatch):
+def test_inconsistent_passphrases_causes_local_failure(driver, registrant, monkeypatch):
     monkeypatch.setitem(registrant, 'cpassphrase', 'Burble')
     submit_data_to_register_page(driver, registrant)
-    wait = WebDriverWait(driver, 4)
+    wait = WebDriverWait(driver, 2)
     assert wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Registration'))
-    assert wait.until(ecs.text_to_be_present_in_element((By.ID, 'alert'), 'Problem with form, not submitting.'))
+    # assert wait.until(ecs.text_to_be_present_in_element((By.ID, 'alert'), 'Problem with form, not submitting.'))
     assert wait.until(ecs.text_to_be_present_in_element((By.ID, 'passphrase_alert'), 'Passphrase and confirmation passphrase not the same.'))
