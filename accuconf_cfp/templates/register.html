@@ -8,17 +8,18 @@
 </div>
 <div class="row">
     <div class="container-fluid">
+        <p class="alert"> {{ page.data }} </p>
         <p class="alert" id="alert"></p>
     </div>
 </div>
 <div class="row">
     <div class="container-fluid">
-        <form class="form-horizontal" id="registrationForm" method="POST">
+        <form class="form-horizontal" id="registrationForm">
             <div class="form-group">
                 <label for="email" class="control-label col-sm-3">Email</label>
                 <div class="col-sm-offset-1">
-                    <input type="text" id="email" name="email" placeholder="Email" value="{{ page.email }}" aria-describedby="email_help">
-                    <span class="help-block" id="email_help"></span>
+                    <input type="text" id="email" name="email" placeholder="Email" value="{{ page.email }}" aria-describedby="email_alert">
+                    <span class="help-block" id="email_alert"></span>
                 </div>
             </div>
             <div class="form-group">
@@ -90,18 +91,19 @@
             </div>
             {% if page.mode != 'edit_mode' %}
                 <div class="form-group">
-                    <label for="captcha" class="control-label col-sm-3">Solve this puzzle</label>
-                    <label for="captcha" class="puzzle" class="col-sm-3"> {{ page.puzzle }} </label>
+                    <label for="puzzle" class="control-label col-sm-3">Solve this puzzle</label>
+                    <label for="puzzle" id="puzzle_label" class="puzzle" class="col-sm-3"></label>
+                    <script>setPuzzleLabel()</script>
                     <div class="col-sm-offset-1">
-                        <input type="hidden" id="captcha" name="captcha" value="{{ page.question }}">
                         <input type="text" id="puzzle" name="puzzle" placeholder="Solve" class="puzzle">
-                        <span class="form-alert pull-right" id="captcha_alert"></span>
+                        <span class="form-alert pull-right" id="puzzle_alert"></span>
                     </div>
                 </div>
             {% endif %}
+            <p id="button_spacer"></p>
             <div class="form-group">
-                <button type="submit" id="submit"  class="btn btn-primary" onclick="javascript:registerUser();">Register</button>
-                <button type="reset" class="btn btn-default">Reset</button>
+                <button type="button" id="submit"  class="btn btn-primary" onclick="registerUser();"> {{ page.submit_button }} </button>
+                <button type="reset" class="btn btn-default" onclick="clearAlerts()">Reset</button>
             </div>
         </form>
     </div>

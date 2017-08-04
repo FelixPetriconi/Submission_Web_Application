@@ -11,7 +11,7 @@ function isValidName(name) {
 }
 
 function isValidPhone(phone) {
-    return /\+?[0-9 ]+/.test(phone)
+    return /^\+?[0-9 ]+$/.test(phone)
 }
 
 function isValidCountry(country) {
@@ -27,15 +27,33 @@ function isValidState(state) {
 }
 
 function isValidPostalCode(postal_code) {
-    return true
+    return /^[A-Z0-9 ]+$/.test(postal_code)
 }
 
 function isValidStreetAddress(street_address) {
     return true
 }
 
-function isValidCaptcha(captcha) {
-    return true
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+let puzzleResult = 0
+
+function setPuzzle() {
+	const a = getRandomInt(0, 100)
+	const b = getRandomInt(0, 100)
+	puzzleResult = a + b
+	return [a, b]
+}
+
+function setPuzzleLabel() {
+	const values = setPuzzle()
+	$('#puzzle_label').text(`${values[0]} + ${values[1]}`)
+}
+
+function isPuzzleResultCorrect(value) {
+	return puzzleResult === Math.floor(value)
 }
 
 function validateRegistrationData() {
@@ -49,40 +67,90 @@ function validateRegistrationData() {
     const postalCode = $('#postal_code').val()
     const streetAddress =  $('#street_address').val()
     const question = $('#question').val()
-    const captcha = $('#captcha').val()
-    const submit = $('#submit')
+	const puzzleValue = $('#puzzle').val()
+	let returnCode = true
     if (!isValidEmail(email)) {
-        $('#emailalert').text("Email should be of the format user@example.com")
-        return false
+        $('#email_alert').text("Email should be of the format user@example.com")
+        returnCode = false
     } else {
-        $('#emailalert').text()
+        $('#email_alert').text()
     }
     if (!isValidPassphrase(passphrase)) {
-        return false
+    	$('#passphrase_alert').text('Passphrase is not valid.')
+        returnCode = false
+    } else {
+    	$('#passphrase_alert').text()
     }
-    if (!isValidName(name)) {
-        return false
+    if (!isValidPassphrase(cpassphrase)) {
+    	$('#cpassphrase_alert').text('Conformation passphrase is not valid.')
+        returnCode = false
+    } else {
+    	$('#cpassphrase_alert').text()
+    }
+    if (passphrase !== cpassphrase) {
+    	$('#passphrase_alert').text('Passphrase and confirmation passphrase not the same.')
+        returnCode = false
+    } else {
+    	$('#passphrase_alert').text()
+    }
+   if (!isValidName(name)) {
+    	$('#name_alert').text('Invalid name.')
+        returnCode = false
+    } else {
+    	$('#name_alert').text()
     }
     if (!isValidPhone(phone)) {
-        return false
+    	$('#phone_alert').text('Invalid phone number.')
+        returnCode = false
+    } else {
+    	$('#phone_alert').text()
     }
     if (!isValidCountry(country)) {
-        return false
+	    $('#country_alert').text('Invalid country.')
+        returnCode = false
+    } else {
+    	$('#country_alert').text()
     }
     if (!isValidState(state)) {
-        return false
-    }
-    if (!isValidStreetAddress(streetAddress)) {
-        return false
+    	$('#state_alert').text('Invalid state.')
+        returnCode = false
+    } else {
+    	$('#state_alert').text()
     }
     if (!isValidPostalCode(postalCode)) {
-        return false
+   	$('#postal_code_alert').text('Invalid postal code.')
+        returnCode = false
+    } else {
+    	$('#postal_code_alert').text()
     }
-    if (!isValidCaptcha(captcha)) {
-        return false
+    if (!isValidStreetAddress(streetAddress)) {
+   	$('#street_address_alert').text('Invalid street address.')
+        returnCode = false
+    } else {
+    	$('#street_address_alert').text()
     }
-    submit.disabled = false
-    return true
+    if (!isPuzzleResultCorrect(puzzleValue)) {
+     	$('#puzzle_alert').text('Incorrect value given.')
+        returnCode = false
+    } else {
+    	$('#puzzle_alert').text()
+    }
+   submit.disabled = ! returnCode
+    return returnCode
+}
+
+function clearAlerts() {
+	$('#email_alert').text()
+	$('#passphrase_alert').text()
+	$('#cpassphrase_alert').text()
+	$('#name_alert').text()
+	$('#phone_number_alert').text()
+	$('#country_alert').text()
+	$('#state_alert').text()
+	$('#postal_code_alert').text()
+	$('#street_address_alert').text()
+	$('#puzzle_alert').text()
+	return true;
 }
 
 function registerUser() {
@@ -103,23 +171,28 @@ function registerUser() {
             dataType: 'json',
             contentType: "application/json",
             success: (data) => {
-                alert(data.valid)
-            }
-        });
+                alert(data)
+            },
+            error: (data) => {
+                alert(data)
+            },
+        })
+        $('#alert').text('Submitting form.')
         return true
     } else {
-        alert ("Invalid")
+	    $('#alert').text('Problem with form, not submitting.')
         return false
     }
 }
 
+/*
 function checkDuplicateEmail() {
     const email = $('#email').val();
     if (!isValidEmail(email)) {
-        $('#emailalert').text("Please provide a valid email address.");
+        $('#email_alert').text("Please provide a valid email address.");
         $('#submit').attr("disabled", true);
     } else {
-        $('#emailalert').text();
+        $('#email_alert').text();
         $('#submit').removeAttr("disabled");
     }
     $.ajax({
@@ -128,27 +201,29 @@ function checkDuplicateEmail() {
         dataType: "json",
         success: (data) => {
             if (data.duplicate === true) {
-                $('#emailalert').text("This email address is already in use.")
+                $('#email_alert').text("This email address is already in use.")
                 $('#submit').attr("disabled", true)
             } else {
-                $('#emailalert').text("")
+                $('#email_alert').text("")
                 $('#submit').removeAttr("disabled")
             }
         }
     })
 }
-
+*/
+/*
 function notify(message) {
     $("#helpmessage").text(message);
     $("#helpmessage").fadeIn(100);
     //$("#helpmessage").fadeOut(3000);
 }
-
+*/
+/*
 function hidehelp() {
     $("#helpmessage").fadeOut(100);
 }
-
-
+*/
+/*
 function addPresenterOld() {
     const presenter = $('#presenter').val();
     if (!isValidEmail(presenter)) {
@@ -171,9 +246,9 @@ function addPresenterOld() {
             presenters_sel.append('<option value="' + presenter + '">' + presenter + '</option>');
         }
     });
-
 }
-
+*/
+/*
 function addPresenter(tableId) {
     const presenter_tbl_loc = '#' + tableId;
     const presenter_loc = presenter_tbl_loc + '> tbody > tr';
@@ -188,7 +263,8 @@ function addPresenter(tableId) {
     const new_loc = '#p_ctry_' + count;
     $(new_loc).append(options);
 }
-
+*/
+/*
 function submitProposal() {
     const proposalTitle = $('#title').val();
     const proposal = $('#proposal').val();
@@ -241,11 +317,13 @@ function submitProposal() {
     });
     return true;
 }
-
+*/
+/*
 function validatePresenter(details) {
     return true;
 }
-
+*/
+/*
 function addNewPresenter() {
     const email = $("#add-presenter-email").val();
     const fname = $("#add-presenter-fname").val();
@@ -262,27 +340,31 @@ function addNewPresenter() {
     $("#add-presenter-modal").modal('hide');
     return true;
 }
-
+*/
+/*
 function resetModal() {
     $('.modal').on('hidden.bs.modal', function(){
         $("#add-presenter-modal").find('form')[0].reset();
     });
 }
-
+*/
+/*
 function deleteRow(rowIdx) {
     const presenters = $("#presenters-body");
     const msg = $("#presenters-body tr:eq(1)").text();
     alert(msg);
 }
-
+*/
+/*
 function showPointer(element) {
     element.css("cursor", "pointer");
 }
-
+*/
+/*
 function showDefaultPointer(element) {
     element.css("cursor", "default");
 }
-
+*/
 /*
 function uploadReview(button) {
     const button = button.value;
@@ -312,7 +394,7 @@ function uploadReview(button) {
 }
 */
 
-// Apparently this is needed for Node execution.
+// Apparently this is needed for Node execution and thus the tests.
 if (typeof exports !== 'undefined') {
     exports.isValidEmail = isValidEmail
     exports.isValidPassphrase = isValidPassphrase
@@ -322,4 +404,6 @@ if (typeof exports !== 'undefined') {
     exports.isValidState = isValidState
     exports.isValidPostalCode = isValidPostalCode
     exports.isValidStreetAddress = isValidStreetAddress
+	exports.setPuzzle = setPuzzle
+	exports.isPuzzleResultCorrect = isPuzzleResultCorrect
 }

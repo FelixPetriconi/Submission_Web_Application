@@ -12,6 +12,10 @@ from selenium import webdriver
 
 @pytest.fixture(scope='module', autouse=True)
 def server():
+    """A fixture to start a new server.
+
+    It is assumed that a new server is started for each test module.
+    """
     # NB do not spawn with a shell since then you can't terminate the server.
     process = subprocess.Popen(('python3', '{}'.format(pathlib.PurePath(__file__).parent / 'start_server.py')))
     time.sleep(1.5)  # Need a short while for the server to settle, 0.5 works locally but Travis-CI needs longer.
@@ -19,14 +23,14 @@ def server():
     assert process.returncode is None, 'Server start return code {}'.format(process.returncode)
     yield
     process.poll()
-    assert process.returncode is None, 'Server used return code P{.'.format(process.returncode)
+    assert process.returncode is None, 'Server terminated return code {}.'.format(process.returncode)
     process.terminate()
     process.wait()
     assert process.returncode == -15, 'Server terminated return code {}.'.format(process.returncode)
 
 
 @pytest.fixture
-def browser():
-    driver = webdriver.PhantomJS()
-    yield driver
-    driver.quit()
+def driver():
+    wd = webdriver.PhantomJS()
+    yield wd
+    wd.quit()

@@ -48,10 +48,10 @@ describe('phone number validation works correctly', () => {
         assert(accuconf.isValidPhone('02075852200'))
     })
     it('with country code and dashes fails', () => {
-        assert(accuconf.isValidPhone('+44-20-7585-2200'))
+        assert(!accuconf.isValidPhone('+44-20-7585-2200'))
     })
     it('with no country code and dashes fails', () => {
-        assert(accuconf.isValidPhone('020-7585-2200'))
+        assert(!accuconf.isValidPhone('020-7585-2200'))
     })
     it('with letters correctly fails',  () => {
         assert(!accuconf.isValidPhone('xxxxxxxx'))
@@ -90,5 +90,16 @@ describe('postal code validation works correctly', () => {
 describe('street address validation works correctly', () => {
     it('a known street address works', () => {
         assert(accuconf.isValidStreetAddress('41 Buckmaster Road'))
+    })
+})
+
+describe('puzzle setting and result consistency check.', () => {
+    it('when it is correct it works', () => {
+        const values = accuconf.setPuzzle()
+        assert(accuconf.isPuzzleResultCorrect(values[0] + values[1]))
+    })
+    it('when it is incorrect it fails correctly', () => {
+        const values = accuconf.setPuzzle()
+        assert(!accuconf.isPuzzleResultCorrect(values[0] + values[1] + 1))
     })
 })

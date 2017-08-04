@@ -39,6 +39,16 @@ def registrant():
     }
 
 
+def test_attempt_to_get_registration_page_outside_open_period_causes_redirect(client, monkeypatch):
+    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
+    monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
+    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+    get_and_check_content(client, '/register',
+                          code=302,
+                          includes=('Redirect', '<a href="/">'),
+                          )
+
+
 def test_registration_page_has_some_countries(client, monkeypatch):
     monkeypatch.setitem(app.config, 'CALL_OPEN', True)
     monkeypatch.setitem(app.config, 'MAINTENANCE', False)
