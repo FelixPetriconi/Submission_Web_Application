@@ -1,5 +1,3 @@
-import random
-
 from flask import render_template, request, session
 
 from accuconf_cfp import app, countries, db, year
@@ -67,8 +65,6 @@ def register():
 proposals for the ACCU Conf. Please login and
 start preparing your proposal for the conference.'''})
     else:
-        num_a = random.randint(10, 99)
-        num_b = random.randint(10, 99)
         return render_template("register.html", page=utils.md(page, {
             'email': user.email if edit_mode else '',
             'name': user.name if edit_mode else '',
@@ -80,7 +76,6 @@ start preparing your proposal for the conference.'''})
             'street_address': user.street_address if edit_mode else '',
             'title': 'Account Information' if edit_mode else 'Register',
             'data': 'Here you can edit your account information' if edit_mode else 'Register here for submitting proposals to ACCU Conference',
-            'puzzle': '{} + {}'.format(num_a, num_b),
             'submit_button': 'Save' if edit_mode else 'Register',
             'countries': sorted(list(countries.keys())),
         }))
