@@ -50,8 +50,8 @@ def test_user_can_register(client, registrant, monkeypatch):
     user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 0
     post_and_check_content(client, '/register', json.dumps(registrant), 'application/json',
-                           includes=('You have successfully registered', 'Please login', login_menu_item,),
-                           excludes=(register_menu_item,),
+                           includes=('register_success_new',),
+                           excludes=(login_menu_item, register_menu_item,),
                            )
     user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 1
@@ -90,7 +90,7 @@ def test_update_user_name(client, registrant, monkeypatch):
     test_successful_login(client, registrant, monkeypatch)
     registrant['name'] = 'Some Dude'
     post_and_check_content(client, '/register', json.dumps(registrant), 'application/json',
-                           includes=('Your account details were successful updated.',),
+                           includes=('register_success_update',),
                            excludes=(login_menu_item, register_menu_item,),
                            )
 

@@ -135,7 +135,6 @@ function validateRegistrationData() {
     } else {
     	$('#puzzle_alert').text('')
     }
-	submit.disabled = ! returnCode
 	return returnCode
 }
 
@@ -151,6 +150,7 @@ function clearAlerts() {
 	$('#postal_code_alert').text('')
 	$('#country_alert').text('')
 	$('#puzzle_alert').text('')
+	$('#alert').text('')
 	return true;
 }
 
@@ -172,11 +172,11 @@ function registerUser() {
             }),
             dataType: 'json',
             contentType: 'application/json',
-            success: (data) => {
-                alert(data)
+            success: (data, textStatus, jqXHR ) => {
+                window.location.replace("/" + data);
             },
-            error: (data) => {
-                alert(data)
+            error: (jqXHR, textStatus, errorThrown) => {
+                alert(jqXHR)
             },
         })
         $('#alert').text('Submitting form.')

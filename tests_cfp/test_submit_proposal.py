@@ -105,7 +105,7 @@ def test_ensure_registration_and_login(client, registration_data, monkeypatch):
     user = User.query.filter_by(email=registration_data['email']).all()
     assert len(user) == 0
     post_and_check_content(client, '/register', json.dumps(registration_data), 'application/json',
-                           includes=('You have successfully registered',),
+                           includes=('register_success_new',),
                            )
     user = User.query.filter_by(email=registration_data['email']).all()
     assert len(user) == 1

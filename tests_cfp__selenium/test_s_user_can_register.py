@@ -37,19 +37,17 @@ def submit_data_to_register_page(driver, registrant):
     assert ' – Registration' in driver.find_element_by_class_name('pagetitle').text
     for key, value in registrant.items():
         driver.find_element_by_id(key).send_keys(value)
+    puzzle_text = driver.find_element_by_id('puzzle_label').text
+    driver.find_element_by_id('puzzle').send_keys(eval(puzzle_text))
     button = WebDriverWait(driver, 1).until(ecs.element_to_be_clickable((By.ID, 'submit')))
     assert 'Register' in button.text
     assert 'registerUser()' in button.get_attribute('onclick')
     button.click()
 
 
-def XXX_test_user_can_successfully_register(driver, registrant):
+def test_user_can_successfully_register(driver, registrant):
     submit_data_to_register_page(driver, registrant)
-    element = WebDriverWait(driver, 2).until(
-        ecs.presence_of_element_located((By.CLASS_NAME, 'pagetitle'))
-    )
-    assert 'XXXX' in driver.find_element_by_id('content').text
-    assert 'Registration Success' in element.text
+    WebDriverWait(driver, 4).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), 'Registration Successful'))
 
 
 @pytest.mark.parametrize(('key', 'value', 'message'), (
@@ -66,5 +64,5 @@ def test_single_error_causing_local_failure(key, value, message, driver, registr
     submit_data_to_register_page(driver, registrant)
     wait = WebDriverWait(driver, 2)
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Registration'))
-    # wait.until(ecs.text_to_be_present_in_element((By.ID, 'alert'), 'Problem with form, not submitting.'))
+    wait.until(ecs.text_to_be_present_in_element((By.ID, 'alert'), 'Problem with form, not submitting.'))
     wait.until(ecs.text_to_be_present_in_element((By.ID, key + '_alert'), message))
