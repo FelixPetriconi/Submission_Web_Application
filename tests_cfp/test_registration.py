@@ -54,7 +54,8 @@ def test_registration_page_has_some_countries(client, monkeypatch):
     monkeypatch.setitem(app.config, 'MAINTENANCE', False)
     get_and_check_content(client, '/register',
                           includes=('Register', 'United Kingdom'),
-                          excludes=(register_menu_item, 'GBR'))
+                          excludes=(register_menu_item, 'GBR'),
+                          )
 
 
 def test_attempted_form_submit_not_json_fails(client, registrant, monkeypatch):
@@ -63,8 +64,9 @@ def test_attempted_form_submit_not_json_fails(client, registrant, monkeypatch):
     user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 0
     post_and_check_content(client, '/register', registrant,
-                           includes=('Registration Failure', 'No JSON data returned', login_menu_item),
-                           excludes=(register_menu_item,))
+                           code=400,
+                           includes=('No JSON data returned',),
+                           )
     user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 0
 
@@ -75,8 +77,9 @@ def test_successful_user_registration(client, registrant, monkeypatch):
     user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 0
     post_and_check_content(client, '/register', json.dumps(registrant), 'application/json',
-                           includes=('You have successfully registered', 'Please login', login_menu_item),
-                           excludes=(register_menu_item,))
+                           includes=('register_success_new',),
+                           excludes=(login_menu_item, register_menu_item,),
+                           )
     user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 1
     assert user[0].email == registrant['email']
@@ -86,8 +89,9 @@ def test_successful_user_registration(client, registrant, monkeypatch):
 def test_attempted_duplicate_user_registration_fails(client, registrant, monkeypatch):
     test_successful_user_registration(client, registrant, monkeypatch)
     post_and_check_content(client, '/register', json.dumps(registrant), 'application/json',
-                           includes=('The email address is already in use.', login_menu_item),
-                           excludes=(register_menu_item,))
+                           code=400,
+                           includes=('The email address is already in use.',),
+                           )
 
 
 def test_no_passphrase(client, registrant, monkeypatch):
@@ -95,8 +99,9 @@ def test_no_passphrase(client, registrant, monkeypatch):
     monkeypatch.setitem(app.config, 'MAINTENANCE', False)
     registrant['passphrase'] = ''
     post_and_check_content(client, '/register', json.dumps(registrant), 'application/json',
-                           includes=('No passphrase for new registration.', login_menu_item),
-                           excludes=(register_menu_item,))
+                           code=400,
+                           includes=('No passphrase for new registration.',),
+                           )
 
 
 def test_invalid_email(client, registrant, monkeypatch):
@@ -104,5 +109,6 @@ def test_invalid_email(client, registrant, monkeypatch):
     monkeypatch.setitem(app.config, 'MAINTENANCE', False)
     registrant['email'] = 'thing.flob.adob'
     post_and_check_content(client, '/register', json.dumps(registrant), 'application/json',
-                           includes=('Validation failed for the following keys:', 'email', login_menu_item),
-                           excludes=(register_menu_item,))
+                           code=400,
+                           includes=('Validation failed for the following keys:', 'email'),
+                           )

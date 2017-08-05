@@ -58,19 +58,17 @@ describe('phone number validation works correctly', () => {
     })
 })
 
-/*
- * Country validation requires the list of countries to be put into the DOM
- * so it is not clear how to do this in unit tests. Yet.
- *
-describe('country validation works correctly', () => {
-    it('a known country works', () => {
-        assert(accuconf.isValidCountry('United Kingdom'))
-    })
-    it('an unknown country fails', ()=> {
-        assert(!accuconf.isValidCountry('Middle Earth'))
+describe('street address validation works correctly', () => {
+    it('a known street address works', () => {
+        assert(accuconf.isValidStreetAddress('41 Buckmaster Road'))
     })
 })
-*/
+
+describe('town city validation works correctly', () => {
+    it('a known town city works', () => {
+        assert(accuconf.isValidStreetAddress('London'))
+    })
+})
 
 describe('state validation works correctly', () => {
     it('a known state works', () => {
@@ -84,12 +82,6 @@ describe('postal code validation works correctly', () => {
     })
     it('a known Indian pincode works', () => {
         assert(accuconf.isValidPostalCode('12345'))
-    })
-})
-
-describe('street address validation works correctly', () => {
-    it('a known street address works', () => {
-        assert(accuconf.isValidStreetAddress('41 Buckmaster Road'))
     })
 })
 
