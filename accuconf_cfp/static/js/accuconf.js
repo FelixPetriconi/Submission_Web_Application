@@ -30,13 +30,7 @@ function isValidPostalCode(postal_code) {
     return /^[A-Z0-9 ]+$/.test(postal_code)
 }
 
-function isValidCountry(country) {
-    const countryList = $('#country')
-    for (let i = 0; i < countryList.options.length; i++) {
-        if (country === countryList.options[i].text) { return true }
-    }
-    return false
-}
+// There is no isValidCountry since a drop-down selection is used.
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -77,37 +71,37 @@ function validateRegistrationData() {
         $('#email_alert').text("Email should be of the format user@example.com")
         returnCode = false
     } else {
-        $('#email_alert').text()
+        $('#email_alert').text('')
     }
     if (!isValidPassphrase(passphrase)) {
     	$('#passphrase_alert').text('Passphrase is not valid.')
         returnCode = false
     } else {
-    	$('#passphrase_alert').text()
+    	$('#passphrase_alert').text('')
     }
     if (!isValidPassphrase(cpassphrase)) {
     	$('#cpassphrase_alert').text('Confirmation passphrase is not valid.')
         returnCode = false
     } else {
-    	$('#cpassphrase_alert').text()
+    	$('#cpassphrase_alert').text('')
     }
     if (passphrase !== cpassphrase) {
     	$('#passphrase_alert').text('Passphrase and confirmation passphrase not the same.')
         returnCode = false
     } else {
-    	$('#passphrase_alert').text()
+    	$('#passphrase_alert').text('')
     }
    if (!isValidName(name)) {
     	$('#name_alert').text('Invalid name.')
         returnCode = false
     } else {
-    	$('#name_alert').text()
+    	$('#name_alert').text('')
     }
     if (!isValidPhone(phone)) {
     	$('#phone_alert').text('Invalid phone number.')
         returnCode = false
     } else {
-    	$('#phone_alert').text()
+    	$('#phone_alert').text('')
     }
     if (!isValidStreetAddress(streetAddress)) {
 	    $('#street_address_alert').text('Invalid street address.')
@@ -119,48 +113,44 @@ function validateRegistrationData() {
 	    $('#town_city_alert').text('Invalid town/city.')
         returnCode = false
     } else {
-    	$('#town_city_alert').text()
+    	$('#town_city_alert').text('')
     }
     if (!isValidState(state)) {
     	$('#state_alert').text('Invalid state.')
         returnCode = false
     } else {
-    	$('#state_alert').text()
+    	$('#state_alert').text('')
     }
     if (!isValidPostalCode(postalCode)) {
 	    $('#postal_code_alert').text('Invalid postal code.')
         returnCode = false
     } else {
-    	$('#postal_code_alert').text()
+    	$('#postal_code_alert').text('')
     }
-    if (!isValidCountry(country)) {
-	    $('#country_alert').text('Invalid country.')
-        returnCode = false
-    } else {
-    	$('#country_alert').text()
-    }
+    // Country is select from a drop down and so must be valid.
+	$('#country_alert').text('')
     if (!isPuzzleResultCorrect(puzzleValue)) {
      	$('#puzzle_alert').text('Incorrect value given.')
         returnCode = false
     } else {
-    	$('#puzzle_alert').text()
+    	$('#puzzle_alert').text('')
     }
 	submit.disabled = ! returnCode
 	return returnCode
 }
 
 function clearAlerts() {
-	$('#email_alert').text()
-	$('#passphrase_alert').text()
-	$('#cpassphrase_alert').text()
-	$('#name_alert').text()
-	$('#phone_number_alert').text()
-	$('#street_address_alert').text()
-	$('#town_city_alert').text()
-	$('#state_alert').text()
-	$('#postal_code_alert').text()
-	$('#country_alert').text()
-	$('#puzzle_alert').text()
+	$('#email_alert').text('')
+	$('#passphrase_alert').text('')
+	$('#cpassphrase_alert').text('')
+	$('#name_alert').text('')
+	$('#phone_alert').text('')
+	$('#street_address_alert').text('')
+	$('#town_city_alert').text('')
+	$('#state_alert').text('')
+	$('#postal_code_alert').text('')
+	$('#country_alert').text('')
+	$('#puzzle_alert').text('')
 	return true;
 }
 
@@ -193,7 +183,7 @@ function registerUser() {
         return true
     } else {
 	    $('#alert').text('Problem with form, not submitting.')
-        return false
+        return true
     }
 }
 
@@ -416,7 +406,6 @@ if (typeof exports !== 'undefined') {
     exports.isValidTownCity = isValidTownCity
     exports.isValidState = isValidState
     exports.isValidPostalCode = isValidPostalCode
-    exports.isValidCountry = isValidCountry
 	exports.setPuzzle = setPuzzle
 	exports.isPuzzleResultCorrect = isPuzzleResultCorrect
 }
