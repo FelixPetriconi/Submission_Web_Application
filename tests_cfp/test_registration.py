@@ -20,9 +20,6 @@ from test_utils.functions import get_and_check_content, post_and_check_content
 
 from accuconf_cfp.utils import hash_passphrase
 
-# TODO For some reason we have to import the class Score, why?
-from models.score import Score
-
 
 @pytest.fixture
 def registrant():

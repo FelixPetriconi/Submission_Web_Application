@@ -16,8 +16,6 @@ from test_utils.functions import get_and_check_content, post_and_check_content
 
 from accuconf_cfp.utils import hash_passphrase
 
-from models.score import Score  # TODO Why is this needed here?
-
 
 @pytest.fixture
 def registrant():

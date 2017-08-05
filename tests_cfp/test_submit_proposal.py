@@ -12,8 +12,6 @@ import configure
 from accuconf import app
 
 from models.user import User
-from models.proposal import Proposal
-from models.score import Score  # TODO Why is this needed?
 from models.proposal_types import SessionType
 
 from test_utils.constants import login_menu_item, register_menu_item

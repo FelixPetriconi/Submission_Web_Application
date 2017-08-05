@@ -12,11 +12,6 @@ from test_utils.fixtures import database
 
 from models.user import User
 
-# Apparently this class has to be loaded for things to work at runtime.
-# This is sort of understandable, but only if Comment and Proposal also
-# have to be imported. Yet they do not, so confusion exists.
-from models.score import Score
-
 
 @pytest.mark.parametrize('user_data', (
     # A user with all fields set.
