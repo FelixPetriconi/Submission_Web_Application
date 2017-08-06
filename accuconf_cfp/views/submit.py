@@ -57,7 +57,7 @@ def submit():
         return check[1]
     assert check[1] is None
     page = {
-        'title': 'Submit',
+        'type': 'Submit',
         'year': year,
     }
     if is_logged_in():
@@ -88,8 +88,10 @@ def submit():
                         db.session.add(presenter)
                     db.session.commit()
                     response['success'] = True
-                    response['message'] = '''Thank you, you have successfully submitted a proposal for the ACCU {} conference!
-If you need to edit it you can via the 'My Proposal' menu item.'''.format(year)
+                    response['message'] = '''
+Thank you, you have successfully submitted a proposal for the ACCU {} conference!
+If you need to edit it you can via the 'My Proposal' menu item.
+'''.format(year)
                     response['redirect'] = '/'
                 else:
                     response['success'] = False
@@ -109,4 +111,6 @@ If you need to edit it you can via the 'My Proposal' menu item.'''.format(year)
                         'state': user.state,
                     }
                 })
-    return render_template('failure.html', page=md(page, {'data': 'Must be logged in to submit a proposal.'}))
+    return render_template('failure.html', page=md(page, {'data': '''
+You must be registered and logged in to submit a proposal.
+'''}))

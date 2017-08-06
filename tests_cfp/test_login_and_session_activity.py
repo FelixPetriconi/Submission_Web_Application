@@ -61,7 +61,7 @@ def test_cannot_login_using_form_submission(client, registrant, monkeypatch):
     test_user_can_register(client, registrant, monkeypatch)
     post_and_check_content(client, '/login',
                            {'email': registrant['email'], 'passphrase': registrant['passphrase']},
-                           includes=('Failure', register_menu_item),
+                           includes=('No JSON data returned.', register_menu_item),
                            excludes=(login_menu_item,),
                            )
 
@@ -79,7 +79,7 @@ def test_wrong_passphrase_causes_login_failure(client, registrant, monkeypatch):
     test_user_can_register(client, registrant, monkeypatch)
     post_and_check_content(client, '/login',
                            json.dumps({'email': registrant['email'], 'passphrase': 'Passphrase2'}), 'application/json',
-                           includes=('Failure', 'User/passphrase not recognised.', register_menu_item),
+                           includes=('User/passphrase not recognised.', register_menu_item),
                            excludes=(login_menu_item,),
                            )
 

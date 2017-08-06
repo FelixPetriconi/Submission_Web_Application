@@ -109,7 +109,6 @@ def test_ensure_registration_and_login(client, registration_data, monkeypatch):
     assert len(user) == 1
     assert user[0].passphrase == hash_passphrase(registration_data['passphrase'])
     post_and_check_content(client, '/login', json.dumps({'email': registration_data['email'], 'passphrase': registration_data['passphrase']}), 'application/json',
-                           code=200,
                            includes=('Successful',),
                            excludes=(login_menu_item, register_menu_item),
                            )
@@ -119,7 +118,7 @@ def test_not_logged_in_user_cannot_get_submission_page(client, monkeypatch):
     monkeypatch.setitem(app.config, 'CALL_OPEN', True)
     monkeypatch.setitem(app.config, 'MAINTENANCE', False)
     get_and_check_content(client, '/submit',
-                          includes=('Failure', 'Must be logged in to submit a proposal.', login_menu_item, register_menu_item),
+                          includes=('Submit', 'You must be registered and logged in to submit a proposal.', login_menu_item, register_menu_item),
                           )
 
 
