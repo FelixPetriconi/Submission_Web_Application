@@ -1,14 +1,15 @@
 {% extends "base.html" %}
-{% block title %} {{ page.type }} Success {% endblock %}
 {% block content %}
 <div class="row">
     <div class="pagetitle">
-        ACCU {{ page.year }} – {{ page.type }} Successful
+        ACCU {{ page.year }} – {{ page.title }}
     </div>
 </div>
 <div class="row">
-    <p class="first">
-        {{ page.data }}
-    </p>
+   <div class="container-fluid">
+       <p class="first">
+           {{ page.data }}
+       </p>
+   </div>
 </div>
 {% endblock %}
