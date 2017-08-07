@@ -21,7 +21,7 @@ def test_the_top_page_closed(client, monkeypatch):
     monkeypatch.setitem(app.config, 'CALL_OPEN', False)
     monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
     monkeypatch.setitem(app.config, 'MAINTENANCE', False)
-    get_and_check_content(client, '/', 200, ('ACCU', 'Not Open', 'not open'), ('Login', 'Maintenance',))
+    get_and_check_content(client, '/', 200, ('ACCU', 'is not open'), ('Login', 'Maintenance',))
 
 
 def test_the_registration_page_closed(client, monkeypatch):
@@ -64,7 +64,7 @@ def test_the_login_page_call_open(client, monkeypatch):
 def test_the_top_page_maintenance(client, monkeypatch):
     assert client is not None
     monkeypatch.setitem(app.config, 'MAINTENANCE', True)
-    get_and_check_content(client, '/', 200, ('ACCU', 'Maintenance'), ('Login',))
+    get_and_check_content(client, '/', 200, ('ACCU', 'undergoing maintenance'), ('Login',))
 
 
 def test_the_register_page_maintenance(client, monkeypatch):

@@ -70,7 +70,7 @@ def test_successful_login(client, registrant, monkeypatch):
     test_user_can_register(client, registrant, monkeypatch)
     post_and_check_content(client, '/login',
                            json.dumps({'email': registrant['email'], 'passphrase': registrant['passphrase']}), 'application/json',
-                           includes=('Successful',),
+                           includes=('Login successful',),
                            excludes=(login_menu_item, register_menu_item),
                            )
 

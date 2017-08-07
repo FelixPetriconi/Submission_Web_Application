@@ -83,18 +83,14 @@ def register_success():
     if not check[0]:
         return check[1]
     assert check[1] is None
-    return render_template("success.html", page=utils.md(base_page, {
-        'title': 'Registration',
+    return render_template("general.html", page=utils.md(base_page, {
+        'title': 'Registration Successful',
         'data': '''
 You have successfully registered for submitting proposals for the ACCU Conf.
 
 Please login and start preparing your proposal for the conference.
 '''}))
 
-
-registration_update_base_page = utils.md(base_page,
-    {'title': 'Registration Update'}
-)
 
 @app.route('/registration_update', methods=['GET', 'POST'])
 def registration_update():
@@ -103,7 +99,8 @@ def registration_update():
         return check[1]
     assert check[1] is None
     if not utils.is_logged_in():
-        return render_template('failure.html', page=utils.md(registration_update_base_page, {
+        return render_template('general.html', page=utils.md(base_page, {
+            'title': 'Registration Update Failure',
             'data': 'You must be logged in to update registration details.',
         }))
     user = User.query.filter_by(email=session['email']).first()
@@ -143,10 +140,12 @@ def registration_update_success():
         return check[1]
     assert check[1] is None
     if not utils.is_logged_in():
-        return render_template('failure.html', page=utils.md(registration_update_base_page, {
+        return render_template('general.html', page=utils.md(base_page, {
+            'title': 'Registration Update Failure',
             'data': 'You must be logged in to update registration details.',
         }))
-    return render_template('success.html',  page=utils.md(registration_update_base_page, {
+    return render_template('general.html',  page=utils.md(registration_update_base_page, {
+        'title': 'Registration Update Successful',
         'data': '''
 Your registration details were successful updated.
 '''}))
