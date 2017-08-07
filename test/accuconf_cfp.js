@@ -1,5 +1,5 @@
-const accuconf = require('../accuconf_cfp/static/js/accuconf.js')
-//import * as accuconf from '../accuconf_cfp/static/js/accuconf.js'
+const accuconf = require('../accuconf_cfp/static/js/accuconf_cfp.js')
+//import * as accuconf from '../accuconf_cfp/static/js/accuconf_cfp.js'
 
 const assert = require('assert')
 
