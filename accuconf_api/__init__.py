@@ -38,12 +38,17 @@ from models.proposal import Presenter, Proposal
 
 @app.route('/')
 def index():
-    page = {
-        'year': year,
-    }
     if app.config['API_ACCESS']:
-        return render_template('open_home.html', page=page)
-    return render_template('not_open.html', page=page)
+        return render_template('general.html', page={
+            'title': 'API Access Is Available',
+            'year': year,
+            'data': 'The ACCU {} API access to the schedule information is currently available.'.format(year),
+        })
+    return render_template('general.html', page={
+        'title': 'API Access Is Not Available',
+        'year': year,
+        'data': 'The ACCU {} API is not available at this time.'.format(year),
+    })
 
 
 def presentation_to_json(presentation):
