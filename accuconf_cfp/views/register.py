@@ -71,7 +71,7 @@ def register():
     else:
         return render_template('register.html', page=utils.md(base_page, {
             'title': 'Register',
-            'data': 'Register here for submitting proposals to ACCU Conference',
+            'data': 'Register here for submitting proposals to the ACCU {} Conference'.format(year),
             'submit_button': 'Register',
             'countries': sorted(list(countries.keys())),
         }))

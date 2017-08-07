@@ -17,7 +17,7 @@ def test_can_get_register_page(driver):
     driver.get(base_url + 'register')
     # assert 'Registration' in driver.find_element_by_tag_name('title').text
     assert ' – Register' in driver.find_element_by_class_name('pagetitle').text
-    assert 'Register here for submitting proposals to ACCU Conference' in driver.find_element_by_class_name('first').text
+    assert 'Register here for submitting proposals to the ACCU' in driver.find_element_by_class_name('first').text
 
 
 def test_can_access_register_success_page(driver):

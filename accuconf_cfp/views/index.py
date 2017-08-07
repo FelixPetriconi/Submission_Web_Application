@@ -13,13 +13,13 @@ def index():
     }
     if app.config['MAINTENANCE']:
         return render_template('general.html', page=md(page, {'data': '''
-The ACCU {{page.year }} proposal submission Web application is currently undergoing maintenance.
+The ACCU {} proposal submission Web application is currently undergoing maintenance.
 This should not take long, so please come back soon.
-'''}))
+'''.format(year)}))
     if app.config['CALL_OPEN']:
         return render_template('general.html', page=md(page, {'data': '''
-The ACCU {{ page.year }} Call for Proposals is open for business.
-'''}))
+The ACCU {} Call for Proposals is open for business.
+'''.format(year)}))
     return render_template('general.html', page=md(page, {'data': '''
-The ACCU {{ page.year }} Call for Proposals is not open.
-'''}))
+The ACCU {} Call for Proposals is not open.
+'''.format(year)}))
