@@ -1,14 +1,13 @@
 {% extends "base.html" %}
-{% block title %} Registration {% endblock %}
 {% block content %}
 <div class="row">
     <div class="pagetitle">
-        ACCU {{page.year}} – Registration
+        ACCU {{page.year}} – {{ page.title }}
     </div>
 </div>
 <div class="row">
     <div class="container-fluid">
-        <p class="alert"> {{ page.data }} </p>
+        <p class="alert first"> {{ page.data }} </p>
         <p class="alert" id="alert"></p>
     </div>
 </div>

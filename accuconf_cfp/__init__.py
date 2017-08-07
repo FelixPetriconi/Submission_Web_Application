@@ -53,6 +53,8 @@ def top_nav():
         entries.append(View('Register', 'register'))
     if (app.config['CALL_OPEN'] or app.config['REVIEWING_ALLOWED']) and not logged_in and request.path != '/login':
         entries.append(View('Login', 'login'))
+    if (app.config['CALL_OPEN'] or app.config['REVIEWING_ALLOWED']) and logged_in and request.path != '/registration_update':
+        entries.append(View('Registration Update', 'registration_update'))
     return Navbar('', *entries)
 
 

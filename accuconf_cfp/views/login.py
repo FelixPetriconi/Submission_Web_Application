@@ -29,17 +29,17 @@ def login():
     assert check[1] is None
     # TODO What to do if the user is currently logged in?
     page = {
-        'type': 'Login',
+        'title': 'Login',
         'year': year,
     }
     if request.method == 'POST':
         login_data = request.json
         user, message = validate_login_data(login_data)
         if not user:
-            return render_template('failure.html', page=md(page, {'data': message}))
+            return render_template('general.html', page=md(page, {'data': message}))
         session['email'] = user.email
         #  TODO  Change something so as to see the login state. Menu changes of course.
-        return render_template('success.html', page=md(page, {'data': 'Login successful.'}))
+        return render_template('general.html', page=md(page, {'data': 'Login successful.'}))
     else:
         return render_template('login.html', page=page)
 

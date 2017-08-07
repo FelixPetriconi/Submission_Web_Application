@@ -48,7 +48,7 @@ def test_user_can_register(client, registrant, monkeypatch):
     user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 0
     post_and_check_content(client, '/register', json.dumps(registrant), 'application/json',
-                           includes=('register_success_new',),
+                           includes=('register_success',),
                            excludes=(login_menu_item, register_menu_item,),
                            )
     user = User.query.filter_by(email=registrant['email']).all()
@@ -70,7 +70,7 @@ def test_successful_login(client, registrant, monkeypatch):
     test_user_can_register(client, registrant, monkeypatch)
     post_and_check_content(client, '/login',
                            json.dumps({'email': registrant['email'], 'passphrase': registrant['passphrase']}), 'application/json',
-                           includes=('Successful',),
+                           includes=('Login successful',),
                            excludes=(login_menu_item, register_menu_item),
                            )
 
@@ -87,8 +87,8 @@ def test_wrong_passphrase_causes_login_failure(client, registrant, monkeypatch):
 def test_update_user_name(client, registrant, monkeypatch):
     test_successful_login(client, registrant, monkeypatch)
     registrant['name'] = 'Some Dude'
-    post_and_check_content(client, '/register', json.dumps(registrant), 'application/json',
-                           includes=('register_success_update',),
+    post_and_check_content(client, '/registration_update', json.dumps(registrant), 'application/json',
+                           includes=('registration_update_success',),
                            excludes=(login_menu_item, register_menu_item,),
                            )
 

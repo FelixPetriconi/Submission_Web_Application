@@ -111,6 +111,8 @@ If you need to edit it you can via the 'My Proposal' menu item.
                         'state': user.state,
                     }
                 })
-    return render_template('failure.html', page=md(page, {'data': '''
+    return render_template('general.html', page=md(page, {
+        'title': 'Submit',
+        'data': '''
 You must be registered and logged in to submit a proposal.
 '''}))

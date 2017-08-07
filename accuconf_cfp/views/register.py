@@ -34,7 +34,6 @@ def validate_registration_data(registration_data):
 
 
 base_page = {
-    'type': 'Registration',
     'year': year,
 }
 
@@ -45,8 +44,7 @@ def register():
     if not check[0]:
         return check[1]
     assert check[1] is None
-    user = User.query.filter_by(email=session['email']).first() if utils.is_logged_in() else None
-    edit_mode = bool(user)
+    assert 'email' not in session
     if request.method == 'POST':
         registration_data = request.json
         status, message = validate_registration_data(registration_data)
@@ -55,55 +53,99 @@ def register():
             response = jsonify(message)
             response.status_code = 400
             return response
-        if not edit_mode:
-            if not registration_data['passphrase']:
-                # NB This should never be executed.
-                response = jsonify('No passphrase for new registration.')
-                response.status_code = 400
-                return response
-            if User.query.filter_by(email=registration_data['email']).first():
-                # Currently this can happen as client-site checking is not implemented.
-                # TODO implement client side checking so this becomes redundant.
-                response = jsonify('The email address is already in use.')
-                response.status_code = 400
-                return response
-        if registration_data['passphrase']:
-            registration_data['passphrase'] = utils.hash_passphrase(registration_data['passphrase'])
-        if edit_mode:
-            User.query.filter_by(email=registration_data['email']).update(registration_data)
-            db.session.commit()
-            return jsonify('register_success_update')
+        if not registration_data['passphrase']:
+            # NB This should never be executed.
+            response = jsonify('No passphrase for new registration.')
+            response.status_code = 400
+            return response
+        if User.query.filter_by(email=registration_data['email']).first():
+            # Currently this can happen as client-site checking is not implemented.
+            # TODO implement client side checking so this becomes redundant.
+            response = jsonify('The email address is already in use.')
+            response.status_code = 400
+            return response
+        registration_data['passphrase'] = utils.hash_passphrase(registration_data['passphrase'])
         db.session.add(User(**registration_data))
         db.session.commit()
-        return jsonify('register_success_new')
+        return jsonify('register_success')
     else:
         return render_template('register.html', page=utils.md(base_page, {
-            'email': user.email if edit_mode else '',
-            'name': user.name if edit_mode else '',
-            'phone': user.phone if edit_mode else '',
-            'street_address': user.street_address if edit_mode else '',
-            'town_city': user.town_city if edit_mode else '',
-            'state': user.state if edit_mode else '',
-            'postal_code': user.postal_code if edit_mode else '',
-            'country': user.country if edit_mode else 'GBR',  # UK shall be the default
-            'title': 'Account Information' if edit_mode else 'Register',
-            'data': 'Here you can edit your account information' if edit_mode else 'Register here for submitting proposals to ACCU Conference',
-            'submit_button': 'Save' if edit_mode else 'Register',
+            'title': 'Register',
+            'data': 'Register here for submitting proposals to the ACCU {} Conference'.format(year),
+            'submit_button': 'Register',
             'countries': sorted(list(countries.keys())),
         }))
 
 
-@app.route('/register_success_new')
-def register_success_new():
-    return render_template("success.html", page=utils.md(base_page, {'data': '''
+@app.route('/register_success')
+def register_success():
+    check = utils.is_acceptable_route()
+    if not check[0]:
+        return check[1]
+    assert check[1] is None
+    return render_template("general.html", page=utils.md(base_page, {
+        'title': 'Registration Successful',
+        'data': '''
 You have successfully registered for submitting proposals for the ACCU Conf.
 
 Please login and start preparing your proposal for the conference.
 '''}))
 
 
-@app.route('/register_success_update')
-def register_success_update():
-    return render_template('success.html',  page=utils.md(base_page, {'data': '''
-Your account details were successful updated.
+@app.route('/registration_update', methods=['GET', 'POST'])
+def registration_update():
+    check = utils.is_acceptable_route()
+    if not check[0]:
+        return check[1]
+    assert check[1] is None
+    if not utils.is_logged_in():
+        return render_template('general.html', page=utils.md(base_page, {
+            'title': 'Registration Update Failure',
+            'data': 'You must be logged in to update registration details.',
+        }))
+    user = User.query.filter_by(email=session['email']).first()
+    if request.method == 'POST':
+        registration_data = request.json
+        status, message = validate_registration_data(registration_data)
+        if not status:
+            # NB This should never be executed.
+            response = jsonify(message)
+            response.status_code = 400
+            return response
+        if registration_data['passphrase']:
+            registration_data['passphrase'] = utils.hash_passphrase(registration_data['passphrase'])
+        User.query.filter_by(email=registration_data['email']).update(registration_data)
+        db.session.commit()
+        return jsonify('registration_update_success')
+    else:
+        return render_template('register.html', page=utils.md(registration_update_base_page, {
+            'email': user.email,
+            'name': user.name,
+            'phone': user.phone,
+            'street_address': user.street_address,
+            'town_city': user.town_city,
+            'state': user.state,
+            'postal_code': user.postal_code,
+            'country': user.country,
+            'data': 'Here you can edit your registration information',
+            'submit_button': 'Save',
+            'countries': sorted(list(countries.keys())),
+        }))
+
+
+@app.route('/registration_update_success')
+def registration_update_success():
+    check = utils.is_acceptable_route()
+    if not check[0]:
+        return check[1]
+    assert check[1] is None
+    if not utils.is_logged_in():
+        return render_template('general.html', page=utils.md(base_page, {
+            'title': 'Registration Update Failure',
+            'data': 'You must be logged in to update registration details.',
+        }))
+    return render_template('general.html',  page=utils.md(registration_update_base_page, {
+        'title': 'Registration Update Successful',
+        'data': '''
+Your registration details were successful updated.
 '''}))

@@ -74,7 +74,7 @@ def test_successful_user_registration(client, registrant, monkeypatch):
     user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 0
     post_and_check_content(client, '/register', json.dumps(registrant), 'application/json',
-                           includes=('register_success_new',),
+                           includes=('register_success',),
                            excludes=(login_menu_item, register_menu_item,),
                            )
     user = User.query.filter_by(email=registrant['email']).all()
