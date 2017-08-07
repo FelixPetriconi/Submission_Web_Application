@@ -15,13 +15,13 @@ from test_utils.functions import get_and_check_content
 def test_api_open_index(client, monkeypatch):
     assert client is not None
     monkeypatch.setitem(app.config, 'API_ACCESS', True)
-    get_and_check_content(client, '/', 200, ('ACCU', 'API Access',))
+    get_and_check_content(client, '/', 200, ('ACCU', 'API Access Is Available',))
 
 
 def test_api_not_open_index(client, monkeypatch):
     assert client is not None
     monkeypatch.setitem(app.config, 'API_ACCESS', False)
-    get_and_check_content(client, '/', 200, ('ACCU', 'API Access', 'Not Available',))
+    get_and_check_content(client, '/', 200, ('ACCU', 'API Access Is Not Available',))
 
 
 def test_api_not_open_presentations(client, monkeypatch):
