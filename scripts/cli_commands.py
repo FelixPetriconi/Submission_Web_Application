@@ -30,11 +30,13 @@ file_directory = Path(__file__).parent
 sys.path.insert(0, str(file_directory.parent))
 
 from accuconf_cfp import app, db
+
 from models.user import User
-from models.proposal import ProposalPresenter, Proposal, Presenter, Score, Comment
-from utils.proposals import SessionType, ProposalState, SessionCategory, SessionAudience
-from utils.schedule import ConferenceDay, SessionSlot, QuickieSlot, Track, Room
-from utils.roles import Role
+from models.proposal import Proposal, Presenter, ProposalPresenter
+from models.score import Score, Comment
+from models.proposal_types import SessionType, ProposalState, SessionCategory, SessionAudience
+from models.schedule_types import ConferenceDay, SessionSlot, QuickieSlot, Track, Room
+from models.role_types import Role
 
 start_date = date(2018, 4, 10)  # The day of the full-day pre-conference workshops
 
