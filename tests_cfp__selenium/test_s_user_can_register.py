@@ -1,9 +1,6 @@
 import pytest
 
-from selenium.common.exceptions import TimeoutException
-
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ecs
 
@@ -67,11 +64,3 @@ def test_single_error_causing_local_failure(key, value, message, driver, registr
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Register'))
     wait.until(ecs.text_to_be_present_in_element((By.ID, 'alert'), 'Problem with form, not submitting.'))
     wait.until(ecs.text_to_be_present_in_element((By.ID, key + '_alert'), message))
-
-
-def test_user_can_successfully_login(driver, registrant):
-    test_user_can_successfully_register(driver, registrant)
-    driver.find_element_by_id('email').send_keys(registrant['email'])
-    driver.find_element_by_id('passphrase').send_keys(registrant['passphrase'])
-    driver.find_element_by_id('login').click()
-    WebDriverWait(driver, 4).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), 'Login Successful'))

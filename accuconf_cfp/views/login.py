@@ -1,9 +1,13 @@
-from flask import redirect, render_template, request, session
+from flask import jsonify, redirect, render_template, request, session
 
 from accuconf_cfp import app, year
-from accuconf_cfp.utils import hash_passphrase, is_acceptable_route, is_valid_email, md
+from accuconf_cfp.utils import hash_passphrase, is_acceptable_route, is_logged_in, is_valid_email, md
 
 from models.user import User
+
+base_page = {
+    'year': year,
+}
 
 
 def validate_login_data(login_data):
@@ -28,20 +32,38 @@ def login():
         return check[1]
     assert check[1] is None
     # TODO What to do if the user is currently logged in?
-    page = {
-        'title': 'Login',
-        'year': year,
-    }
     if request.method == 'POST':
         login_data = request.json
         user, message = validate_login_data(login_data)
         if not user:
-            return render_template('general.html', page=md(page, {'data': message}))
+            # This should never happen.
+            response = jsonify(message)
+            response.status_code = 400
+            return response
         session['email'] = user.email
         #  TODO  Change something so as to see the login state. Menu changes of course.
-        return render_template('general.html', page=md(page, {'data': 'Login successful.'}))
-    else:
-        return render_template('login.html', page=page)
+        return jsonify('login_success')
+    return render_template('login.html', page=md(base_page, {
+            'title': 'Login',
+            'data': 'Please login using email and passphrase given at registration time.',
+        }))
+
+
+@app.route('/login_success')
+def login_success():
+    check = is_acceptable_route()
+    if not check[0]:
+        return check[1]
+    assert check[1] is None
+    if is_logged_in():
+        return render_template('general.html', page=md(base_page, {
+            'title': 'Login Successful',
+            'data': 'Login successful.',
+        }))
+    return render_template('login.html', page=md(base_page, {
+        'title': 'Login Failure',
+        'data': 'Please login using email and passphrase given at registration time.',
+    }))
 
 
 @app.route('/logout')

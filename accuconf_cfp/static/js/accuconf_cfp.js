@@ -55,30 +55,21 @@ function isPuzzleResultCorrect(value) {
 }
 
 function validateRegistrationData() {
-    const email = $('#email').val()
-    const passphrase = $('#passphrase').val()
-    const cpassphrase = $('#cpassphrase').val()
-    const name = $('#name').val()
-    const phone = $('#phone').val()
-    const streetAddress =  $('#street_address').val()
-    const townCity =  $('#town_city').val()
-    const state = $('#state').val()
-    const postalCode = $('#postal_code').val()
-	const country = $('#country').val()
-	const puzzleValue = $('#puzzle').val()
 	let returnCode = true
-    if (!isValidEmail(email)) {
+    if (!isValidEmail($('#email').val())) {
         $('#email_alert').text("Email should be of the format user@example.com")
         returnCode = false
     } else {
         $('#email_alert').text('')
     }
+    const passphrase = $('#passphrase').val()
     if (!isValidPassphrase(passphrase)) {
     	$('#passphrase_alert').text('Passphrase is not valid.')
         returnCode = false
     } else {
     	$('#passphrase_alert').text('')
     }
+    const cpassphrase = $('#cpassphrase').val()
     if (!isValidPassphrase(cpassphrase)) {
     	$('#cpassphrase_alert').text('Confirmation passphrase is not valid.')
         returnCode = false
@@ -91,37 +82,37 @@ function validateRegistrationData() {
     } else {
     	$('#passphrase_alert').text('')
     }
-   if (!isValidName(name)) {
+   if (!isValidName($('#name').val())) {
     	$('#name_alert').text('Invalid name.')
         returnCode = false
     } else {
     	$('#name_alert').text('')
     }
-    if (!isValidPhone(phone)) {
+    if (!isValidPhone($('#phone').val())) {
     	$('#phone_alert').text('Invalid phone number.')
         returnCode = false
     } else {
     	$('#phone_alert').text('')
     }
-    if (!isValidStreetAddress(streetAddress)) {
+    if (!isValidStreetAddress($('#street_address').val())) {
 	    $('#street_address_alert').text('Invalid street address.')
         returnCode = false
     } else {
     	$('#street_address_alert').text()
     }
-    if (!isValidTownCity(townCity)) {
+    if (!isValidTownCity($('#town_city').val())) {
 	    $('#town_city_alert').text('Invalid town/city.')
         returnCode = false
     } else {
     	$('#town_city_alert').text('')
     }
-    if (!isValidState(state)) {
+    if (!isValidState($('#state').val())) {
     	$('#state_alert').text('Invalid state.')
         returnCode = false
     } else {
     	$('#state_alert').text('')
     }
-    if (!isValidPostalCode(postalCode)) {
+    if (!isValidPostalCode($('#postal_code').val())) {
 	    $('#postal_code_alert').text('Invalid postal code.')
         returnCode = false
     } else {
@@ -129,7 +120,7 @@ function validateRegistrationData() {
     }
     // Country is select from a drop down and so must be valid.
 	$('#country_alert').text('')
-    if (!isPuzzleResultCorrect(puzzleValue)) {
+    if (!isPuzzleResultCorrect($('#puzzle').val())) {
      	$('#puzzle_alert').text('Incorrect value given.')
         returnCode = false
     } else {
@@ -176,7 +167,7 @@ function registerUser() {
                 window.location.replace("/" + data);
             },
             error: (jqXHR, textStatus, errorThrown) => {
-                alert(jqXHR)
+                alert(textStatus)
             },
         })
         $('#alert').text('Submitting form.')
@@ -185,6 +176,43 @@ function registerUser() {
 	    $('#alert').text('Problem with form, not submitting.')
         return true
     }
+}
+
+function isValidLoginData() {
+	let returnCode = true
+	if (!isValidEmail($('#email').val())) {
+		returnCode = false
+	}
+	if (!isValidPassphrase($('#passphrase').val())) {
+		returnCode = false
+	}
+	return returnCode
+}
+
+function loginUser() {
+	if (isValidLoginData()) {
+		$.ajax({
+			method: 'POST',
+			url: '/login',
+			data: JSON.stringify({
+				'email': $('#email').val(),
+				'passphrase': $('#passphrase').val(),
+			}),
+			dataType: 'json',
+			contentType: 'application/json',
+			success: (data, textStatus, jqXHR ) => {
+				window.location.replace("/" + data);
+			},
+			error: (jqXHR, textStatus, errorThrown) => {
+				alert(txtStatus)
+			},
+		})
+		$('#alert').text('Submitting login details.')
+		return true
+	} else {
+	    $('#alert').text('Problem with login form, not submitting.')
+		return true
+	}
 }
 
 /*

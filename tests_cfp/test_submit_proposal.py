@@ -104,13 +104,14 @@ def test_ensure_registration_and_login(client, registration_data, monkeypatch):
     assert len(user) == 0
     post_and_check_content(client, '/register', json.dumps(registration_data), 'application/json',
                            includes=('register_success',),
+                           excludes=(),
                            )
     user = User.query.filter_by(email=registration_data['email']).all()
     assert len(user) == 1
     assert user[0].passphrase == hash_passphrase(registration_data['passphrase'])
     post_and_check_content(client, '/login', json.dumps({'email': registration_data['email'], 'passphrase': registration_data['passphrase']}), 'application/json',
-                           includes=('Login successful',),
-                           excludes=(login_menu_item, register_menu_item),
+                           includes=('login_success',),
+                           excludes=(),
                            )
 
 
