@@ -7,6 +7,10 @@ from models.user import User
 from models.proposal import Presenter, Proposal, ProposalPresenter
 from models.proposal_types import SessionType
 
+base_page = {
+    'year': year,
+}
+
 
 def validate_presenters(presenters):
     """Presenter data is not invalid."""
@@ -56,10 +60,6 @@ def submit():
     if not check[0]:
         return check[1]
     assert check[1] is None
-    page = {
-        'type': 'Submit',
-        'year': year,
-    }
     if is_logged_in():
         if request.method == 'POST':
             user = User.query.filter_by(email=session['email']).first()
@@ -100,7 +100,7 @@ If you need to edit it you can via the 'My Proposal' menu item.
         else:
             user = User.query.filter_by(email=session['email']).first()
             if user:
-                return render_template('submit.html', page={
+                return render_template('submit.html', page=md(base_page, {
                     'title': 'Submit a proposal for ACCU {}'.format(year),
                     'name': user.name,
                     'proposer': {
@@ -110,9 +110,60 @@ If you need to edit it you can via the 'My Proposal' menu item.
                         'country': user.country,
                         'state': user.state,
                     }
-                })
-    return render_template('general.html', page=md(page, {
-        'title': 'Submit',
+                }))
+    return render_template('general.html', page=md(base_page, {
+        'title': 'Submit Not Possible',
         'data': '''
 You must be registered and logged in to submit a proposal.
 '''}))
+
+
+@app.route('/my_proposals')
+def my_proposals():
+    check = is_acceptable_route()
+    if not check[0]:
+        return check[1]
+    assert check[1] is None
+    if is_logged_in():
+        user = User.query.filter_by(email=session['email']).first()
+        return render_template('my_proposals.html', page=md(base_page, {
+            'title': 'My Proposals',
+            'data': '''
+The following are your current proposals. Click on the one you wish to update.
+''',
+            'proposals': [{'title': proposal.title, 'id': proposal.id} for proposal in user.proposals]
+        }))
+    return render_template('general.html', page=md(base_page, {
+        'title': 'My Proposals Failure',
+        'year': year,
+        'data': 'You must be registered and logged in to discover your current proposals.',
+    }))
+
+
+@app.route('/proposal_update/<int:id>')
+def proposal_update(id):
+    check = is_acceptable_route()
+    if not check[0]:
+        return check[1]
+    assert check[1] is None
+    if is_logged_in():
+        proposal = Proposal.query.filter_by(id=id).first()
+        if not proposal:
+            return render_template('general.html', page=md(page, {
+                'title': 'Proposal Not Found',
+                'data': 'The requested proposal cannot be found.'
+            }))
+        return render_template('submit.html', page=md(base_page, {
+            'title': 'Update a proposal for ACCU {}'.format(year),
+            'name': proposal.proposer.name,
+            'proposer': {
+                'email': proposal.proposer.email,
+                'name': proposal.proposer.name,
+                'country': proposal.proposer.country,
+                'state': proposal.proposer.state,
+            }
+        }))
+    return render_template('general.html', page=md(base_page, {
+        'title': 'Proposal Update Failure',
+        'data': 'You must be registered and logged in to update a proposal.',
+    }))
