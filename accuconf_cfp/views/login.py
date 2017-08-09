@@ -31,6 +31,8 @@ def login():
     if not check[0]:
         return check[1]
     assert check[1] is None
+    if  is_logged_in():
+        return redirect('/')
     # TODO What to do if the user is currently logged in?
     if request.method == 'POST':
         login_data = request.json
@@ -41,6 +43,7 @@ def login():
             response.status_code = 400
             return response
         session['email'] = user.email
+        session['just_logged_in'] = True
         #  TODO  Change something so as to see the login state. Menu changes of course.
         return jsonify('login_success')
     return render_template('login.html', page=md(base_page, {
@@ -55,6 +58,9 @@ def login_success():
     if not check[0]:
         return check[1]
     assert check[1] is None
+    if 'just_logged_in' not in session:
+        return redirect('/')
+    session.pop('just_logged_in', None)
     if is_logged_in():
         return render_template('general.html', page=md(base_page, {
             'title': 'Login Successful',

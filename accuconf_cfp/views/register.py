@@ -44,7 +44,8 @@ def register():
     if not check[0]:
         return check[1]
     assert check[1] is None
-    assert 'email' not in session
+    if utils.is_logged_in():
+        return redirect('/')
     if request.method == 'POST':
         registration_data = request.json
         status, message = validate_registration_data(registration_data)
@@ -103,10 +104,7 @@ def registration_update():
         return check[1]
     assert check[1] is None
     if not utils.is_logged_in():
-        return render_template('general.html', page=utils.md(base_page, {
-            'title': 'Registration Update Failure',
-            'data': 'You must be logged in to update registration details.',
-        }))
+        return redirect('/')
     user = User.query.filter_by(email=session['email']).first()
     if request.method == 'POST':
         registration_data = request.json
@@ -120,6 +118,7 @@ def registration_update():
             registration_data['passphrase'] = utils.hash_passphrase(registration_data['passphrase'])
         User.query.filter_by(email=registration_data['email']).update(registration_data)
         db.session.commit()
+        session['just_updated_register'] = True
         return jsonify('registration_update_success')
     return render_template('register.html', page=utils.md(base_page, {
         'title': 'Registration Details Updating',
@@ -143,11 +142,10 @@ def registration_update_success():
     if not check[0]:
         return check[1]
     assert check[1] is None
+    if 'just_updated_register' not in session:
+        return redirect('/')
     if not utils.is_logged_in():
-        return render_template('general.html', page=utils.md(base_page, {
-            'title': 'Registration Update Failure',
-            'data': 'You must be logged in to update registration details.',
-        }))
+        return redirect('/')
     return render_template('general.html',  page=utils.md(registration_update_base_page, {
         'title': 'Registration Update Successful',
         'data': '''

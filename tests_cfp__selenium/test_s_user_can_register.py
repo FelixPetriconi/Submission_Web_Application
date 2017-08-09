@@ -5,6 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ecs
 
 from configuration import base_url
+from functions import check_menu_items
 
 # NB PyCharm can't tell these are used as fixtures, but they are.
 # NB server is an session scope autouse fixture that no test needs direct access to.
@@ -55,7 +56,6 @@ def test_user_can_successfully_register(driver, registrant):
     ('name', 'R', 'Invalid name.'),
     ('phone', 'blurb', 'Invalid phone number.'),
     ('postal_code', 'Fubar', 'Invalid postal code.'),
-    # ('country', 'Fubar', 'Invalid country.'),
 ))
 def test_single_error_causing_local_failure(key, value, message, driver, registrant, monkeypatch):
     monkeypatch.setitem(registrant, key, value)
