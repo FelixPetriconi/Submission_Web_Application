@@ -68,5 +68,9 @@ def login_success():
 
 @app.route('/logout')
 def logout():
+    check = is_acceptable_route()
+    if not check[0]:
+        return check[1]
+    assert check[1] is None
     session.pop('email', None)
     return redirect('/')

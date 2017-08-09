@@ -1,4 +1,4 @@
-from flask import jsonify, render_template, request, session
+from flask import Markup, jsonify, redirect, render_template, request, session
 
 from accuconf_cfp import app, countries, db, year
 
@@ -67,6 +67,7 @@ def register():
         registration_data['passphrase'] = utils.hash_passphrase(registration_data['passphrase'])
         db.session.add(User(**registration_data))
         db.session.commit()
+        session['just_registered'] = True
         return jsonify('register_success')
     return render_template('register.html', page=utils.md(base_page, {
             'title': 'Register',
@@ -82,13 +83,17 @@ def register_success():
     if not check[0]:
         return check[1]
     assert check[1] is None
+    if 'just_registered' not in session:
+        return redirect('/')
+    session.pop('just_registered', None)
     return render_template("general.html", page=utils.md(base_page, {
         'title': 'Registration Successful',
-        'data': '''
-You have successfully registered for submitting proposals for the ACCU Conf.
-
+        'data': Markup('''
+You have successfully registered for submitting proposals for the ACCU Conference.
+</p>
+</p>
 Please login and start preparing your proposal for the conference.
-'''}))
+''')}))
 
 
 @app.route('/registration_update', methods=['GET', 'POST'])
