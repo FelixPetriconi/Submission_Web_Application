@@ -15,7 +15,4 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
 db.drop_all()
 db.create_all()
 
-# TODO Why is this needed?
-from models.score import Score
-
 app.run(host=host, port=port, debug=False)
