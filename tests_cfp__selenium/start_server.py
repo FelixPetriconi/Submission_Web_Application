@@ -10,6 +10,7 @@ from accuconf_cfp import app, db
 app.config['CALL_OPEN'] = True
 app.config['REVIEWING_ALLOWED'] = True
 app.config['MAINTENANCE'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
 
 db.drop_all()
 db.create_all()
