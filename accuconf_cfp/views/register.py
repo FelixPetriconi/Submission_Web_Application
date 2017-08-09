@@ -116,19 +116,20 @@ def registration_update():
         User.query.filter_by(email=registration_data['email']).update(registration_data)
         db.session.commit()
         return jsonify('registration_update_success')
-    return render_template('register.html', page=utils.md(registration_update_base_page, {
-            'email': user.email,
-            'name': user.name,
-            'phone': user.phone,
-            'street_address': user.street_address,
-            'town_city': user.town_city,
-            'state': user.state,
-            'postal_code': user.postal_code,
-            'country': user.country,
-            'data': 'Here you can edit your registration information',
-            'submit_button': 'Save',
-            'countries': sorted(list(countries.keys())),
-        }))
+    return render_template('register.html', page=utils.md(base_page, {
+        'title': 'Registration Details Updating',
+        'email': user.email,
+        'name': user.name,
+        'phone': user.phone,
+        'street_address': user.street_address,
+        'town_city': user.town_city,
+        'state': user.state,
+        'postal_code': user.postal_code,
+        'country': user.country,
+        'data': 'Here you can edit your registration information',
+        'submit_button': 'Save',
+        'countries': sorted(list(countries.keys())),
+    }))
 
 
 @app.route('/registration_update_success')
