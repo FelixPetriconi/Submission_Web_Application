@@ -68,8 +68,7 @@ def register():
         db.session.add(User(**registration_data))
         db.session.commit()
         return jsonify('register_success')
-    else:
-        return render_template('register.html', page=utils.md(base_page, {
+    return render_template('register.html', page=utils.md(base_page, {
             'title': 'Register',
             'data': 'Register here for submitting proposals to the ACCU {} Conference'.format(year),
             'submit_button': 'Register',
@@ -117,8 +116,7 @@ def registration_update():
         User.query.filter_by(email=registration_data['email']).update(registration_data)
         db.session.commit()
         return jsonify('registration_update_success')
-    else:
-        return render_template('register.html', page=utils.md(registration_update_base_page, {
+    return render_template('register.html', page=utils.md(registration_update_base_page, {
             'email': user.email,
             'name': user.name,
             'phone': user.phone,

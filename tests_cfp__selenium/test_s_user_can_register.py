@@ -1,9 +1,6 @@
 import pytest
 
-from selenium.common.exceptions import TimeoutException
-
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ecs
 
@@ -47,7 +44,8 @@ def submit_data_to_register_page(driver, registrant):
 
 def test_user_can_successfully_register(driver, registrant):
     submit_data_to_register_page(driver, registrant)
-    WebDriverWait(driver, 4).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), 'Register'))
+    WebDriverWait(driver, 4).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Registration Successful'))
+    assert 'You have successfully registered for submitting proposals for the ACCU' in driver.find_element_by_id('content').text
 
 
 @pytest.mark.parametrize(('key', 'value', 'message'), (

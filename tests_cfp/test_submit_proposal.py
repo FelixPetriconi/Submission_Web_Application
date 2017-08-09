@@ -14,7 +14,7 @@ from accuconf import app
 from models.user import User
 from models.proposal_types import SessionType
 
-from test_utils.constants import login_menu_item, register_menu_item
+from test_utils.constants import login_menu_item, register_menu_item, registration_update_menu_item
 # PyCharm fails to spot this is used as a fixture.
 from test_utils.fixtures import client
 from test_utils.functions import get_and_check_content, post_and_check_content
@@ -104,13 +104,14 @@ def test_ensure_registration_and_login(client, registration_data, monkeypatch):
     assert len(user) == 0
     post_and_check_content(client, '/register', json.dumps(registration_data), 'application/json',
                            includes=('register_success',),
+                           excludes=(),
                            )
     user = User.query.filter_by(email=registration_data['email']).all()
     assert len(user) == 1
     assert user[0].passphrase == hash_passphrase(registration_data['passphrase'])
     post_and_check_content(client, '/login', json.dumps({'email': registration_data['email'], 'passphrase': registration_data['passphrase']}), 'application/json',
-                           includes=('Login successful',),
-                           excludes=(login_menu_item, register_menu_item),
+                           includes=('login_success',),
+                           excludes=(),
                            )
 
 
@@ -200,3 +201,59 @@ def test_logged_in_user_cannot_submit_multipresenter_multilead_proposal(client, 
     user = user[0]
     assert user is not None
     assert len(user.proposals) == 0
+
+
+def test_logged_in_get_proposals_page(client, registration_data, proposal_single_presenter, monkeypatch):
+    test_logged_in_user_can_submit_a_single_presenter_proposal(client, registration_data, proposal_single_presenter, monkeypatch)
+    get_and_check_content(client, '/my_proposals',
+                          includes=(
+                              'My Proposals',
+                              'The following are your current proposals. Click on the one you wish to update.',
+                              '<li><a href="/proposal_update/1"> ACCU Proposal </a></li>',
+                              registration_update_menu_item,
+                          ),
+                          excludes=(login_menu_item, register_menu_item)
+                          )
+
+
+def test_not_logged_in_my_proposals_get_request_fails(client, registration_data, proposal_single_presenter, monkeypatch):
+    test_logged_in_user_can_submit_a_single_presenter_proposal(client, registration_data, proposal_single_presenter, monkeypatch)
+    get_and_check_content(client, '/logout',
+                          code=302,
+                          includes=('Redirect', '<a href="/">'),
+                          )
+    monkeypatch.setitem(proposal_single_presenter, 'title', 'Something Interesting')
+    get_and_check_content(client, '/my_proposals',
+                          includes=(
+                              'My Proposals Failure',
+                              'You must be registered and logged in to discover your current proposals.',
+                              login_menu_item,
+                              register_menu_item,
+                          ),
+                          excludes=(),
+                          )
+
+
+def test_logged_in_submit_proposal_then_update_it(client, registration_data, proposal_single_presenter, monkeypatch):
+    test_logged_in_user_can_submit_a_single_presenter_proposal(client, registration_data, proposal_single_presenter, monkeypatch)
+    get_and_check_content(client, '/proposal_update/1',
+                          includes=(),
+                          excludes=(),
+                          )
+
+
+def test_not_logged_in_submit_proposal_then_attempt_to_update_it_fails(client, registration_data, proposal_single_presenter, monkeypatch):
+    test_logged_in_user_can_submit_a_single_presenter_proposal(client, registration_data, proposal_single_presenter, monkeypatch)
+    get_and_check_content(client, '/logout',
+                          code=302,
+                          includes=('Redirect', '<a href="/">'),
+                          )
+    get_and_check_content(client, '/proposal_update/1',
+                          includes=(
+                              'Proposal Update Failure',
+                              'You must be registered and logged in to update a proposal.',
+                              login_menu_item,
+                              register_menu_item,
+                          ),
+                          excludes=(),
+                          )
