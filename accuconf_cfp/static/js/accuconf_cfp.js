@@ -204,7 +204,7 @@ function loginUser() {
 				window.location.replace("/" + data);
 			},
 			error: (jqXHR, textStatus, errorThrown) => {
-				alert(txtStatus)
+				alert(textStatus)
 			},
 		})
 		$('#alert').text('Submitting login details.')
