@@ -163,12 +163,14 @@ function registerUser() {
             }),
             dataType: 'json',
             contentType: 'application/json',
-            success: (data, textStatus, jqXHR ) => {
-                window.location.replace("/" + data);
-            },
-            error: (jqXHR, textStatus, errorThrown) => {
-                alert(textStatus)
-            },
+	        statusCode: {
+	        	200: (data, text, jqXHR) => {
+			        window.location.replace("/" + data)
+		        },
+		        400: (jqXHR, textStatus, errorThrown) => {
+			        alert(jqXHR.status + '\n' +  jqXHR.responseText)
+		        },
+	        }
         })
         $('#alert').text('Submitting form.')
         return true
@@ -204,7 +206,7 @@ function loginUser() {
 				window.location.replace("/" + data);
 			},
 			error: (jqXHR, textStatus, errorThrown) => {
-				alert(txtStatus)
+				alert(textStatus)
 			},
 		})
 		$('#alert').text('Submitting login details.')

@@ -1,4 +1,4 @@
-from flask import jsonify, render_template, request, session
+from flask import Markup, jsonify, redirect, render_template, request, session
 
 from accuconf_cfp import app, countries, db, year
 
@@ -44,7 +44,8 @@ def register():
     if not check[0]:
         return check[1]
     assert check[1] is None
-    assert 'email' not in session
+    if utils.is_logged_in():
+        return redirect('/')
     if request.method == 'POST':
         registration_data = request.json
         status, message = validate_registration_data(registration_data)
@@ -67,6 +68,7 @@ def register():
         registration_data['passphrase'] = utils.hash_passphrase(registration_data['passphrase'])
         db.session.add(User(**registration_data))
         db.session.commit()
+        session['just_registered'] = True
         return jsonify('register_success')
     return render_template('register.html', page=utils.md(base_page, {
             'title': 'Register',
@@ -82,13 +84,17 @@ def register_success():
     if not check[0]:
         return check[1]
     assert check[1] is None
+    if 'just_registered' not in session:
+        return redirect('/')
+    session.pop('just_registered', None)
     return render_template("general.html", page=utils.md(base_page, {
         'title': 'Registration Successful',
-        'data': '''
-You have successfully registered for submitting proposals for the ACCU Conf.
-
+        'data': Markup('''
+You have successfully registered for submitting proposals for the ACCU Conference.
+</p>
+</p>
 Please login and start preparing your proposal for the conference.
-'''}))
+''')}))
 
 
 @app.route('/registration_update', methods=['GET', 'POST'])
@@ -98,10 +104,7 @@ def registration_update():
         return check[1]
     assert check[1] is None
     if not utils.is_logged_in():
-        return render_template('general.html', page=utils.md(base_page, {
-            'title': 'Registration Update Failure',
-            'data': 'You must be logged in to update registration details.',
-        }))
+        return redirect('/')
     user = User.query.filter_by(email=session['email']).first()
     if request.method == 'POST':
         registration_data = request.json
@@ -115,20 +118,22 @@ def registration_update():
             registration_data['passphrase'] = utils.hash_passphrase(registration_data['passphrase'])
         User.query.filter_by(email=registration_data['email']).update(registration_data)
         db.session.commit()
+        session['just_updated_register'] = True
         return jsonify('registration_update_success')
-    return render_template('register.html', page=utils.md(registration_update_base_page, {
-            'email': user.email,
-            'name': user.name,
-            'phone': user.phone,
-            'street_address': user.street_address,
-            'town_city': user.town_city,
-            'state': user.state,
-            'postal_code': user.postal_code,
-            'country': user.country,
-            'data': 'Here you can edit your registration information',
-            'submit_button': 'Save',
-            'countries': sorted(list(countries.keys())),
-        }))
+    return render_template('register.html', page=utils.md(base_page, {
+        'title': 'Registration Details Updating',
+        'email': user.email,
+        'name': user.name,
+        'phone': user.phone,
+        'street_address': user.street_address,
+        'town_city': user.town_city,
+        'state': user.state,
+        'postal_code': user.postal_code,
+        'country': user.country,
+        'data': 'Here you can edit your registration information',
+        'submit_button': 'Save',
+        'countries': sorted(list(countries.keys())),
+    }))
 
 
 @app.route('/registration_update_success')
@@ -137,11 +142,10 @@ def registration_update_success():
     if not check[0]:
         return check[1]
     assert check[1] is None
+    if 'just_updated_register' not in session:
+        return redirect('/')
     if not utils.is_logged_in():
-        return render_template('general.html', page=utils.md(base_page, {
-            'title': 'Registration Update Failure',
-            'data': 'You must be logged in to update registration details.',
-        }))
+        return redirect('/')
     return render_template('general.html',  page=utils.md(registration_update_base_page, {
         'title': 'Registration Update Successful',
         'data': '''

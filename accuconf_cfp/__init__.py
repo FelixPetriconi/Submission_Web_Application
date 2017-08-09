@@ -47,16 +47,22 @@ def top_nav():
     """The callable that delivers the left-side menu for the current state ."""
     if app.config['MAINTENANCE']:
         return Navbar('')
+    if not (app.config['CALL_OPEN'] or app.config['REVIEWING_ALLOWED']):
+        return Navbar('')
     logged_in = is_logged_in()
     entries = []
-    if app.config['CALL_OPEN'] and not logged_in and request.path != '/register':
+    if not logged_in and request.path != '/register':
         entries.append(View('Register', 'register'))
-    if (app.config['CALL_OPEN'] or app.config['REVIEWING_ALLOWED']) and not logged_in and request.path != '/login':
+    if not logged_in and request.path != '/login':
         entries.append(View('Login', 'login'))
-    if (app.config['CALL_OPEN'] or app.config['REVIEWING_ALLOWED']) and logged_in and request.path != '/registration_update':
+    if app.config['CALL_OPEN'] and logged_in and request.path != '/submit':
+        entries.append(View('Submit a Proposal', 'submit'))
+    if logged_in and request.path != '/registration_update':
         entries.append(View('Registration Update', 'registration_update'))
-    if (app.config['CALL_OPEN'] or app.config['REVIEWING_ALLOWED']) and logged_in and request.path != '/my_proposals':
+    if app.config['CALL_OPEN'] and logged_in and request.path != '/my_proposals':
         entries.append(View('My Proposals', 'my_proposals'))
+    if logged_in:
+        entries.append(View('Logout', 'logout'))
     return Navbar('', *entries)
 
 
