@@ -29,7 +29,7 @@ def server():
     assert process.returncode == -15, 'Server terminated return code {}.'.format(process.returncode)
 
 
-@pytest.fixture
+@pytest.fixture(scope='module')
 def driver():
     # It seems that PhantomJS cannot handle the button clicking.
     # wd = webdriver.PhantomJS()
@@ -41,3 +41,19 @@ def driver():
     wd = webdriver.Chrome(chrome_options=options)
     yield wd
     wd.quit()
+
+
+@pytest.fixture
+def registrant():
+    return {
+        'email': 'a@b.c',
+        'passphrase': 'Passphrase1',
+        'cpassphrase': 'Passphrase1',
+        'name': 'User Name',
+        'phone': '+011234567890',
+        'country': 'India',
+        'state': 'TamilNadu',
+        'postal_code': '123456',
+        'town_city': 'Chennai',
+        'street_address': 'Chepauk',
+    }
