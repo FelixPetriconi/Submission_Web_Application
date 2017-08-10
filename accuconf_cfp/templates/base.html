@@ -84,10 +84,15 @@
                             {% block content %}{% endblock %}
                         </div>
                         <!--End of body content-->
-                        {# <footer id="footer"> #}
-                            {# {{ content_footer }} #}
-                            {# {{ template_hooks['page_footer']() }} #}
-                            {# </footer> #}
+                        <footer id="footer">
+                            Contents &copy; {{ year}} <a href="mailto:conference@accu.org">ACCU</a>
+                            –
+                            Hosting donated by <a href="http://www.bytemark.co.uk/r/accu" rel="nofollow">Bytemark</a>.
+                            <br>
+                            Powered by <a href="https://www.python.org" rel="nofollow">Python</a> and <a href="http://flask.pocoo.org/" rel="nofollow">Flask</a>
+                            –
+                            Created using <a href="https://www.jetbrains.com/pycharm/" rel="nofollow">PyCharm</a> from <a href="https://www.jetbrains.com/" rel="nofollow">JetBrains</a>
+                        </footer>
                     </div>
                 </div>
             </div> <!--  End of col-sm-6 -->
