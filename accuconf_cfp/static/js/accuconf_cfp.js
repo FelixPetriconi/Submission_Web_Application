@@ -183,10 +183,16 @@ function registerUser() {
 function isValidLoginData() {
 	let returnCode = true
 	if (!isValidEmail($('#email').val())) {
+		$('#email_alert').text('Email not valid.')
 		returnCode = false
+	} else {
+		$('#email_alert').text('')
 	}
 	if (!isValidPassphrase($('#passphrase').val())) {
+		$('#passphrase_alert').text('Passphrase not valid.')
 		returnCode = false
+	} else {
+		$('#passphrase_alert').text('')
 	}
 	return returnCode
 }

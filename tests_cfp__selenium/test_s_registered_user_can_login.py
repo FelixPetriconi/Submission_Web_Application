@@ -33,6 +33,27 @@ def register_user(driver, registrant):
         user_is_registered = True
 
 
+@pytest.mark.parametrize(('email', 'passphrase', 'error_key'), (
+    ('', '', 'email'),
+    ('russel.winder.org.uk', '', 'email'),
+    ('russel@winder.org.uk', '', 'passphrase'),
+))
+def test_malformed_data_cases_local_error(email, passphrase, error_key, driver):
+    driver.get(base_url + 'login')
+    wait = WebDriverWait(driver, driver_wait_time)
+    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Login'))
+    driver.find_element_by_id('email').send_keys(email)
+    driver.find_element_by_id('passphrase').send_keys(passphrase)
+    button = wait.until(ecs.element_to_be_clickable((By.ID, 'login')))
+    button.click()
+    WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Login'))
+    assert 'Problem with login form, not submitting.' in driver.find_element_by_id('alert').text
+    assert 'not valid.' in driver.find_element_by_id(error_key + '_alert').text
+
+
+# This test must come after the above since the above tests require the user not to be logged
+# in and this test leaves the per-module driver in logged in state. Pytest runs the tests in
+# declaration order so putting this test last should suffice.
 def test_user_can_successfully_login(driver, registrant):
     register_user(driver, registrant)
     driver.get(base_url + 'login')
