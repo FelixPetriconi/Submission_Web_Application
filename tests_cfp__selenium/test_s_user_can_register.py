@@ -5,39 +5,22 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ecs
 
 from configuration import base_url
-from functions import check_menu_items
+from constants import driver_wait_time
 
 # NB PyCharm can't tell these are used as fixtures, but they are.
 # NB server is an session scope autouse fixture that no test needs direct access to.
-from fixtures import driver, server
-
-# NB The server is in "call open" state.
-
-
-@pytest.fixture
-def registrant():
-    return {
-        'email': 'a@b.c',
-        'passphrase': 'Passphrase1',
-        'cpassphrase': 'Passphrase1',
-        'name': 'User Name',
-        'phone': '+011234567890',
-        'country': 'India',
-        'state': 'TamilNadu',
-        'postal_code': '123456',
-        'town_city': 'Chennai',
-        'street_address': 'Chepauk',
-    }
+from fixtures import driver, server, registrant
 
 
 def submit_data_to_register_page(driver, registrant):
     driver.get(base_url + 'register')
-    assert ' – Register' in driver.find_element_by_class_name('pagetitle').text
+    wait = WebDriverWait(driver, driver_wait_time)
+    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Register'))
     for key, value in registrant.items():
         driver.find_element_by_id(key).send_keys(value)
     puzzle_text = driver.find_element_by_id('puzzle_label').text
     driver.find_element_by_id('puzzle').send_keys(eval(puzzle_text))
-    button = WebDriverWait(driver, 1).until(ecs.element_to_be_clickable((By.ID, 'submit')))
+    button = wait.until(ecs.element_to_be_clickable((By.ID, 'submit')))
     assert 'Register' in button.text
     assert 'registerUser()' in button.get_attribute('onclick')
     button.click()
@@ -45,7 +28,7 @@ def submit_data_to_register_page(driver, registrant):
 
 def test_user_can_successfully_register(driver, registrant):
     submit_data_to_register_page(driver, registrant)
-    WebDriverWait(driver, 4).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Registration Successful'))
+    WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Registration Successful'))
     assert 'You have successfully registered for submitting proposals for the ACCU' in driver.find_element_by_id('content').text
 
 
@@ -60,7 +43,6 @@ def test_user_can_successfully_register(driver, registrant):
 def test_single_error_causing_local_failure(key, value, message, driver, registrant, monkeypatch):
     monkeypatch.setitem(registrant, key, value)
     submit_data_to_register_page(driver, registrant)
-    wait = WebDriverWait(driver, 2)
-    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Register'))
-    wait.until(ecs.text_to_be_present_in_element((By.ID, 'alert'), 'Problem with form, not submitting.'))
-    wait.until(ecs.text_to_be_present_in_element((By.ID, key + '_alert'), message))
+    WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Register'))
+    assert 'Problem with form, not submitting.' in driver.find_element_by_id('alert').text
+    assert message in driver.find_element_by_id(key + '_alert').text
