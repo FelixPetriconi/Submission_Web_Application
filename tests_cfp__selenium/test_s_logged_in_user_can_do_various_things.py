@@ -60,7 +60,7 @@ def proposal_single_presenter():
     return {
         'title': 'ACCU Proposal',
         'session_type': 'quickie',
-        'abstract': '''This is a test proposal that will have
+        'summary': '''This is a test proposal that will have
 dummy data. Also this is not a very
 lengthy proposal''',
         'presenters': [
@@ -82,6 +82,8 @@ def XXX_test_logged_in_user_can_submit_a_proposal(driver, registrant, proposal_s
     wait = WebDriverWait(driver, driver_wait_time)
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Submit'))
     driver.find_element_by_id('title').send_keys(proposal_single_presenter['title'])
+    driver.find_element_by_id('session_type').send_keys(proposal_single_presenter['session_type'])
+    driver.find_element_by_id('summary').send_keys(proposal_single_presenter['summary'])
     button = wait.until(ecs.element_to_be_clickable((By.ID, 'submit')))
     assert 'Submit' == driver.find_element_by_id('submit').text
     assert 'submitProposal()' == button.get_attribute('onclick')
