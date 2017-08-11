@@ -98,6 +98,13 @@ def test_logged_in_user_can_get_submit_page(driver, registrant):
     check_menu_items(driver, ())
 
 
+def test_logged_in_cannot_get_submit_success_page_if_not_just_submitted(driver):
+    driver.get(base_url + 'submit_success')
+    WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Submit Failed'))
+    assert 'You must be registered and logged in to submit a proposal.' in driver.find_element_by_class_name('first').text
+    check_menu_items(driver, ())
+
+
 def test_logged_in_user_can_get_my_proposals_page(driver, registrant):
     register_and_login_user(driver, registrant)
     driver.get(base_url + 'my_proposals')

@@ -133,12 +133,10 @@ def test_logged_in_user_can_get_submission_page(client, registration_data, monke
 
 def test_logged_in_user_can_submit_a_single_presenter_proposal(client, registration_data, proposal_single_presenter, monkeypatch):
     test_ensure_registration_and_login(client, registration_data, monkeypatch)
-    rvd = post_and_check_content(client, '/submit', json.dumps(proposal_single_presenter), 'application/json',
-                                 includes=('success',),
-                                 excludes=(login_menu_item, register_menu_item),
-                                 )
-    response = json.loads(rvd)
-    assert response['success']
+    post_and_check_content(client, '/submit', json.dumps(proposal_single_presenter), 'application/json',
+                           includes=('submit_success',),
+                           excludes=(login_menu_item, register_menu_item),
+                           )
     user = User.query.filter_by(email='a@b.c').all()
     assert len(user) == 1
     user = user[0]
@@ -162,12 +160,10 @@ def test_logged_in_user_can_submit_a_single_presenter_proposal(client, registrat
 
 def test_logged_in_user_can_submit_multipresenter_single_lead_proposal(client, registration_data, proposal_multiple_presenters_single_lead, monkeypatch):
     test_ensure_registration_and_login(client, registration_data, monkeypatch)
-    rvd = post_and_check_content(client, '/submit', json.dumps(proposal_multiple_presenters_single_lead), 'application/json',
-                                 includes=('success',),
-                                 excludes=(login_menu_item, register_menu_item),
-                                 )
-    response = json.loads(rvd)
-    assert response['success']
+    post_and_check_content(client, '/submit', json.dumps(proposal_multiple_presenters_single_lead), 'application/json',
+                           includes=('submit_success',),
+                           excludes=(login_menu_item, register_menu_item),
+                           )
     user = User.query.filter_by(email='a@b.c').all()
     assert len(user) == 1
     user = user[0]
@@ -188,14 +184,11 @@ def test_logged_in_user_can_submit_multipresenter_single_lead_proposal(client, r
 
 def test_logged_in_user_cannot_submit_multipresenter_multilead_proposal(client, registration_data, proposal_multiple_presenters_and_leads, monkeypatch):
     test_ensure_registration_and_login(client, registration_data, monkeypatch)
-    rvd = post_and_check_content(client, '/submit', json.dumps(proposal_multiple_presenters_and_leads), 'application/json',
-                                 includes=('success',),
-                                 excludes=(login_menu_item, register_menu_item),
-                                 )
-    response = json.loads(rvd)
-    assert response["success"] is False
-    assert "message" in response
-    assert "both marked as lead presenters" in response["message"]
+    post_and_check_content(client, '/submit', json.dumps(proposal_multiple_presenters_and_leads), 'application/json',
+                           code=400,
+                           includes=('both marked as lead presenters',),
+                           excludes=(login_menu_item, register_menu_item),
+                           )
     user = User.query.filter_by(email='a@b.c').all()
     assert len(user) == 1
     user = user[0]

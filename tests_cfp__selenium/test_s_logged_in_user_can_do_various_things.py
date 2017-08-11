@@ -89,4 +89,4 @@ def XXX_test_logged_in_user_can_submit_a_proposal(driver, registrant, proposal_s
     wait.until(ecs.presence_of_element_located((By.CLASS_NAME, 'pagetitle')))
     print(driver.find_element_by_class_name('pagetitle').text)
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), 'Submission Successful'))
-    assert 'Your registration details were successful updated.' in driver.find_element_by_id('content').text
+    assert 'Thank you, you have successfully submitted a proposal for the ACCU' in driver.find_element_by_id('content').text

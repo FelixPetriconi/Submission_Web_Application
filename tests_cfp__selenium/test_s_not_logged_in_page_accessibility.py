@@ -67,6 +67,13 @@ def test_cannot_get_submit_page_if_not_logged_in(driver):
     check_menu_items(driver, ('Register', 'Login'))
 
 
+def test_cannot_get_submit_success_page_if_not_logged_in(driver):
+    driver.get(base_url + 'submit_success')
+    WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Submit Failed'))
+    assert 'You must be registered and logged in to submit a proposal.' in driver.find_element_by_class_name('first').text
+    check_menu_items(driver, ('Register', 'Login'))
+
+
 def test_cannot_get_my_proposals_page_unless_logged_in(driver):
     driver.get(base_url + 'my_proposals')
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – My Proposals Failure'))

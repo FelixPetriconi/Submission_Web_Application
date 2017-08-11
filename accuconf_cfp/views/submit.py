@@ -66,56 +66,70 @@ def submit():
             if user:
                 proposal_data = request.json
                 status, message = validate_proposal_data(proposal_data)
-                response = {}
-                if status:
-                    proposal = Proposal(
-                        user,
-                        proposal_data.get('title').strip(),
-                        SessionType(proposal_data.get('session_type')),
-                        proposal_data.get('abstract').strip()
+                if not status:
+                    # NB This should never be executed.
+                    response = jsonify(message)
+                    response.status_code = 400
+                    return response
+                proposal = Proposal(
+                    user,
+                    proposal_data.get('title').strip(),
+                    SessionType(proposal_data.get('session_type')),
+                    proposal_data.get('abstract').strip()
+                )
+                db.session.add(proposal)
+                presenters_data = proposal_data.get('presenters')
+                for presenter_data in presenters_data:
+                    presenter = Presenter(
+                        presenter_data['email'],
+                        presenter_data['name'],
+                        'A human being.',
+                        presenter_data['country'],
+                        presenter_data['state'],
                     )
-                    db.session.add(proposal)
-                    presenters_data = proposal_data.get('presenters')
-                    for presenter_data in presenters_data:
-                        presenter = Presenter(
-                            presenter_data['email'],
-                            presenter_data['name'],
-                            'A human being.',
-                            presenter_data['country'],
-                            presenter_data['state'],
-                        )
-                        ProposalPresenter(proposal, presenter, presenter_data['lead'])
-                        db.session.add(presenter)
-                    db.session.commit()
-                    response['success'] = True
-                    response['message'] = '''
-Thank you, you have successfully submitted a proposal for the ACCU {} conference!
-If you need to edit it you can via the 'My Proposal' menu item.
-'''.format(year)
-                    response['redirect'] = '/'
-                else:
-                    response['success'] = False
-                    response['message'] = message
-                return jsonify(**response)
-        else:
-            user = User.query.filter_by(email=session['email']).first()
-            if user:
-                return render_template('submit.html', page=md(base_page, {
-                    'title': 'Submit a proposal for ACCU {}'.format(year),
-                    'name': user.name,
-                    'proposer': {
-                        'email': user.email,
-                        'name': user.name,
-                        'bio': 'A human being.',
-                        'country': user.country,
-                        'state': user.state,
-                    }
-                }))
+                    ProposalPresenter(proposal, presenter, presenter_data['lead'])
+                    db.session.add(presenter)
+                db.session.commit()
+                session['just_submitted'] = True
+                return jsonify('submit_success')
+        user = User.query.filter_by(email=session['email']).first()
+        if user:
+            return render_template('submit.html', page=md(base_page, {
+                'title': 'Submit a proposal for ACCU {}'.format(year),
+                'name': user.name,
+                'proposer': {
+                'email': user.email,
+                'name': user.name,
+                'bio': 'A human being.',
+                'country': user.country,
+                'state': user.state,
+                }
+        }))
     return render_template('general.html', page=md(base_page, {
         'title': 'Submit Not Possible',
-        'data': '''
-You must be registered and logged in to submit a proposal.
-'''}))
+        'data': 'You must be registered and logged in to submit a proposal.'
+    }))
+
+
+@app.route('/submit_success')
+def submit_success():
+    check = is_acceptable_route()
+    if not check[0]:
+        return check[1]
+    assert check[1] is None
+    if 'just_submitted' in session:
+        session.pop('just_submitted', None)
+        return render_template('general.html', page=md(base_page, {
+            'title': 'Submission Successful',
+            'data': '''
+Thank you, you have successfully submitted a proposal for the ACCU {} conference!
+If you need to edit it you can via the 'My Proposal' menu item.
+'''.format(year),
+        }))
+    return render_template('general.html', page=md(base_page, {
+        'title': 'Submit Failed',
+        'data': 'You must be registered and logged in to submit a proposal.',
+    }))
 
 
 @app.route('/my_proposals')
