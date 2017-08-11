@@ -71,11 +71,12 @@ def register():
         session['just_registered'] = True
         return jsonify('register_success')
     return render_template('register.html', page=utils.md(base_page, {
-            'title': 'Register',
-            'data': 'Register here for submitting proposals to the ACCU {} Conference'.format(year),
-            'submit_button': 'Register',
-            'countries': sorted(list(countries.keys())),
-        }))
+        'title': 'Register',
+        'data': 'Register here for submitting proposals to the ACCU {} Conference'.format(year),
+        'submit_button': 'Register',
+        'passphrase_required': 'true',
+        'countries': sorted(list(countries.keys())),
+    }))
 
 
 @app.route('/register_success')
@@ -132,6 +133,7 @@ def registration_update():
         'country': user.country,
         'data': 'Here you can edit your registration information',
         'submit_button': 'Save',
+        'passphrase_required': 'false',
         'countries': sorted(list(countries.keys())),
     }))
 
@@ -146,8 +148,7 @@ def registration_update_success():
         return redirect('/')
     if not utils.is_logged_in():
         return redirect('/')
-    return render_template('general.html',  page=utils.md(registration_update_base_page, {
+    return render_template('general.html',  page=utils.md(base_page, {
         'title': 'Registration Update Successful',
-        'data': '''
-Your registration details were successful updated.
-'''}))
+        'data': 'Your registration details were successful updated.',
+    }))

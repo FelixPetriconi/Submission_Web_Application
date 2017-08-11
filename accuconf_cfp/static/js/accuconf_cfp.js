@@ -54,7 +54,7 @@ function isPuzzleResultCorrect(value) {
 	return puzzleResult === Math.floor(value)
 }
 
-function validateRegistrationData() {
+function validateRegistrationData(passphraseRequired) {
 	let returnCode = true
     if (!isValidEmail($('#email').val())) {
         $('#email_alert').text("Email should be of the format user@example.com")
@@ -63,14 +63,14 @@ function validateRegistrationData() {
         $('#email_alert').text('')
     }
     const passphrase = $('#passphrase').val()
-    if (!isValidPassphrase(passphrase)) {
+    if (passphraseRequired && !isValidPassphrase(passphrase)) {
     	$('#passphrase_alert').text('Passphrase is not valid.')
         returnCode = false
     } else {
     	$('#passphrase_alert').text('')
     }
     const cpassphrase = $('#cpassphrase').val()
-    if (!isValidPassphrase(cpassphrase)) {
+    if (passphraseRequired && !isValidPassphrase(cpassphrase)) {
     	$('#cpassphrase_alert').text('Confirmation passphrase is not valid.')
         returnCode = false
     } else {
@@ -120,12 +120,14 @@ function validateRegistrationData() {
     }
     // Country is select from a drop down and so must be valid.
 	$('#country_alert').text('')
-    if (!isPuzzleResultCorrect($('#puzzle').val())) {
-     	$('#puzzle_alert').text('Incorrect value given.')
-        returnCode = false
-    } else {
-    	$('#puzzle_alert').text('')
-    }
+	if (passphraseRequired) {
+		if (!isPuzzleResultCorrect($('#puzzle').val())) {
+			$('#puzzle_alert').text('Incorrect value given.')
+			returnCode = false
+		} else {
+			$('#puzzle_alert').text('')
+		}
+	}
 	return returnCode
 }
 
@@ -145,11 +147,12 @@ function clearAlerts() {
 	return true;
 }
 
-function registerUser() {
-    if (validateRegistrationData()) {
+function registerUser(passphraseRequiredText) {
+	const passphraseRequired = true === passphraseRequiredText
+    if (validateRegistrationData(passphraseRequired)) {
         $.ajax({
             method: 'POST',
-            url: '/register',
+            url: (passphraseRequired ? '/register' : '/registration_update'),
             data: JSON.stringify({
                 'email': $('#email').val(),
                 'passphrase': $('#passphrase').val(),
