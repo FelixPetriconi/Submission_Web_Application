@@ -21,8 +21,8 @@ def submit_data_to_register_page(driver, registrant):
     puzzle_text = driver.find_element_by_id('puzzle_label').text
     driver.find_element_by_id('puzzle').send_keys(eval(puzzle_text))
     button = wait.until(ecs.element_to_be_clickable((By.ID, 'submit')))
-    assert 'Register' in button.text
-    assert 'registerUser()' in button.get_attribute('onclick')
+    assert 'Register' == button.text
+    assert 'registerUser(true)' == button.get_attribute('onclick')
     button.click()
 
 
@@ -44,5 +44,5 @@ def test_single_error_causing_local_failure(key, value, message, driver, registr
     monkeypatch.setitem(registrant, key, value)
     submit_data_to_register_page(driver, registrant)
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Register'))
-    assert 'Problem with form, not submitting.' in driver.find_element_by_id('alert').text
+    assert 'Problem with form, not submitting.' == driver.find_element_by_id('alert').text
     assert message in driver.find_element_by_id(key + '_alert').text

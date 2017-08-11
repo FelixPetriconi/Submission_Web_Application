@@ -94,7 +94,7 @@
                     <span class="help-block" id="country_alert"></span>
                 </div>
             </div>
-            {% if page.mode != 'edit_mode' %}
+            {% if page.passphrase_required != 'false' %}
                 <div class="form-group">
                     <label for="puzzle" class="control-label col-sm-3">Solve this puzzle</label>
                     <label for="puzzle" id="puzzle_label" class="puzzle" class="col-sm-3"></label>
@@ -107,7 +107,7 @@
             {% endif %}
             <p id="button_spacer"></p>
             <div class="form-group">
-                <button type="button" id="submit"  class="btn btn-primary" onclick="registerUser();"> {{ page.submit_button }} </button>
+                <button type="button" id="submit"  class="btn btn-primary" onclick="registerUser({{ page.passphrase_required }})"> {{ page.submit_button }} </button>
                 <button type="reset" class="btn btn-default" onclick="clearAlerts()">Reset</button>
             </div>
         </form>
