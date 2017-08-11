@@ -51,7 +51,42 @@ def test_logged_in_user_can_amend_registration_record(driver, registrant):
     assert 'Save' == driver.find_element_by_id('submit').text
     assert 'registerUser(false)' == button.get_attribute('onclick')
     button.click()
+    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), 'Registration Update Successful'))
+    assert 'Your registration details were successful updated.' in driver.find_element_by_id('content').text
+
+
+@pytest.fixture
+def proposal_single_presenter():
+    return {
+        'title': 'ACCU Proposal',
+        'session_type': 'quickie',
+        'abstract': '''This is a test proposal that will have
+dummy data. Also this is not a very
+lengthy proposal''',
+        'presenters': [
+            {
+                'email': 'a@b.c',
+                'lead': True,
+                'name': 'User Name',
+                'bio': 'A nice member of the human race.',
+                'country': 'India',
+                'state': 'TamilNadu'
+            },
+        ]
+    }
+
+
+def XXX_test_logged_in_user_can_submit_a_proposal(driver, registrant, proposal_single_presenter):
+    register_and_login_user(driver, registrant)
+    driver.get(base_url + 'submit')
+    wait = WebDriverWait(driver, driver_wait_time)
+    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Submit'))
+    driver.find_element_by_id('title').send_keys(proposal_single_presenter['title'])
+    button = wait.until(ecs.element_to_be_clickable((By.ID, 'submit')))
+    assert 'Submit' == driver.find_element_by_id('submit').text
+    assert 'submitProposal()' == button.get_attribute('onclick')
+    button.click()
     wait.until(ecs.presence_of_element_located((By.CLASS_NAME, 'pagetitle')))
     print(driver.find_element_by_class_name('pagetitle').text)
-    # wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), 'Registration Update Successful'))
+    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), 'Submission Successful'))
     assert 'Your registration details were successful updated.' in driver.find_element_by_id('content').text

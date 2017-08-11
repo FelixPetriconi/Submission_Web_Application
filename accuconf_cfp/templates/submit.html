@@ -19,7 +19,7 @@
 </div>
 <div class="row">
     <div class="container-fluid">
-        <form class="form-horizontal" id="proposalform" method="POST">
+        <form class="form-horizontal" id="proposal_form" method="POST">
             <div class="form-group">
                 <label for="title" class="control-label col-sm-3">Title</label>
                 <div class="col-sm-8">
@@ -29,13 +29,13 @@
             <div class="form-group">
                 <label for="abstract" class="control-label col-sm-3">Abstract</label>
                 <div class="col-sm-8">
-                    <textarea rows="24" cols="50" name="proposal" id="proposal" placeholder="Proposal abstract (minimum 50 characters)"></textarea>
+                    <textarea rows="24" cols="50" name="abstract" id="abstract" placeholder="Proposal abstract (minimum 50 characters)"></textarea>
                 </div>
             </div>
             <div class="form-group">
-                <label for="proposaltype" class="control-label col-sm-3">Proposal Type</label>
+                <label for="session_type" class="control-label col-sm-3">Session Type</label>
                 <div class="col-lg-8">
-                    <select name="proposaltype" id="proposaltype">
+                    <select name="session_type" id="session_type">
                         <option value="quick">15 minute presentation</option>
                         <option value="interactive">90 minute session</option>
                         <option value="miniworkshop">90 minute workshop</option>
@@ -130,7 +130,7 @@
                 <input type="text" name="tags" id="tags" placeholder="Category" data-role="tagsinput">
             </div>
             <div class="form-group">
-                <button type="submit" class="btn btn-primary" onclick="javascript:submitProposal();">Submit</button>
+                <button type="submit" name="submit" id="submit" class="btn btn-primary" onclick="submitProposal()">Submit</button>
                 <button type="reset" class="btn btn-default">Reset</button>
             </div>
         </form>
@@ -172,7 +172,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" onclick="return addNewPresenter();">Add</button>
+                        <button type="button" class="btn btn-primary" onclick="addNewPresenter()">Add</button>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
@@ -194,7 +194,7 @@
         <td align="center" id="p_country_<%= sno %>"> <%= country %> </td>
         <td align="center" id="p_state_<%= sno %>"> <%= state %></td>
         <td align="center" id="p_del_<%= sno %>">
-            <a href=""> <span class="glyphicon glyphicon-remove" aria-hidden="true" onclick="return deleteRow('<%= sno %>');"></span> </a>
+            <a href=""> <span class="glyphicon glyphicon-remove" aria-hidden="true" onclick="deleteRow('<%= sno %>');"></span> </a>
         </td>
     </tr>
 </script>

@@ -22,7 +22,7 @@ from test_utils.functions import get_and_check_content, post_and_check_content
 from accuconf_cfp.utils import hash_passphrase
 
 
-@pytest.fixture()
+@pytest.fixture
 def registration_data():
     return {
         'email': 'a@b.c',
@@ -37,7 +37,7 @@ def registration_data():
     }
 
 
-@pytest.fixture()
+@pytest.fixture
 def proposal_single_presenter():
     return {
         'proposer': 'a@b.c',
@@ -59,7 +59,7 @@ lengthy proposal''',
     }
 
 
-@pytest.fixture()
+@pytest.fixture
 def proposal_multiple_presenters_single_lead():
     return {
         'proposer': 'a@b.c',
@@ -89,7 +89,7 @@ lengthy proposal''',
     }
 
 
-@pytest.fixture()
+@pytest.fixture
 def proposal_multiple_presenters_and_leads():
     proposal_data = proposal_multiple_presenters_single_lead()
     assert proposal_data['presenters'][1]['lead'] == 0

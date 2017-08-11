@@ -54,7 +54,7 @@ function isPuzzleResultCorrect(value) {
 	return puzzleResult === Math.floor(value)
 }
 
-function validateRegistrationData(passphraseRequired) {
+function isValidRegistrationData(passphraseRequired) {
 	let returnCode = true
     if (!isValidEmail($('#email').val())) {
         $('#email_alert').text("Email should be of the format user@example.com")
@@ -131,7 +131,7 @@ function validateRegistrationData(passphraseRequired) {
 	return returnCode
 }
 
-function clearAlerts() {
+function clearRegisterAlerts() {
 	$('#email_alert').text('')
 	$('#passphrase_alert').text('')
 	$('#cpassphrase_alert').text('')
@@ -149,7 +149,7 @@ function clearAlerts() {
 
 function registerUser(passphraseRequiredText) {
 	const passphraseRequired = true === passphraseRequiredText
-    if (validateRegistrationData(passphraseRequired)) {
+    if (isValidRegistrationData(passphraseRequired)) {
         $.ajax({
             method: 'POST',
             url: (passphraseRequired ? '/register' : '/registration_update'),
@@ -200,6 +200,12 @@ function isValidLoginData() {
 	return returnCode
 }
 
+function clearLoginAlerts() {
+	$('#login_alert').text('')
+	$('#passphrase_alert').text('')
+	return true;
+}
+
 function loginUser() {
 	if (isValidLoginData()) {
 		$.ajax({
@@ -211,11 +217,13 @@ function loginUser() {
 			}),
 			dataType: 'json',
 			contentType: 'application/json',
-			success: (data, textStatus, jqXHR ) => {
-				window.location.replace("/" + data);
-			},
-			error: (jqXHR, textStatus, errorThrown) => {
-				alert(textStatus)
+			statusCode: {
+				200: (data, textStatus, jqXHR) => {
+					window.location.replace("/" + data);
+				},
+				400: (jqXHR, textStatus, errorThrown) => {
+					alert(jqXHR.status + '\n' +  jqXHR.responseText)
+				},
 			},
 		})
 		$('#alert').text('Submitting login details.')
@@ -305,60 +313,62 @@ function addPresenter(tableId) {
     $(new_loc).append(options);
 }
 */
-/*
+
+function clearSubmitAlerts() {
+	$('#title_alert').text('')
+	$('#abstract_alert').text('')
+	$('#session_type_alert').text('')
+	$('#presenters_alert').text('')
+	return true
+}
+
 function submitProposal() {
     const proposalTitle = $('#title').val();
-    const proposal = $('#proposal').val();
-    const proposalType = $('#proposaltype').val();
-    const presenterRows = $("#presenters-body tr");
-    const proposer = $("#def_email").text();
+    const abstract = $('#abstract').val();
+    const sessionType = $('#session_type').val();
+    const presenterRows = $('#presenters-body tr');
+    const proposer = $('#def_email').text();
     const presenters = [];
     let leadId = $('input[name=lead]:checked', '#proposalform').val();
     if (leadId === undefined) {
         leadId = 1;
     }
-    $("#presenters-body > tr").each(function(idx) {
+    $('#presenters-body > tr').each(function(idx) {
         const cells = $(this).find('td');
         const presenter = {
-            "lead": (leadId == (idx + 1)) ? 1 : 0,
-            "email" : cells[2].innerText,
-            "fname" : cells[3].innerText,
-            "lname" : cells[4].innerText,
-            "country" : cells[5].innerText,
-            "state" : cells[6].innerText
+            'lead': (leadId == (idx + 1)) ? 1 : 0,
+            'email' : cells[2].innerText,
+            'fname' : cells[3].innerText,
+            'lname' : cells[4].innerText,
+            'country' : cells[5].innerText,
+            'state' : cells[6].innerText
         };
         presenters.push(presenter);
     });
-    const proposalData = {
-        "title": proposalTitle,
-        "abstract": proposal,
-        "proposer": proposer,
-        "proposalType": proposalType,
-        "presenters": presenters
-    };
     $.ajax({
-        url: "/proposals/upload_proposal",
-        data: JSON.stringify(proposalData),
-        type: "POST",
-        method: "POST",
-        dataType: "json",
-        contentType: "application/json",
-        success: function(data) {
-            console.log(data);
-            if (data.success) {
-                alert(data.message);
-                window.location = data.redirect;
-            } else {
-                $('#alert').text(data.message);
-            }
-        },
-        error: function(data) {
-            console.log("Error in proposal submission: " + data);
-        }
+        method: 'POST',
+        url: '/submit',
+        data: JSON.stringify({
+	        'title': proposalTitle,
+	        'abstract': abstract,
+	        'proposer': proposer,
+	        'proposalType': proposalType,
+	        'presenters': presenters
+        }),
+        dataType: 'json',
+        contentType: 'application/json',
+	    statusCode: {
+		    200: (data, textStatus, jqXHR) => {
+			    window.location.replace('/' + data);
+		    },
+		    400: (jqXHR, textStatus, errorThrown) => {
+			    alert(jqXHR.status + '\n' +  jqXHR.responseText);
+		    },
+	    },
     });
     return true;
 }
-*/
+
 /*
 function validatePresenter(details) {
     return true;
