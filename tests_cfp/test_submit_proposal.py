@@ -43,7 +43,7 @@ def proposal_single_presenter():
         'proposer': 'a@b.c',
         'title': 'ACCU Proposal',
         'session_type': 'quickie',
-        'abstract': '''This is a test proposal that will have
+        'summary': '''This is a test proposal that will have
 dummy data. Also this is not a very
 lengthy proposal''',
         'presenters': [
@@ -65,7 +65,7 @@ def proposal_multiple_presenters_single_lead():
         'proposer': 'a@b.c',
         'title': 'ACCU Proposal',
         'session_type': 'miniworkshop',
-        'abstract': ''' This is a test proposal that will have
+        'summary': ''' This is a test proposal that will have
 dummy data. Also this is not a very
 lengthy proposal''',
         'presenters': [

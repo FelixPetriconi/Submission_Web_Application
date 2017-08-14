@@ -44,90 +44,67 @@
                     </select>
                 </div>
             </div>
+            <div class="form-group">
+                <label for="tags" class="control-label col-sm-3">Category</label>
+                <div class="col-sm-8">
+                    <input type="text" name="tags" id="tags" placeholder="Category" data-role="tagsinput">
+                </div>
+            </div>
             <div class="form-group" id="copresenters">
                 <label for="presenters" class="control-group col-sm-3">Presenters/Co-Presenters</label>
                 <div class="col-lg-8">
-                    <!-- <table class="presenterstable" id="presenterstable">
-                         <thead>
-                         <tr>
-                         <th> Lead </th>
-                         <th> Email </th>
-                         <th> First Name </th>
-                         <th> Last Name </th>
-                         <th> Country </th>
-                         <th> State </th>
-                         <th>  </th>
-                         </tr>
-                         </thead>
-                         <tbody>
+                    <table class="presenters" id="presenters">
                          <tr class="odd">
-                         <td class="narrow"> <input type="radio" name="lead" id="lead" value="0"> </td>
-                         <td align="center" id="def_email"> {{ page.proposer.email }} </td>
-                         <td align="center" id="def_fname"> {{ page.proposer.first_name }} </td>
-                         <td align="center" id="def_lname"> {{ page.proposer.last_name }} </td>
-                         <td align="center" id="def_country"> {{ page.proposer.country }} </td>
-                         <td align="center" id="def_state"> {{ page.proposer.state }} </td>
+                             <td>
+                                 <div class="form-group">
+                                     <label class="control-label col-sm-2">Email</label>
+                                     <div class="col-sm-4">
+                                         <input class="email_field" type="text" value="{{ page.proposer.email }}">
+                                     </div>
+                                 </div>
+                                 <div class="form-group">
+                                     <label class="control-label col-sm-2">Name</label>
+                                     <div class="col-sm-4">
+                                         <input class="name_field" type="text" value="{{ page.proposer.name }}">
+                                     </div>
+                                 </div>
+                                 <div class="form-group">
+                                     <label class="control-label col-sm-2">Is Lead?</label>
+                                     <div class="col-sm-4">
+                                         <input class="is_lead_field" type="checkbox" value="Is Lead?">
+                                     </div>
+                                 </div>
+                                 <div class="form-group">
+                                     <label class="control-label col-sm-2">Bio</label>
+                                     <div class="col-sm-4">
+                                         <textarea class="bio_field" rows="24" cols="50" placeholder="{{ page.proposer.bio }}"></textarea>
+                                     </div>
+                                 </div>
+                                 <div class="form-group">
+                                     <label class="control-label col-sm-2">Country</label>
+                                     <div class="col-sm-4">
+                                         <select class="country_field" >
+                                             {% for x in  page.countries   %}
+                                             <option value="{{ x }}" {% if x == page.proposer.country %} selected  {% endif %}>{{ x }}</option>
+                                             {% endfor %}
+                                         </select>
+                                     </div>
+                                 </div>
+                                 <div class="form-group">
+                                     <label class="control-label col-sm-2">State</label>
+                                     <div class="col-sm-4">
+                                         <input class="state_field" type="text" value="{{ page.proposer.state }}">
+                                     </div>
+                                 </div>
+                             </td>
                          </tr>
-                         <tr class="even">
-                         <td class="narrow"> <input type="radio" name="lead" id="lead" value="1"> </td>
-                         <td> <input type="text" name="p_email_1" id="p_email_1" placeholder="Email Address"> </td>
-                         <td> <input type="text" name="p_fname_1" id="p_fname_1" placeholder="First Name"> </td>
-                         <td> <input type="text" name="p_lname_1" id="p_lname_1" placeholder="Last Name"> </td>
-                         <td>
-                         <select class="widetable" name="p_ctry_1" id="p_ctry_1"
-                         onchange="javascript:loadState('p_ctry_1', 'p_states_1', 'p_state_1', true);"
-                         onkeyup="this.onchange();" onmouseup="this.onchange();">
-                         </select>
-                         </td>
-                         <td> <input type="text" name="p_state_1" id="p_state_1" placeholder="State"> </td>
-                         <td style="display: none;">
-                         <select class="widetable" name="p_states_1" id="p_states_1"> </select>
-                         </td>
-                         <td>
-                         <button class="adder" type="button"
-                         onclick="javascript:addPresenter('presenterstable');">+</button>
-                         </td>
-                         </tr>
-                         </tbody>
-                         </table> -->
+                    </table>
                     <div class="panel panel-default">
-                        <div class="panel-body">
-                            <table class="table" id="presenters">
-                                <thead>
-                                    <tr>
-                                        <td class="col-sm-1"> # </td>
-                                        <td class="col-sm-1"> Lead </td>
-                                        <td class="col-sm-2"> Email </td>
-                                        <td class="col-sm-2"> Name </td>
-                                        <td class="col-sm-2"> Country </td>
-                                        <td class="col-sm-2"> State </td>
-                                        <td class="col-sm-1"> Delete </td>
-                                    </tr>
-                                </thead>
-                                <tbody id="presenters-body">
-                                    <tr>
-                                        <td align="center" id="def_seq"> 1 </td>
-                                        <td class="narrow"> <input type="radio" name="lead" id="lead" value="1"> </td>
-                                        <td align="center" id="def_email"> {{ page.proposer.email }} </td>
-                                        <td align="center" id="def_name"> {{ page.proposer.name }} </td>
-                                        <td align="center" id="def_country"> {{ page.proposer.country }} </td>
-                                        <td align="center" id="def_state"> {{ page.proposer.state }} </td>
-                                        <!-- <td align="center" id="def_del">
-                                             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                                             </td> -->
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
                         <div class="panel-footer">
                             <a type="button" class="btn btn-small" href="#" onclick="" data-toggle="modal" data-target="#add-presenter-modal">Add Presenter</a>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label for="tags">Category</label>
-                <input type="text" name="tags" id="tags" placeholder="Category" data-role="tagsinput">
             </div>
             <div class="form-group">
                 <button type="submit" name="submit" id="submit" class="btn btn-primary" onclick="submitProposal()">Submit</button>
@@ -156,10 +133,19 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label for="add-presenter-bio" class="control-label col-sm-2">Bio</label>
+                                <div class="col-sm-4">
+                                    <textarea rows="24" cols="50" name="add-presenter-bio" id="add-presenter-bio" placeholder="Presenter Bio (minimum 50 characters)"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label for="add-presenter-country" class="control-label col-sm-2">Country</label>
                                 <div class="col-sm-4">
                                     <select name="add-presenter-country" id="add-presenter-country">
-                                    </select>
+                                        {% for x in  page.countries   %}
+                                        <option value="{{ x }}" {% if x == "United Kingdom" %} selected  {% endif %}>{{ x }}</option>
+                                        {% endfor %}
+                                   </select>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -185,17 +171,4 @@
     organising the conference.
   </p>
 </div>
-<script type="text/template" id="presenters-row-template">
-    <tr>
-        <td align="center" id="p_seq_<%= sno %>"> <%= sno %> </td>
-        <td class="narrow"> <input type="radio" name="lead" id="lead" value="<%= sno  %>"> </td>
-        <td align="center" id="p_email_<%= sno %>"> <%= email %> </td>
-        <td align="center" id="p_name_<%= sno %>"> <%= name %> </td>
-        <td align="center" id="p_country_<%= sno %>"> <%= country %> </td>
-        <td align="center" id="p_state_<%= sno %>"> <%= state %></td>
-        <td align="center" id="p_del_<%= sno %>">
-            <a href=""> <span class="glyphicon glyphicon-remove" aria-hidden="true" onclick="deleteRow('<%= sno %>');"></span> </a>
-        </td>
-    </tr>
-</script>
 {% endblock %}

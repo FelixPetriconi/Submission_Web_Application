@@ -66,8 +66,8 @@ lengthy proposal''',
         'presenters': [
             {
                 'email': 'a@b.c',
-                'lead': True,
                 'name': 'User Name',
+                'is_lead': True,
                 'bio': 'A nice member of the human race.',
                 'country': 'India',
                 'state': 'TamilNadu'
@@ -76,7 +76,7 @@ lengthy proposal''',
     }
 
 
-def XXX_test_logged_in_user_can_submit_a_proposal(driver, registrant, proposal_single_presenter):
+def test_logged_in_user_can_submit_a_proposal(driver, registrant, proposal_single_presenter):
     register_and_login_user(driver, registrant)
     driver.get(base_url + 'submit')
     wait = WebDriverWait(driver, driver_wait_time)
@@ -84,6 +84,12 @@ def XXX_test_logged_in_user_can_submit_a_proposal(driver, registrant, proposal_s
     driver.find_element_by_id('title').send_keys(proposal_single_presenter['title'])
     driver.find_element_by_id('session_type').send_keys(proposal_single_presenter['session_type'])
     driver.find_element_by_id('summary').send_keys(proposal_single_presenter['summary'])
+    presenter = proposal_single_presenter['presenters'][0]
+    driver.find_element_by_class_name('email_field').send_keys(presenter['email'])
+    driver.find_element_by_class_name('name_field').send_keys(presenter['name'])
+    driver.find_element_by_class_name('bio_field').send_keys(presenter['bio'])
+    driver.find_element_by_class_name('country_field').send_keys(presenter['country'])
+    driver.find_element_by_class_name('state_field').send_keys(presenter['state'])
     button = wait.until(ecs.element_to_be_clickable((By.ID, 'submit')))
     assert 'Submit' == driver.find_element_by_id('submit').text
     assert 'submitProposal()' == button.get_attribute('onclick')

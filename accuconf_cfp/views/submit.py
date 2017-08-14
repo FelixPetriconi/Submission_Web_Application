@@ -1,6 +1,6 @@
 from flask import jsonify, render_template, request, session
 
-from accuconf_cfp import app, db, year
+from accuconf_cfp import app, db, year, countries
 from accuconf_cfp.utils import is_acceptable_route, is_logged_in, md
 
 from models.user import User
@@ -13,8 +13,11 @@ base_page = {
 
 
 def validate_presenters(presenters):
-    """Presenter data is not invalid."""
-    mandatory_keys = ["lead", "email", "name", "country", "state"]
+    """Check validity of  the list of presenters.
+
+    This function should never fail since the checks should already have been made client-side.
+     """
+    mandatory_keys = ["lead", "email", "name", "bio", "country", "state"]
     lead_found = False
     lead_presenter = ""
     for presenter in presenters:
@@ -33,21 +36,24 @@ def validate_presenters(presenters):
 
 
 def validate_proposal_data(proposal_data):
-    """Proposal data is not invalid."""
-    mandatory_keys = ['title', 'abstract', 'session_type', 'presenters']
+    """Check validity of the proposal data.
+
+    This function should never fail since the checks should already have been made client-side.
+    """
+    mandatory_keys = ['title', 'summary', 'session_type', 'presenters']
     for key in mandatory_keys:
         if key not in proposal_data:
             return False, '{} information is not present in proposal'.format(key)
         if proposal_data[key] is None:
             return False, '{} information should not be empty'.format(key)
-    if type(proposal_data['presenters']) != list:
-        return False, 'presenters data is malformed'
-    if len(proposal_data['presenters']) < 1:
-        return False, 'At least one presenter needed'
     if len(proposal_data.get('title')) < 5:
         return False, 'Title is too short'
-    if len(proposal_data.get('abstract')) < 50:
-        return False, 'Proposal too short'
+    if len(proposal_data.get('summary')) < 50:
+        return False, 'Summary is too short'
+    if type(proposal_data['presenters']) != list:
+        return False, 'Presenters data is malformed'
+    if len(proposal_data['presenters']) < 1:
+        return False, 'At least one presenter needed'
     (result, message) = validate_presenters(proposal_data['presenters'])
     if not result:
         return result, message
@@ -65,6 +71,7 @@ def submit():
             user = User.query.filter_by(email=session['email']).first()
             if user:
                 proposal_data = request.json
+                print(proposal_data)
                 status, message = validate_proposal_data(proposal_data)
                 if not status:
                     # NB This should never be executed.
@@ -74,8 +81,8 @@ def submit():
                 proposal = Proposal(
                     user,
                     proposal_data.get('title').strip(),
-                    SessionType(proposal_data.get('session_type')),
-                    proposal_data.get('abstract').strip()
+                    SessionType(proposal_data.get('session_type').strip()),
+                    proposal_data.get('summary').strip()
                 )
                 db.session.add(proposal)
                 presenters_data = proposal_data.get('presenters')
@@ -83,7 +90,7 @@ def submit():
                     presenter = Presenter(
                         presenter_data['email'],
                         presenter_data['name'],
-                        'A human being.',
+                        presenter_data['bio'],
                         presenter_data['country'],
                         presenter_data['state'],
                     )
@@ -92,18 +99,27 @@ def submit():
                 db.session.commit()
                 session['just_submitted'] = True
                 return jsonify('submit_success')
+            return render_template('general.html', page=md(base_page, {
+                'title': 'Submit POST Error',
+                'data': 'The logged in user is not in database. This cannot happen.',
+            }))
         user = User.query.filter_by(email=session['email']).first()
         if user:
             return render_template('submit.html', page=md(base_page, {
                 'title': 'Submit a proposal for ACCU {}'.format(year),
                 'name': user.name,
                 'proposer': {
-                'email': user.email,
-                'name': user.name,
-                'bio': 'A human being.',
-                'country': user.country,
-                'state': user.state,
-                }
+                    'email': user.email,
+                    'name': user.name,
+                    'bio': 'A human being we know, but we need something somewhat more uniquely personal.',
+                    'country': user.country,
+                    'state': user.state,
+                },
+                'countries': sorted(countries.keys())
+            }))
+        return render_template('general.html', page=md(base_page, {
+            'title': 'Submission Problem',
+            'data': 'The logged in user is not in database. This cannot happen.',
         }))
     return render_template('general.html', page=md(base_page, {
         'title': 'Submit Not Possible',
@@ -175,7 +191,8 @@ def proposal_update(id):
                 'name': proposal.proposer.name,
                 'country': proposal.proposer.country,
                 'state': proposal.proposer.state,
-            }
+            },
+            'countries': sorted(countries.keys())
         }))
     return render_template('general.html', page=md(base_page, {
         'title': 'Proposal Update Failure',

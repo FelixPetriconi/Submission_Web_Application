@@ -260,57 +260,10 @@ function checkDuplicateEmail() {
     })
 }
 */
-/*
-function notify(message) {
-    $("#helpmessage").text(message);
-    $("#helpmessage").fadeIn(100);
-    //$("#helpmessage").fadeOut(3000);
-}
-*/
-/*
-function hidehelp() {
-    $("#helpmessage").fadeOut(100);
-}
-*/
-/*
-function addPresenterOld() {
-    const presenter = $('#presenter').val();
-    if (!isValidEmail(presenter)) {
-        return false;
-    }
-    const presenters_sel = $('#presenters');
-    const allPresenters = [];
-    $('#presenters option').each(function() {
-        console.log($(this).val());
-        allPresenters.push($(this).val());
-    });
-    if (!allPresenters.length) {
-        $('#presenters').append('<option value="' + presenter + '">' + presenter + '</option>');
-        allPresenters.push(presenter);
-    }
-    $.each(allPresenters, function(idx) {
-        if (presenter === allPresenters[idx]) {
-            console.log("Entry already present");
-        } else {
-            presenters_sel.append('<option value="' + presenter + '">' + presenter + '</option>');
-        }
-    });
-}
-*/
-/*
-function addPresenter(tableId) {
-    const presenter_tbl_loc = '#' + tableId;
-    const presenter_loc = presenter_tbl_loc + '> tbody > tr';
-    const count = $(presenter_loc).length;
-    const onChangeString = "javascript:loadState('p_ctry_" + count + "', 'p_states_" + count + "', 'p_state_" + count + "', true);";
 
-    const htmlString = "<tr> <td class=\"narrow\"> <input type=\"radio\" name=\"lead\" id=\"lead\" value=\"" + count +  "\"> </td> <td> <input type=\"text\" name=\"p_email_" + count + "\" id=\"p_email_" + count + "\" placeholder=\"Email Address\"> </td>  <td> <input type=\"text\" name=\"p_fname_" + count + "\" id=\"p_fname_" + count + "\" placeholder=\"First Name\"> </td> <td> <input type=\"text\" name=\"p_lname_" + count + "\" id=\"p_lname_" + count + "\" placeholder=\"Last Name\"> </td>  <td> <select class=\"widetable\" name=\"p_ctry_" + count + "\" id=\"p_ctry_" + count + "\" onchange=\"" + onChangeString + "\" onkeyup=\"this.onchange();\" onmouseup=\"this.onchange();\"> </td> <td> <input type=\"text\" name=\"p_state_" + count + "\" id=\"p_state_" + count + "\" placeholder=\"State\"> </td> <td style=\"display: none;\"> <select class=\"widetable\" name=\"p_states_" + count + "\" id=\"p_states_" + count + "\"> </td> <td> <button type=\"button\" class=\"adder\" onclick=\"javascript:addPresenter('presenterstable');\">+</button> </td> </tr>";
-
-    $(presenter_tbl_loc).find('tbody')
-        .append(htmlString);
-    const options = $('#p_ctry_1 > option').clone();
-    const new_loc = '#p_ctry_' + count;
-    $(new_loc).append(options);
+/*
+function validatePresenter(details) {
+    return true;
 }
 */
 
@@ -323,37 +276,36 @@ function clearSubmitAlerts() {
 }
 
 function submitProposal() {
-    const proposalTitle = $('#title').val();
-    const abstract = $('#abstract').val();
-    const sessionType = $('#session_type').val();
-    const presenterRows = $('#presenters-body tr');
-    const proposer = $('#def_email').text();
-    const presenters = [];
-    let leadId = $('input[name=lead]:checked', '#proposalform').val();
-    if (leadId === undefined) {
-        leadId = 1;
-    }
-    $('#presenters-body > tr').each(function(idx) {
-        const cells = $(this).find('td');
-        const presenter = {
-            'lead': (leadId == (idx + 1)) ? 1 : 0,
-            'email' : cells[2].innerText,
-            'fname' : cells[3].innerText,
-            'lname' : cells[4].innerText,
-            'country' : cells[5].innerText,
-            'state' : cells[6].innerText
-        };
-        presenters.push(presenter);
-    });
+    const title = $('#title').val()
+    const sessionType = $('#session_type').val()
+    const summary = $('#summary').val()
+    const presenters = []
+    $('#presenters  tr').each((index, element) => {
+    	presenters.push('burble', index, element)
+	    presenters.push('blob', this)
+    	//presenters.push('burble', index, element, $( this ))
+	    //presenters.push('blob', $(this))
+    	//presenters.push('flob', $(this).find('.email_field').val())
+    	//presenters.push('adob', $(this).find('.name_field').val())
+    	/*
+	    presenters.push({
+		    'email': $(this).find('email_field').val(),
+		    'name': $(this).find('name_field').val(),
+		    'is_lead': $(this).find('is_lead_field').val(),
+		    'bio': $(this).find('bio_field').val(),
+		    'country': $(this).find('country_field').val(),
+		    'state': $(this).find('state_field').val(),
+	    })
+	    */
+    })
     $.ajax({
         method: 'POST',
         url: '/submit',
         data: JSON.stringify({
-	        'title': proposalTitle,
-	        'abstract': abstract,
-	        'proposer': proposer,
-	        'proposalType': proposalType,
-	        'presenters': presenters
+	        'title': title,
+	        'session_type': sessionType,
+	        'summary': summary,
+	        'presenters': presenters,
         }),
         dataType: 'json',
         contentType: 'application/json',
@@ -365,57 +317,63 @@ function submitProposal() {
 			    alert(jqXHR.status + '\n' +  jqXHR.responseText);
 		    },
 	    },
-    });
-    return true;
+    })
+    return true
 }
 
-/*
-function validatePresenter(details) {
-    return true;
-}
-*/
-/*
 function addNewPresenter() {
     const email = $("#add-presenter-email").val();
-    const fname = $("#add-presenter-fname").val();
-    const lname = $("#add-presenter-lname").val();
-    const ctry = $("#add-presenter-country").val();
-    const state_sel = $("#add-presenter-states").val();
-    const state_txt = $("#add-presenter-state").val();
-    const presenters = $("#presenters-body");
-    const trCnt = $("#presenters-body tr").length;
-    const sno = trCnt + 1;
-    const presenterRow = _.template($("#presenters-row-template").html());
-    presenters.append(presenterRow({"sno": sno, "email": email, "fname": fname, "lname": lname, "ctry": ctry, "state": state}));
-    resetModal();
+    const name = $("#add-presenter-name").val();
+    const bio = $("#add-presenter-bio").val();
+    const country = $("#add-presenter-country").val();
+    const state = $("#add-presenter-states").val();
+	$('#presenters tr:last').after(`
+<tr><td>
+	<div class="form-group">
+		<label class="control-label col-sm-2">Email</label>
+		<div class="col-sm-4">
+		    <input class="email_field" type="text" value="${ email }">
+		</div>
+    </div>
+	<div class="form-group">
+	    <label class="control-label col-sm-2">Name</label>
+	    <div class="col-sm-4">
+		    <input class="name_field" type="text" value="${ name }">
+		</div>
+	</div>
+	<div class="form-group">
+        <label class="control-label col-sm-2">Is Lead?</label>
+        <div class="col-sm-4">
+            <input class="is_lead_field" type="checkbox" value="Is Lead?">
+        </div>
+    </div>
+	<div class="form-group">
+		<label class="control-label col-sm-2">Bio</label>
+		<div class="col-sm-4">
+	    	<textarea class="bio_field" rows="24" cols="50" placeholder="${ bio }"></textarea>
+		</div>
+	</div>
+	<div class="form-group">
+	    <label class="control-label col-sm-2">Country</label>
+		<div class="col-sm-4">
+	    	<input class="country_field" type="text" value="${ country }">
+	    </div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-sm-2">State</label>
+		<div class="col-sm-4">
+		    <input class="state_field" type="text" value="${ state }">
+		</div>
+	</div>
+</td></tr>
+`)
+	$('.modal').on('hidden.bs.modal', () => {
+		$("#add-presenter-modal").find('form')[0].reset();
+	});
     $("#add-presenter-modal").modal('hide');
     return true;
 }
-*/
-/*
-function resetModal() {
-    $('.modal').on('hidden.bs.modal', function(){
-        $("#add-presenter-modal").find('form')[0].reset();
-    });
-}
-*/
-/*
-function deleteRow(rowIdx) {
-    const presenters = $("#presenters-body");
-    const msg = $("#presenters-body tr:eq(1)").text();
-    alert(msg);
-}
-*/
-/*
-function showPointer(element) {
-    element.css("cursor", "pointer");
-}
-*/
-/*
-function showDefaultPointer(element) {
-    element.css("cursor", "default");
-}
-*/
+
 /*
 function uploadReview(button) {
     const button = button.value;
