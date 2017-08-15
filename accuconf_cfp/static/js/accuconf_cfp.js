@@ -281,20 +281,18 @@ function submitProposal() {
     const summary = $('#summary').val()
     const presenters = []
     $('#presenters  tr').each((index, element) => {
-    	presenters.push('burble', index, element)
-	    presenters.push('blob', this)
-    	//presenters.push('burble', index, element, $( this ))
+    	presenters.push('burble', index, element, typeof(element))  // object
 	    //presenters.push('blob', $(this))
     	//presenters.push('flob', $(this).find('.email_field').val())
     	//presenters.push('adob', $(this).find('.name_field').val())
     	/*
 	    presenters.push({
-		    'email': $(this).find('email_field').val(),
-		    'name': $(this).find('name_field').val(),
-		    'is_lead': $(this).find('is_lead_field').val(),
-		    'bio': $(this).find('bio_field').val(),
-		    'country': $(this).find('country_field').val(),
-		    'state': $(this).find('state_field').val(),
+		    'email': $(this).find('.email_field').val(),
+		    'name': $(this).find('.name_field').val(),
+		    'is_lead': $(this).find('.is_lead_field').val(),
+		    'bio': $(this).find('.bio_field').val(),
+		    'country': $(this).find('.country_field').val(),
+		    'state': $(this).find('.state_field').val(),
 	    })
 	    */
     })

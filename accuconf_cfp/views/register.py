@@ -150,5 +150,5 @@ def registration_update_success():
         return redirect('/')
     return render_template('general.html',  page=utils.md(base_page, {
         'title': 'Registration Update Successful',
-        'data': 'Your registration details were successful updated.',
+        'data': 'Your registration details were successfully updated.',
     }))
