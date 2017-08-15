@@ -109,3 +109,51 @@ def test_invalid_email(client, registrant, monkeypatch):
                            code=400,
                            includes=('Validation failed for the following keys:', 'email'),
                            )
+
+
+def test_attempt_get_register_success_out_of_open_causes_redirect(client, monkeypatch):
+    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
+    monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
+    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+    get_and_check_content(client, '/register_success',
+                          code=302,
+                          includes=('Redirecting', '<a href="/">'),
+                          )
+
+
+def test_attempt_to_get_register_success_after_registration_delivers_correct_page(client, registrant, monkeypatch):
+    test_successful_user_registration(client, registrant, monkeypatch)
+    get_and_check_content(client, '/register_success',
+                          includes=(' – Registration Successful', 'You have successfully registered'),
+                          excludes=(),
+                          )
+
+
+def test_attempt_get_registration_update_success_out_of_open_causes_redirect(client, monkeypatch):
+    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
+    monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
+    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+    get_and_check_content(client, '/registration_update_success',
+                          code=302,
+                          includes=('Redirecting', '<a href="/">'),
+                          excludes=(),
+                          )
+
+
+def test_attempt_to_get_registration_update_success_not_after_registration_update_causes_redirect(client, registrant, monkeypatch):
+    test_successful_user_registration(client, registrant, monkeypatch)
+    get_and_check_content(client, '/registration_update_success',
+                          code=302,
+                          includes=('Redirecting', '<a href="/">'),
+                          excludes=(),
+                          )
+
+
+def test_attempted_registration_update_not_logged_in(client, registrant, monkeypatch):
+    test_successful_user_registration(client, registrant, monkeypatch)
+    monkeypatch.setitem(registrant, 'name', 'Jo Bloggs')
+    post_and_check_content(client, '/registration_update', json.dumps(registrant), 'application/json',
+                           code=302,
+                           includes=('Redirecting', '<a href="/">'),
+                           excludes=(),
+                           )

@@ -1,4 +1,4 @@
-[![Licence](https://img.shields.io/badge/license-GPL_3-green.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+[![GPLv3](https://img.shields.io/badge/license-GPL_3-green.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![Build Status](https://travis-ci.org/ACCUConf/ACCUConf_Submission_Web_Application.svg?branch=master)](https://travis-ci.org/ACCUConf/ACCUConf_Submission_Web_Application)
 [![Coverage Status](https://coveralls.io/repos/github/ACCUConf/ACCUConf_Submission_Web_Application/badge.svg?branch=master)](https://coveralls.io/github/ACCUConf/ACCUConf_Submission_Web_Application)
 

@@ -40,3 +40,6 @@ accuconf_config.py
 # Selenium related stuff
 ghostdriver.log
 geckodriver.log
+
+# Coverage test report
+/htmlcov/

@@ -43,7 +43,7 @@ def proposal_single_presenter():
         'proposer': 'a@b.c',
         'title': 'ACCU Proposal',
         'session_type': 'quickie',
-        'abstract': '''This is a test proposal that will have
+        'summary': '''This is a test proposal that will have
 dummy data. Also this is not a very
 lengthy proposal''',
         'presenters': [
@@ -65,7 +65,7 @@ def proposal_multiple_presenters_single_lead():
         'proposer': 'a@b.c',
         'title': 'ACCU Proposal',
         'session_type': 'miniworkshop',
-        'abstract': ''' This is a test proposal that will have
+        'summary': ''' This is a test proposal that will have
 dummy data. Also this is not a very
 lengthy proposal''',
         'presenters': [
@@ -156,6 +156,14 @@ def test_logged_in_user_can_submit_a_single_presenter_proposal(client, registrat
     assert len(presenter.presenter_proposals) == 1
     pp = presenter.presenter_proposals[0]
     assert p == pp
+
+
+def test_get_submit_success_after_successful_submission(client, registration_data, proposal_single_presenter, monkeypatch):
+    test_logged_in_user_can_submit_a_single_presenter_proposal(client, registration_data, proposal_single_presenter, monkeypatch)
+    get_and_check_content(client, '/submit_success',
+                          includes=('Submission Successful', 'Thank you, you have successfully submitted'),
+                          excludes=(login_menu_item, register_menu_item),
+                          )
 
 
 def test_logged_in_user_can_submit_multipresenter_single_lead_proposal(client, registration_data, proposal_multiple_presenters_single_lead, monkeypatch):
@@ -249,4 +257,14 @@ def test_not_logged_in_submit_proposal_then_attempt_to_update_it_fails(client, r
                               register_menu_item,
                           ),
                           excludes=(),
+                          )
+
+
+def test_attempt_get_sub_success_out_of_open_causes_redirect(client, monkeypatch):
+    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
+    monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
+    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+    get_and_check_content(client, '/submit_success',
+                          code=302,
+                          includes=('Redirecting', '<a href="/">'),
                           )

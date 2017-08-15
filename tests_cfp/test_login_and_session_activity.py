@@ -76,6 +76,34 @@ def test_successful_login(client, registrant, monkeypatch):
                            )
 
 
+def test_successful_login_checking_after_redirect(client, registrant, monkeypatch):
+    test_successful_login(client, registrant, monkeypatch)
+    get_and_check_content(client, '/login_success',
+                          includes=(' – Login Successful', 'Login successful'),
+                          excludes=(),
+                          )
+
+
+def test_logged_in_user_cannot_register(client, registrant, monkeypatch):
+    test_successful_login(client, registrant, monkeypatch)
+    post_and_check_content(client, '/register',
+                           json.dumps({'email': registrant['email'], 'passphrase': registrant['passphrase']}), 'application/json',
+                           code=302,
+                           includes=('Redirect', '<a href="/">',),
+                           excludes=(),
+                           )
+
+
+def test_logged_in_user_cannot_login_again(client, registrant, monkeypatch):
+    test_successful_login(client, registrant, monkeypatch)
+    post_and_check_content(client, '/login',
+                           json.dumps(registrant), 'application/json',
+                           code=302,
+                           includes=('Redirect', '<a href="/">',),
+                           excludes=(),
+                           )
+
+
 def test_wrong_passphrase_causes_login_failure(client, registrant, monkeypatch):
     test_user_can_register(client, registrant, monkeypatch)
     post_and_check_content(client, '/login',
@@ -93,6 +121,16 @@ def test_update_user_name(client, registrant, monkeypatch):
                            includes=('registration_update_success',),
                            excludes=(login_menu_item, register_menu_item,),
                            )
+
+
+def test_logout_not_in_open_state_cases_redirect(client, monkeypatch):
+    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
+    monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
+    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+    get_and_check_content(client, '/logout',
+                          code=302,
+                          includes=('Redirecting', '<a href="/">'),
+                          )
 
 
 def test_logout_without_login_is_noop(client, monkeypatch):
@@ -126,3 +164,46 @@ def test_logged_in_user_cannot_logout_with_json_post(client, registrant, monkeyp
                            code=405,
                            includes=('Method Not Allowed',),
                            )
+
+
+def test_attempt_get_login_success_out_of_open_causes_redirect(client, monkeypatch):
+    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
+    monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
+    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+    get_and_check_content(client, '/login_success',
+                          code=302,
+                          includes=('Redirecting', '<a href="/">'),
+                          )
+
+
+def test_attempt_to_get_login_success_not_after_login_causes_redirect(client, registrant, monkeypatch):
+    test_user_can_register(client, registrant, monkeypatch)
+    get_and_check_content(client, '/login_success',
+                          code=302,
+                          includes=('Redirecting', '<a href="/">'),
+                          )
+
+
+def test_logged_in_user_can_get_registration_update_page(client, registrant, monkeypatch):
+    test_successful_login(client, registrant, monkeypatch)
+    get_and_check_content(client, '/registration_update',
+                          includes=(' – Registration Details Updating',),
+                          excludes=(),
+                          )
+
+
+def test_registration_update(client, registrant, monkeypatch):
+    test_successful_login(client, registrant, monkeypatch)
+    monkeypatch.setitem(registrant, 'name', 'Jo Bloggs')
+    post_and_check_content(client, '/registration_update', json.dumps(registrant), 'application/json',
+                           includes=('registration_update_success',),
+                           excludes=(),
+                           )
+
+
+def test_get_registration_update_success_after_correct_registration_update(client, registrant, monkeypatch):
+    test_registration_update(client, registrant, monkeypatch)
+    get_and_check_content(client, '/registration_update_success',
+                          includes=(' – Registration Update Successful', 'Your registration details were successfully updated.'),
+                          excludes=(),
+                          )
