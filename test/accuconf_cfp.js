@@ -95,3 +95,30 @@ describe('puzzle setting and result consistency check.', () => {
         assert(!accuconf.isPuzzleResultCorrect(values[0] + values[1] + 1))
     })
 })
+
+describe('presenter bios are well formed', () => {
+    it('short bios fail', () => {
+        assert(!accuconf.isValidBio('fred'))
+    })
+    it('long bios succeed', () => {
+        assert(accuconf.isValidBio('Person has been doing stuff for a while and is thus a hoopy frood.'))
+    })
+})
+
+describe('session types are well formed', () => {
+    it('invalid session type fails', () => {
+        assert(!accuconf.isValidSessionType('fubar'))
+    })
+    it('valid session type works', () => {
+        assert(!accuconf.isValidSessionType('interactive'))
+    })
+})
+
+describe('presentation summaries are well formed', () => {
+    it('short summaries fail', () => {
+        assert(!accuconf.isValidSummary('fred'))
+    })
+    it('long summaries succeed', () => {
+        assert(accuconf.isValidSummary('This session will involve someone doing something and then interacting with whatever audience happens to be present.'))
+    })
+})
