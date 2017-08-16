@@ -17,7 +17,7 @@ def validate_presenters(presenters):
 
     This function should never fail since the checks should already have been made client-side.
      """
-    mandatory_keys = ["lead", "email", "name", "bio", "country", "state"]
+    mandatory_keys = ["is_lead", "email", "name", "bio", "country", "state"]
     lead_found = False
     lead_presenter = ""
     for presenter in presenters:
@@ -26,10 +26,10 @@ def validate_presenters(presenters):
                 return False, "{} attribute is mandatory for Presenters".format(key)
             if presenter[key] is None:
                 return False, "{} attribute should have valid data".format(key)
-        if "lead" in presenter and "email" in presenter:
-            if presenter["lead"] and lead_found:
+        if "is_lead" in presenter and "email" in presenter:
+            if presenter["is_lead"] and lead_found:
                 return False, "{} and {} are both marked as lead presenters".format(presenter["email"], lead_presenter)
-            elif presenter["lead"] and not lead_found:
+            elif presenter["is_lead"] and not lead_found:
                 lead_found = True
                 lead_presenter = presenter["email"]
     return True, "validated"
@@ -71,7 +71,6 @@ def submit():
             user = User.query.filter_by(email=session['email']).first()
             if user:
                 proposal_data = request.json
-                print(proposal_data)
                 status, message = validate_proposal_data(proposal_data)
                 if not status:
                     # NB This should never be executed.
@@ -94,7 +93,7 @@ def submit():
                         presenter_data['country'],
                         presenter_data['state'],
                     )
-                    ProposalPresenter(proposal, presenter, presenter_data['lead'])
+                    ProposalPresenter(proposal, presenter, presenter_data['is_lead'])
                     db.session.add(presenter)
                 db.session.commit()
                 session['just_submitted'] = True

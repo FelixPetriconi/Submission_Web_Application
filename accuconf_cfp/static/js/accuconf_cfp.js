@@ -280,22 +280,41 @@ function submitProposal() {
     const sessionType = $('#session_type').val()
     const summary = $('#summary').val()
     const presenters = []
-    $('#presenters  tr').each((index, element) => {
-    	presenters.push('burble', index, element, typeof(element))  // object
-	    //presenters.push('blob', $(this))
-    	//presenters.push('flob', $(this).find('.email_field').val())
-    	//presenters.push('adob', $(this).find('.name_field').val())
-    	/*
-	    presenters.push({
-		    'email': $(this).find('.email_field').val(),
-		    'name': $(this).find('.name_field').val(),
-		    'is_lead': $(this).find('.is_lead_field').val(),
-		    'bio': $(this).find('.bio_field').val(),
-		    'country': $(this).find('.country_field').val(),
-		    'state': $(this).find('.state_field').val(),
-	    })
-	    */
-    })
+	/*
+	  For some reason the jQuery approach fails to do the right thing because
+	  $(this) fails to be set. So do things with pure JavaScript (or is that ECMAScript)
+	  pending finding the correct jQuery solution.
+
+	$('#presenters  tr').each(() => {
+		presenters.push({
+			'email': $(this).find('.email_field').val(),
+			'name': $(this).find('.name_field').val(),
+			'is_lead': $(this).find('.is_lead_field').val(),
+			'bio': $(this).find('.bio_field').val(),
+			'country': $(this).find('.country_field').val(),
+			'state': $(this).find('.state_field').val(),
+		})
+	)
+	*/
+	const trNodes = document.getElementsByTagName('tr')
+	for (let i = 0; i < trNodes.length; ++i) {
+		const email = trNodes[i].getElementsByClassName('email_field')[0].value
+		const name = trNodes[i].getElementsByClassName('name_field')[0].value
+		const is_lead = trNodes[i].getElementsByClassName('is_lead_field')[0].checked
+		const bio = trNodes[i].getElementsByClassName('bio_field')[0].value
+		const countryNode = trNodes[i].getElementsByClassName('country_field')[0]
+		const country = countryNode.options[countryNode.selectedIndex].value
+		const state =  trNodes[i].getElementsByClassName('state_field')[0].value
+		const datum = {
+			'email': email,
+			'name': name,
+			'is_lead': is_lead,
+			'bio': bio,
+			'country': country,
+			'state': state,
+		}
+		presenters.push(datum)
+	}
     $.ajax({
         method: 'POST',
         url: '/submit',

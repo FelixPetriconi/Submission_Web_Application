@@ -49,7 +49,7 @@ lengthy proposal''',
         'presenters': [
             {
                 'email': 'a@b.c',
-                'lead': True,
+                'is_lead': True,
                 'name': 'User Name',
                 'bio': 'A nice member of the human race.',
                 'country': 'India',
@@ -71,7 +71,7 @@ lengthy proposal''',
         'presenters': [
             {
                 'email': 'a@b.c',
-                'lead': True,
+                'is_lead': True,
                 'name': 'User Name',
                 'bio': 'A person.',
                 'country': 'India',
@@ -79,7 +79,7 @@ lengthy proposal''',
             },
             {
                 'email': 'p2@b.c',
-                'lead': False,
+                'is_lead': False,
                 'name': 'Presenter Second',
                 'bio': 'Another person',
                 'country': 'India',
@@ -92,8 +92,8 @@ lengthy proposal''',
 @pytest.fixture
 def proposal_multiple_presenters_and_leads():
     proposal_data = proposal_multiple_presenters_single_lead()
-    assert proposal_data['presenters'][1]['lead'] == 0
-    proposal_data['presenters'][1]['lead'] = 1
+    assert not proposal_data['presenters'][1]['is_lead']
+    proposal_data['presenters'][1]['is_lead'] = True
     return proposal_data
 
 
