@@ -58,7 +58,7 @@ def test_logged_in_user_can_amend_registration_record(driver, registrant):
 @pytest.fixture
 def proposal_single_presenter():
     return {
-        'title': 'ACCU Proposal',
+        'title': 'A Proposal for a Quickie',
         'session_type': 'quickie',
         'summary': '''This is a test proposal that will have
 dummy data. Also this is not a very
@@ -87,7 +87,14 @@ def test_logged_in_user_can_submit_a_proposal(driver, registrant, proposal_singl
     driver.find_element_by_id('summary').send_keys(proposal_single_presenter['summary'])
     presenter = proposal_single_presenter['presenters'][0]
     for key in presenter.keys():
-        driver.find_element_by_class_name(key + '_field').send_keys(presenter[key])
+        if key == 'is_lead':
+            pass
+        elif key == 'country':
+            Select(driver.find_element_by_class_name(key + '_field')).select_by_value(presenter[key])
+        else:
+            element = driver.find_element_by_class_name(key + '_field')
+            element.clear()
+            element.send_keys(presenter[key])
     button = wait.until(ecs.element_to_be_clickable((By.ID, 'submit')))
     assert 'Submit' == driver.find_element_by_id('submit').text
     assert 'submitProposal()' == button.get_attribute('onclick')

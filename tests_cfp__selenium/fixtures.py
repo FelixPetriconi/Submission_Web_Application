@@ -8,6 +8,7 @@ import subprocess
 import time
 
 from selenium import webdriver
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 @pytest.fixture(scope='module', autouse=True)
@@ -36,10 +37,17 @@ def driver():
     # It seems geckodriver cannot work headless easily.
     # wd = webdriver.Firefox()
     # So we end up associating with the Borg.
+    capabilities = DesiredCapabilities.CHROME
+    capabilities['loggingPrefs'] = {
+        'browser': 'ALL',
+        # 'driver': 'ALL',
+    }
     options = webdriver.ChromeOptions()
     options.add_argument('headless')
-    wd = webdriver.Chrome(chrome_options=options)
+    wd = webdriver.Chrome(chrome_options=options, desired_capabilities=capabilities)
     yield wd
+    print('Browser', wd.get_log('browser'))
+    # print('Driver', wd.get_log('driver'))
     wd.quit()
 
 

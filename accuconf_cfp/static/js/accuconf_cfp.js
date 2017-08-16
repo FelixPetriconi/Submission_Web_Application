@@ -297,7 +297,7 @@ function isValidTitle(title) {
 }
 
 function isValidSessionType(sessionType) {
-	return sessionType in ['quickie', 'interactive', 'mini-workshop', 'workshop', 'full-day']
+	return ['quickie', 'session', 'miniworkshop', 'workshop', 'fulldayworkshop'].indexOf(sessionType) > -1
 }
 
 function isValidSummary(summary) {
@@ -344,8 +344,8 @@ function isValidSubmission(title, sessionType, summary, notes, constraints, pres
 	} else {
 		$('#constraints_alert').text('')
 	}
-	for (const p in presenters) {
-		if (!isValidPresenter(p)) {
+	for (const i in presenters) {
+		if (!isValidPresenter(presenters[i])) {
 			$('#presenter_alert').text('Presenter not valid.')
 			returnCode = false
 		} else {
@@ -395,7 +395,7 @@ function submitProposal() {
 			'state': state,
 		})
 	}
-	//if (isValidSubmission(title, sessionType, summary, notes, constraints, presenters)) {
+	if (isValidSubmission(title, sessionType, summary, notes, constraints, presenters)) {
 		$.ajax({
 			method: 'POST',
 			url: '/submit',
@@ -418,8 +418,10 @@ function submitProposal() {
 				},
 			},
 		})
-	//} else {
-	//}
+		$('#alert').text('Submitting login details.')
+	} else {
+		$('#alert').text('Problem with form, not submitting.')
+	}
     return false
 }
 
