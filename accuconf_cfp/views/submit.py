@@ -17,22 +17,22 @@ def validate_presenters(presenters):
 
     This function should never fail since the checks should already have been made client-side.
      """
-    mandatory_keys = ["is_lead", "email", "name", "bio", "country", "state"]
+    mandatory_keys = ['is_lead', 'email', 'name', 'bio', 'country', 'state']
     lead_found = False
-    lead_presenter = ""
+    lead_presenter = ''
     for presenter in presenters:
         for key in mandatory_keys:
             if key not in presenter:
-                return False, "{} attribute is mandatory for Presenters".format(key)
+                return False, '{} attribute is mandatory for Presenters'.format(key)
             if presenter[key] is None:
-                return False, "{} attribute should have valid data".format(key)
-        if "is_lead" in presenter and "email" in presenter:
-            if presenter["is_lead"] and lead_found:
-                return False, "{} and {} are both marked as lead presenters".format(presenter["email"], lead_presenter)
-            elif presenter["is_lead"] and not lead_found:
+                return False, '{} attribute should have valid data'.format(key)
+        if 'is_lead' in presenter and 'email' in presenter:
+            if presenter['is_lead'] and lead_found:
+                return False, '{} and {} are both marked as lead presenters'.format(presenter['email'], lead_presenter)
+            elif presenter['is_lead'] and not lead_found:
                 lead_found = True
-                lead_presenter = presenter["email"]
-    return True, "validated"
+                lead_presenter = presenter['email']
+    return True, 'validated'
 
 
 def validate_proposal_data(proposal_data):
@@ -46,7 +46,7 @@ def validate_proposal_data(proposal_data):
             return False, '{} information is not present in proposal'.format(key)
         if proposal_data[key] is None:
             return False, '{} information should not be empty'.format(key)
-    if len(proposal_data.get('title')) < 5:
+    if len(proposal_data.get('title')) < 8:
         return False, 'Title is too short'
     if len(proposal_data.get('summary')) < 50:
         return False, 'Summary is too short'
@@ -81,7 +81,9 @@ def submit():
                     user,
                     proposal_data.get('title').strip(),
                     SessionType(proposal_data.get('session_type').strip()),
-                    proposal_data.get('summary').strip()
+                    proposal_data.get('summary').strip(),
+                    proposal_data.get('notes').strip() if proposal_data.get('notes') else '',
+                    proposal_data.get('constraints').strip() if proposal_data.get('constraints') else '',
                 )
                 db.session.add(proposal)
                 presenters_data = proposal_data.get('presenters')

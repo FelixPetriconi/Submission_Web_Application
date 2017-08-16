@@ -1,7 +1,7 @@
 import pytest
 
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.ui import Select, WebDriverWait
 from selenium.webdriver.support import expected_conditions as ecs
 
 from configuration import base_url
@@ -62,13 +62,14 @@ def proposal_single_presenter():
         'session_type': 'quickie',
         'summary': '''This is a test proposal that will have
 dummy data. Also this is not a very
-lengthy proposal''',
+lengthy proposal. But it is longer than the
+minimum requirement.''',
         'presenters': [
             {
                 'email': 'a@b.c',
                 'name': 'User Name',
                 'is_lead': True,
-                'bio': 'A nice member of the human race.',
+                'bio': 'A nice member of the human race who has some experience of presenting.',
                 'country': 'India',
                 'state': 'TamilNadu'
             },
@@ -82,7 +83,7 @@ def test_logged_in_user_can_submit_a_proposal(driver, registrant, proposal_singl
     wait = WebDriverWait(driver, driver_wait_time)
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Submit'))
     driver.find_element_by_id('title').send_keys(proposal_single_presenter['title'])
-    driver.find_element_by_id('session_type').send_keys(proposal_single_presenter['session_type'])
+    Select(driver.find_element_by_id('session_type')).select_by_value(proposal_single_presenter['session_type'])
     driver.find_element_by_id('summary').send_keys(proposal_single_presenter['summary'])
     presenter = proposal_single_presenter['presenters'][0]
     for key in presenter.keys():
