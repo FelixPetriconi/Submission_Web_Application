@@ -11,8 +11,10 @@ from models.proposal import Proposal, Presenter, ProposalPresenter
 from models.score import Score, Comment
 from models.proposal_types import SessionType, ProposalState, SessionCategory, SessionAudience
 
+from fixtures import registrant
+
 # PyCharm believes it isn't a used symbol, but it is.
-from test_utils.fixtures import database, registrant
+from test_utils.fixtures import database
 
 user_data = registrant()
 

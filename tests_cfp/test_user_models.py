@@ -7,8 +7,11 @@ import pytest
 # Apparently unused but has required side effects.
 import configure
 
+# PyCharm fails to spot the use of this symbol as a fixture.
+from fixtures import registrant
+
 # PyCharm doesn't notice the use as a fixture.
-from test_utils.fixtures import database, registrant
+from test_utils.fixtures import database
 
 from models.user import User
 

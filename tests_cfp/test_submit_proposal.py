@@ -14,9 +14,12 @@ from accuconf import app
 from models.user import User
 from models.proposal_types import SessionType
 
+# PyCharm fails to spot the use of this symbol as a fixture.
+from fixtures import registrant
+
 from test_utils.constants import login_menu_item, register_menu_item, registration_update_menu_item
 # PyCharm fails to spot this is used as a fixture.
-from test_utils.fixtures import (client, registrant,
+from test_utils.fixtures import (client,
                                  proposal_single_presenter, proposal_multiple_presenters_single_lead,
                                  proposal_single_presenter_not_lead, proposal_single_presenter_lead_field_set_to_none,
                                  proposal_single_presenter_no_lead_field, proposal_multiple_presenters_and_leads,
