@@ -18,20 +18,20 @@ def validate_presenters(presenters):
     This function should never fail since the checks should already have been made client-side.
      """
     mandatory_keys = ['is_lead', 'email', 'name', 'bio', 'country', 'state']
-    lead_found = False
-    lead_presenter = ''
+    leads_found = []
     for presenter in presenters:
         for key in mandatory_keys:
             if key not in presenter:
                 return False, '{} attribute is mandatory for Presenters'.format(key)
             if presenter[key] is None:
                 return False, '{} attribute should have valid data'.format(key)
-        if 'is_lead' in presenter and 'email' in presenter:
-            if presenter['is_lead'] and lead_found:
-                return False, '{} and {} are both marked as lead presenters'.format(presenter['email'], lead_presenter)
-            elif presenter['is_lead'] and not lead_found:
-                lead_found = True
-                lead_presenter = presenter['email']
+        if presenter['is_lead']:
+            leads_found.append(presenter['email'])
+    lead_count = len(leads_found)
+    if lead_count == 0:
+        return False, 'No lead presenter.'
+    elif lead_count > 1:
+        return False, '{} marked as lead presenters'.format(leads_found)
     return True, 'validated'
 
 
