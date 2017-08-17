@@ -42,8 +42,7 @@ def register_and_login_user(driver, registrant):
         driver.find_element_by_id('passphrase').send_keys(registrant['passphrase'])
         button = wait.until(ecs.element_to_be_clickable((By.ID, 'login')))
         button.click()
-        wait.until(ecs.presence_of_element_located((By.CLASS_NAME, 'pagetitle')))
-        assert ' – Login Successful' in driver.find_element_by_class_name('pagetitle').text
+        wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Login Successful'))
 
 
 def test_logged_in_user_can_amend_registration_record(driver, registrant):
@@ -56,8 +55,7 @@ def test_logged_in_user_can_amend_registration_record(driver, registrant):
     assert 'Save' == driver.find_element_by_id('submit').text
     assert 'registerUser(false)' == button.get_attribute('onclick')
     button.click()
-    wait.until(ecs.presence_of_element_located((By.CLASS_NAME, 'pagetitle')))
-    assert ' – Registration Update Successful' in driver.find_element_by_class_name('pagetitle').text
+    wait.until(ecs.presence_of_element_located((By.CLASS_NAME, 'pagetitle')), ' – Registration Update Successful')
     assert 'Your registration details were successfully updated.' in driver.find_element_by_id('content').text
 
 
@@ -84,6 +82,5 @@ def test_logged_in_user_can_submit_a_proposal(driver, registrant, proposal_singl
     assert 'Submit' == driver.find_element_by_id('submit').text
     assert 'submitProposal()' == button.get_attribute('onclick')
     button.click()
-    wait.until(ecs.presence_of_element_located((By.CLASS_NAME, 'pagetitle')))
-    assert ' – Submission Successful' in driver.find_element_by_class_name('pagetitle').text
+    wait.until(ecs.presence_of_element_located((By.CLASS_NAME, 'pagetitle')), ' – Submission Successful')
     assert 'Thank you, you have successfully submitted a proposal for the ACCU' in driver.find_element_by_id('content').text
