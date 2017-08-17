@@ -7,6 +7,9 @@ import pytest
 # Apparently unused but has required side effects.
 import configure
 
+# PyCharm fails to spot the use of this symbol as a fixture.
+from fixtures import registrant
+
 # PyCharm doesn't notice the use as a fixture.
 from test_utils.fixtures import database
 
@@ -15,17 +18,7 @@ from models.user import User
 
 @pytest.mark.parametrize('user_data', (
     # A user with all fields set.
-    {
-        'email': 'a@b.c',
-        'passphrase': 'Some pass phrase or other.',
-        'name': 'User Name',
-        'country': 'Some Country',
-        'state': 'Some State',
-        'postal_code': 'Postcode',
-        'town_city': 'Town or City',
-        'street_address': 'Street Address',
-        'phone': '+01234567890',
-    },
+    registrant(),
     # A user with only the mandatory fields set, relying on the defaults
     # for the missing fields.
     {

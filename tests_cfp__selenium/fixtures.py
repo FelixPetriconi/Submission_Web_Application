@@ -49,19 +49,3 @@ def driver():
     print('Browser', wd.get_log('browser'))
     # print('Driver', wd.get_log('driver'))
     wd.quit()
-
-
-@pytest.fixture
-def registrant():
-    return {
-        'email': 'a@b.c',
-        'passphrase': 'Passphrase1',
-        'cpassphrase': 'Passphrase1',
-        'name': 'User Name',
-        'phone': '+011234567890',
-        'country': 'India',
-        'state': 'TamilNadu',
-        'postal_code': '123456',
-        'town_city': 'Chennai',
-        'street_address': 'Chepauk',
-    }
