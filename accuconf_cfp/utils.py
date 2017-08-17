@@ -57,6 +57,11 @@ def is_valid_name(name):
     return len(name) > 1
 
 
+def is_valid_bio(bio):
+    """Bios must be at least 40 characters."""
+    return len(bio) > 40
+
+
 def is_valid_phone(phone):
     """Phone numbers are required to conform to ITU rules."""
     return bool(re.compile(r'^\+?[0-9 ]+$').search(phone))
