@@ -12,19 +12,9 @@ from models.score import Score, Comment
 from models.proposal_types import SessionType, ProposalState, SessionCategory, SessionAudience
 
 # PyCharm believes it isn't a used symbol, but it is.
-from test_utils.fixtures import database
+from test_utils.fixtures import database, registrant
 
-user_data = {
-    'email': 'abc@b.c',
-    'passphrase': 'This is an interesting passphrase.',
-    'name': 'User Name',
-    'country': 'IND',
-    'state': 'KARNATAKA',
-    'postal_code': '560093',
-    'town_city': 'Town',
-    'street_address': 'Address',
-    'phone': '+01234567890',
-}
+user_data = registrant()
 
 presenter_data = {
     'email': user_data['email'],

@@ -289,6 +289,12 @@ function isValidPresenter(details) {
 	} else {
 		$('#state_alert').text('')
 	}
+	if (typeof details['is_lead'] !== 'boolean') {
+		$('#is_lead_alert').text('Is_Lead is not valid.')
+		returnCode = false
+	} else {
+		$('#is_lead_alert').text('')
+	}
 	return returnCode
 }
 
@@ -351,6 +357,10 @@ function isValidSubmission(title, sessionType, summary, notes, constraints, pres
 		} else {
 			$('#presenter_alert').text('')
 		}
+	}
+	const leads_list = presenters.filter((p) => { return p['is_lead'] })
+	if (leads_list.length !== 1) {
+		returnCode = false
 	}
 	//  TODO Must check there is one and only one lead presenter.
 	return returnCode

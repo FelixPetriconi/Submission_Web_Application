@@ -4,12 +4,16 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ecs
 
-from configuration import base_url
+from server_configuration import base_url
 from constants import driver_wait_time
+
+# Apparently unused but has required side effects.
+import configure
 
 # NB PyCharm can't tell these are used as fixtures, but they are.
 # NB server is an session scope autouse fixture that no test needs direct access to.
-from fixtures import driver, server, registrant
+from fixtures import driver, server
+from test_utils.fixtures import registrant
 
 user_is_registered = False
 

@@ -1,7 +1,7 @@
 import pathlib
 import sys
 
-from configuration import host, port
+from server_configuration import host, port
 
 sys.path.insert(0, str(pathlib.PurePath(__file__).parent.parent))
 
