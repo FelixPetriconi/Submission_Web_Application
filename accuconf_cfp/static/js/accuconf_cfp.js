@@ -352,6 +352,7 @@ function isValidSubmission(title, sessionType, summary, notes, constraints, pres
 			$('#presenter_alert').text('')
 		}
 	}
+	//  TODO Must check there is one and only one lead presenter.
 	return returnCode
 }
 

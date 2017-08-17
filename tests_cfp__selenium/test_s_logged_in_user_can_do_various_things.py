@@ -88,7 +88,8 @@ def test_logged_in_user_can_submit_a_proposal(driver, registrant, proposal_singl
     presenter = proposal_single_presenter['presenters'][0]
     for key in presenter.keys():
         if key == 'is_lead':
-            pass
+            if presenter[key]:
+                driver.find_element_by_class_name(key + '_field').click()
         elif key == 'country':
             Select(driver.find_element_by_class_name(key + '_field')).select_by_value(presenter[key])
         else:
@@ -99,6 +100,5 @@ def test_logged_in_user_can_submit_a_proposal(driver, registrant, proposal_singl
     assert 'Submit' == driver.find_element_by_id('submit').text
     assert 'submitProposal()' == button.get_attribute('onclick')
     button.click()
-    wait.until(ecs.presence_of_element_located((By.CLASS_NAME, 'pagetitle')))
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), 'Submission Successful'))
     assert 'Thank you, you have successfully submitted a proposal for the ACCU' in driver.find_element_by_id('content').text
