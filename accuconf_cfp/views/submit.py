@@ -1,7 +1,12 @@
 from flask import jsonify, render_template, request, session
 
 from accuconf_cfp import app, db, year, countries
-from accuconf_cfp.utils import is_acceptable_route, is_logged_in, md
+from accuconf_cfp.utils import (is_acceptable_route, is_logged_in, md,
+                                is_valid_email, is_valid_country, is_valid_name,
+                                is_valid_bio, is_valid_passphrase,
+                                is_valid_phone, is_valid_postal_code, is_valid_state,
+                                is_valid_street_address, is_valid_town_city
+                                )
 
 from models.user import User
 from models.proposal import Presenter, Proposal, ProposalPresenter
@@ -25,6 +30,16 @@ def validate_presenters(presenters):
                 return False, '{} attribute is mandatory for Presenters'.format(key)
             if presenter[key] is None:
                 return False, '{} attribute should have valid data'.format(key)
+        if not is_valid_email(presenter['email']):
+            return False, '{} not a valid email'.format(presenter['email'])
+        if not is_valid_name(presenter['name']):
+            return False, '{} not a valid name'.format(presenter['name'])
+        if not is_valid_bio(presenter['bio']):
+            return False, '{} not a valid bio'.format(presenter['bio'])
+        if not is_valid_state(presenter['state']):
+            return False, '{} not a valid state'.format(presenter['state'])
+        if not is_valid_country(presenter['country']):
+            return False, '{} not a valid country'.format(presenter['country'])
         if presenter['is_lead']:
             leads_found.append(presenter['email'])
     lead_count = len(leads_found)
@@ -72,11 +87,6 @@ def submit():
             if user:
                 proposal_data = request.json
                 status, message = validate_proposal_data(proposal_data)
-
-                print('XXXX', proposal_data)
-                print('XXXX', status)
-                print('XXXX', message)
-
                 if not status:
                     # NB This should never be executed.
                     response = jsonify(message)
