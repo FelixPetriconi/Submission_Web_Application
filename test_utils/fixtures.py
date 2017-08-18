@@ -60,8 +60,7 @@ def registrant():
 @pytest.fixture
 def proposal_single_presenter():
     return {
-        'proposer': 'a@b.c',
-        'title': 'ACCU Proposal',
+        'title': 'A single presenter proposal',
         'session_type': 'quickie',
         'summary': '''This is a test proposal that will have
 dummy data. Also this is not a very
@@ -82,8 +81,7 @@ lengthy proposal''',
 @pytest.fixture
 def proposal_multiple_presenters_single_lead():
     return {
-        'proposer': 'a@b.c',
-        'title': 'ACCU Proposal',
+        'title': 'A mulit presenter proposal',
         'session_type': 'miniworkshop',
         'summary': ''' This is a test proposal that will have
 dummy data. Also this is not a very

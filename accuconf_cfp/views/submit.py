@@ -87,10 +87,6 @@ def submit():
             if user:
                 proposal_data = request.json
                 status, message = validate_proposal_data(proposal_data)
-
-                print('XXXX', proposal_data)
-                print('XXXX', status, message)
-
                 if not status:
                     # NB This should never be executed.
                     response = jsonify(message)
