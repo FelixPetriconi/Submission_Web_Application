@@ -106,7 +106,7 @@ def test_logged_in_user_can_submit_a_single_presenter_proposal(client, registran
                            includes=('submit_success',),
                            excludes=(login_menu_item, register_menu_item),
                            )
-    user = User.query.filter_by(email='a@b.c').all()
+    user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 1
     user = user[0]
     assert user is not None
@@ -141,7 +141,7 @@ def test_logged_in_user_can_submit_multipresenter_single_lead_proposal(client, r
                            includes=('submit_success',),
                            excludes=(login_menu_item, register_menu_item),
                            )
-    user = User.query.filter_by(email='a@b.c').all()
+    user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 1
     user = user[0]
     assert user is not None
@@ -149,24 +149,28 @@ def test_logged_in_user_can_submit_multipresenter_single_lead_proposal(client, r
     proposal = user.proposals[0]
     assert proposal is not None
     assert proposal.session_type == SessionType.miniworkshop
-    assert len(proposal.presenters) == 2
-    assert len(proposal.proposal_presenters) == 2
-    if proposal.proposal_presenters[0].is_lead:
-        assert proposal.presenters[0].email == user.email
-        assert proposal.presenters[1].email == 'p2@b.c'
+    presenters = proposal.presenters
+    proposal_presenters = proposal.proposal_presenters
+    assert len(presenters) == 2
+    assert len(proposal_presenters) == 2
+    original_presenters = proposal_multiple_presenters_single_lead['presenters']
+    if proposal_presenters[0].is_lead:
+        assert presenters[0].email == original_presenters[0]['email']
+        assert presenters[1].email == original_presenters[1]['email']
     else:
-        assert proposal.presenters[0].email == 'p2@b.c'
-        assert proposal.presenters[1].email == user.email
+        assert presenters[0].email == original_presenters[1]['email']
+        assert presenters[1].email == original_presenters[0]['email']
 
 
 def test_logged_in_user_cannot_submit_multipresenter_multilead_proposal(client, registrant, proposal_multiple_presenters_and_leads, monkeypatch):
     test_ensure_registration_and_login(client, registrant, monkeypatch)
+    presenters = proposal_multiple_presenters_and_leads['presenters']
     post_and_check_content(client, '/submit', json.dumps(proposal_multiple_presenters_and_leads), 'application/json',
                            code=400,
-                           includes=("['a@b.c', 'p2@b.c'] marked as lead presenters",),
+                           includes=("['{}', '{}'] marked as lead presenters".format(presenters[0]['email'], presenters[1]['email']),),
                            excludes=(login_menu_item, register_menu_item),
                            )
-    user = User.query.filter_by(email='a@b.c').all()
+    user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 1
     user = user[0]
     assert user is not None
@@ -179,7 +183,7 @@ def test_logged_in_get_proposals_page(client, registrant, proposal_single_presen
                           includes=(
                               'My Proposals',
                               'The following are your current proposals. Click on the one you wish to update.',
-                              '<li><a href="/proposal_update/1"> ACCU Proposal </a></li>',
+                              '<li><a href="/proposal_update/1"> A single presenter proposal </a></li>',
                               registration_update_menu_item,
                           ),
                           excludes=(login_menu_item, register_menu_item)
