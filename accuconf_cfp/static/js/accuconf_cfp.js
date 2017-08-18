@@ -350,6 +350,7 @@ function isValidSubmission(title, sessionType, summary, notes, constraints, pres
 	} else {
 		$('#constraints_alert').text('')
 	}
+	return returnCode
 	for (const i in presenters) {
 		if (!isValidPresenter(presenters[i])) {
 			$('#presenter_alert').text('Presenter not valid.')
@@ -390,13 +391,13 @@ function submitProposal() {
 	*/
 	const trNodes = document.getElementsByTagName('tr')
 	for (let i = 0; i < trNodes.length; ++i) {
-		const email = trNodes[i].getElementsByClassName('email_field')[0].value
-		const name = trNodes[i].getElementsByClassName('name_field')[0].value
-		const is_lead = trNodes[i].getElementsByClassName('is_lead_field')[0].checked
-		const bio = trNodes[i].getElementsByClassName('bio_field')[0].value
-		const countryNode = trNodes[i].getElementsByClassName('country_field')[0]
+		const email = document.getElementById(`email_${i}_field`).value
+		const name = document.getElementById(`name_${i}_field`).value
+		const is_lead = document.getElementById(`is_lead_${i}_field`).checked
+		const bio = document.getElementById(`bio_${i}_field`).value
+		const countryNode = document.getElementById(`country_${i}_field`)
 		const country = countryNode.options[countryNode.selectedIndex].value
-		const state =  trNodes[i].getElementsByClassName('state_field')[0].value
+		const state =  document.getElementById(`state_${i}_field`).value
 		presenters.push({
 			'email': email,
 			'name': name,
@@ -439,49 +440,64 @@ function submitProposal() {
 let current_presenter_number = 0
 
 function addNewPresenter() {
-    const email = $("#add-presenter-email").val()
-    const name = $("#add-presenter-name").val()
-    const is_lead = $("#add-presenter-is_lead").val()
-    const bio = $("#add-presenter-bio").val()
-    const country = $("#add-presenter-country").val()
-    const state = $("#add-presenter-states").val()
+    const email = $('#add-presenter-email').val()
+    const name = $('#add-presenter-name').val()
+    const bio = $('#add-presenter-bio').val()
+    const country = $('#add-presenter-country option:selected').val()
+    const state = $('#add-presenter-states').val()
+	if (!isValidPresenter({
+			'email': email,
+			'name': name,
+			'is_lead': false,
+			'bio': bio,
+			'country': country,
+			'state': state,
+		})) {
+    	return false
+	}
     current_presenter_number++
     $('#presenters tr:last').after(`
 <tr><td>
 	<div class="form-group">
 		<label class="control-label col-sm-2">Email</label>
 		<div class="col-sm-4">
-		    <input class="email_field" id="email_field_${ current_presenter_number }" type="text" value="${ email }">
+		    <input class="email_field" id="email_${ current_presenter_number }_field" type="text" value="${ email }">
+                    <span class="help-block" id="email_${ current_presenter_number}_alert"></span>
 		</div>
     </div>
 	<div class="form-group">
 	    <label class="control-label col-sm-2">Name</label>
 	    <div class="col-sm-4">
-		    <input class="name_field" id="name_field_${ current_presenter_number }" type="text" value="${ name }">
+		    <input class="name_field" id="name_${ current_presenter_number }_field" type="text" value="${ name }">       
+             <span class="help-block" id="name_${ current_presenter_number}_alert"></span>
 		</div>
 	</div>
 	<div class="form-group">
-        <label class="control-label col-sm-2">Is Lead?</label>
-        <div class="col-sm-4">
-            <input class="is_lead_field" id="is_lead_field_${ current_presenter_number }" type="checkbox" value="Is Lead?">
+            <label class="control-label col-sm-2">Is Lead?</label>
+            <div class="col-sm-4">
+                <input class="is_lead_field" id="is_lead_${ current_presenter_number }_field" type="checkbox">
+            </div>
         </div>
-    </div>
 	<div class="form-group">
 		<label class="control-label col-sm-2">Bio</label>
 		<div class="col-sm-4">
-	    	<textarea class="bio_field" id="bio_field_${ current_presenter_number }" rows="24" cols="50" placeholder="${ bio }"></textarea>
+	    	<textarea class="bio_field" id="bio_${ current_presenter_number }_field" rows="24" cols="40">${bio}</textarea>
+            <span class="help-block" id="bio_${ current_presenter_number}_alert"></span>
 		</div>
 	</div>
 	<div class="form-group">
 	    <label class="control-label col-sm-2">Country</label>
 		<div class="col-sm-4">
-	    	<input class="country_field" id="country_field_${ current_presenter_number }" type="text" value="${ country }">
+             <select name="country_field" id="country_${ current_presenter_number }_field">
+                  <option value="United Kingdom" selected > United Kingdom</option>
+              </select>
 	    </div>
 	</div>
 	<div class="form-group">
 		<label class="control-label col-sm-2">State</label>
 		<div class="col-sm-4">
-		    <input class="state_field" id="state_field_${ current_presenter_number }" type="text" value="${ state }">
+		    <input class="state_field" id="state_${ current_presenter_number }_field" type="text" value="${ state }">
+            <span class="help-block" id="state_${ current_presenter_number}_alert"></span>
 		</div>
 	</div>
 </td></tr>

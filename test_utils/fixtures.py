@@ -90,7 +90,7 @@ dummy data. Also this is not a very
 lengthy proposal''',
         'presenters': [
             {
-                'email': 'a@b.c',
+                'email': 'p1@b.c',
                 'is_lead': True,
                 'name': 'User Name',
                 'bio': 'A person with a good history of presentations working with someone new to presenting.',

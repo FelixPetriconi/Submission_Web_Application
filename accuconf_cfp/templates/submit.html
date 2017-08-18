@@ -24,12 +24,14 @@
                 <label for="title" class="control-label col-sm-3">Title</label>
                 <div class="col-sm-8">
                     <input type="text" name="title" id="title" size="50" placeholder="Title (minimum 8 characters)">
+                    <span class="help-block" id="title_alert"></span>
                 </div>
             </div>
             <div class="form-group">
                 <label for="summary" class="control-label col-sm-3">Abstract</label>
                 <div class="col-sm-8">
-                    <textarea rows="24" cols="40" name="summary" id="summary" placeholder="Proposal summary (minimum 50 characters)"></textarea>
+                    <textarea rows="24" cols="40" name="summary" id="summary" placeholder="Proposal summary (minimum 50 characters) this will be published"></textarea>
+                    <span class="help-block" id="summary_alert"></span>
                 </div>
             </div>
             <div class="form-group">
@@ -48,18 +50,21 @@
                 <label for="tags" class="control-label col-sm-3">Category</label>
                 <div class="col-sm-8">
                     <input type="text" name="tags" id="tags" placeholder="Category" data-role="tagsinput">
+                    <span class="help-block" id="category_alert"></span>
                 </div>
             </div>
             <div class="form-group">
-                <label for="notes" class="control-label col-sm-3">Abstract</label>
+                <label for="notes" class="control-label col-sm-3">Notes to the Committee</label>
                 <div class="col-sm-8">
-                    <textarea rows="12" cols="40" name="notes" id="notes" placeholder="Noes to the committee"></textarea>
+                    <textarea rows="12" cols="40" name="notes" id="notes" placeholder="Notes to the committee (optional) these will not be published"></textarea>
+                    <span class="help-block" id="notes_alert"></span>
                 </div>
             </div>
              <div class="form-group">
-                <label for="constraints" class="control-label col-sm-3">Abstract</label>
+                <label for="constraints" class="control-label col-sm-3">Scheduling Constraints</label>
                 <div class="col-sm-8">
-                    <textarea rows="8" cols="40" name="constraints" id="constraints" placeholder="Any scheduling constraints"></textarea>
+                    <textarea rows="8" cols="40" name="constraints" id="constraints" placeholder="Any scheduling constraints (optional)"></textarea>
+                    <span class="help-block" id="constraints_alert"></span>
                 </div>
             </div>
            <div class="form-group" id="copresenters">
@@ -71,31 +76,34 @@
                                  <div class="form-group">
                                      <label class="control-label col-sm-2">Email</label>
                                      <div class="col-sm-4">
-                                         <input class="email_field" id="email_field_0" type="text" value="{{ page.proposer.email }}">
+                                         <input class="email_field" id="email_0_field" type="text" value="{{ page.proposer.email }}">
+                                         <span class="help-block" id="email_0_alert"></span>
                                      </div>
                                  </div>
                                  <div class="form-group">
                                      <label class="control-label col-sm-2">Name</label>
                                      <div class="col-sm-4">
-                                         <input class="name_field" id="name_field_0" type="text" value="{{ page.proposer.name }}">
+                                         <input class="name_field" id="name_0_field" type="text" value="{{ page.proposer.name }}">
+                                         <span class="help-block" id="name_0_alert"></span>
                                      </div>
                                  </div>
                                  <div class="form-group">
                                      <label class="control-label col-sm-2">Is Lead?</label>
                                      <div class="col-sm-4">
-                                         <input class="is_lead_field" id="is_lead_field_0" type="checkbox" value="Is Lead?">
+                                         <input class="is_lead_field" id="is_lead_0_field" type="checkbox" value="Is Lead?">
                                      </div>
                                  </div>
                                  <div class="form-group">
                                      <label class="control-label col-sm-2">Bio</label>
                                      <div class="col-sm-4">
-                                         <textarea class="bio_field" id="bio_field_0" rows="24" cols="50" placeholder="{{ page.proposer.bio }}"></textarea>
+                                         <textarea class="bio_field" id="bio_0_field" rows="12" cols="40" placeholder="{{ page.proposer.bio }}"></textarea>
+                                         <span class="help-block" id="bio_0_alert"></span>
                                      </div>
                                  </div>
                                  <div class="form-group">
                                      <label class="control-label col-sm-2">Country</label>
                                      <div class="col-sm-4">
-                                         <select class="country_field" id="country_field_0">
+                                         <select class="country_field" id="country_0_field">
                                              {% for x in  page.countries   %}
                                              <option value="{{ x }}" {% if x == page.proposer.country %} selected  {% endif %}>{{ x }}</option>
                                              {% endfor %}
@@ -105,7 +113,8 @@
                                  <div class="form-group">
                                      <label class="control-label col-sm-2">State</label>
                                      <div class="col-sm-4">
-                                         <input class="state_field" id="state_field_0" type="text" value="{{ page.proposer.state }}">
+                                         <input class="state_field" id="state_0_field" type="text" value="{{ page.proposer.state }}">
+                                         <span class="help-block" id="state_0_alert"></span>
                                      </div>
                                  </div>
                              </td>
@@ -136,24 +145,21 @@
                                 <label for="add-presenter-email" class="control-label col-sm-2">Email</label>
                                 <div class="col-sm-4">
                                     <input type="text" name="add-presenter-email" id="add-presenter-email">
+                                    <span class="help-block" id="add_presenter_email_alert"></span>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="add-presenter-name" class="control-label col-sm-2">Name</label>
                                 <div class="col-sm-4">
                                     <input type="text" name="add-presenter-name" id="add-presenter-name">
+                                    <span class="help-block" id="add_presenter_name_alert"></span>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                              <label for="add-presenter-is-lead" class="control-label col-sm-2">Is Lead?</label>
-                              <div class="col-sm-4">
-                                <input type="checkbox" name="add-presenters-is_lead" id="add-presenter-is_lead" value="Is Lead?">
-                              </div>
                             </div>
                             <div class="form-group">
                                 <label for="add-presenter-bio" class="control-label col-sm-2">Bio</label>
                                 <div class="col-sm-4">
-                                    <textarea rows="24" cols="50" name="add-presenter-bio" id="add-presenter-bio" placeholder="Presenter Bio (minimum 50 characters)"></textarea>
+                                    <textarea rows="24" cols="50" name="add-presenter-bio" id="add-presenter-bio" placeholder="Presenter Bio (minimum 50 characters) this will be published"></textarea>
+                                    <span class="help-block" id="add_presenter_bio_alert"></span>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -170,6 +176,7 @@
                                 <label for="add-presenter-state" class="control-label col-sm-2">State</label>
                                 <div class="col-sm-4">
                                     <input type="text" name="add-presenter-state" id="add-presenter-state">
+                                    <span class="help-block" id="add_presenter_state_alert"></span>
                                 </div>
                             </div>
                         </form>

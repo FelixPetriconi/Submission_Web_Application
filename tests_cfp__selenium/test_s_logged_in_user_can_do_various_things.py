@@ -71,11 +71,11 @@ def test_logged_in_user_can_submit_a_single_presenter_proposal(driver, registran
     for key in presenter.keys():
         if key == 'is_lead':
             if presenter[key]:
-                driver.find_element_by_id(key + '_field_0').click()
+                driver.find_element_by_id(key + '_0_field').click()
         elif key == 'country':
-            Select(driver.find_element_by_id(key + '_field_0')).select_by_value(presenter[key])
+            Select(driver.find_element_by_id(key + '_0_field')).select_by_value(presenter[key])
         else:
-            element = driver.find_element_by_id(key + '_field_0')
+            element = driver.find_element_by_id(key + '_0_field')
             element.clear()
             element.send_keys(presenter[key])
     button = wait.until(ecs.element_to_be_clickable((By.ID, 'submit')))
@@ -98,11 +98,11 @@ def test_logged_in_user_can_submit_a_multiple_presenter_single_lead_proposal(dri
     for key in presenter.keys():
         if key == 'is_lead':
             if presenter[key]:
-                driver.find_element_by_id(key + '_field_0').click()
+                driver.find_element_by_id(key + '_0_field').click()
         elif key == 'country':
-            Select(driver.find_element_by_id(key + '_field_0')).select_by_value(presenter[key])
+            Select(driver.find_element_by_id(key + '_0_field')).select_by_value(presenter[key])
         else:
-            element = driver.find_element_by_id(key + '_field_0')
+            element = driver.find_element_by_id(key + '_0_field')
             element.clear()
             element.send_keys(presenter[key])
     add_presenter_button = wait.until(ecs.element_to_be_clickable((By.ID, 'add_presenter')))
