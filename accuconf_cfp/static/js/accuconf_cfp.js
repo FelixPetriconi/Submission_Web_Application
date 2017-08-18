@@ -436,55 +436,59 @@ function submitProposal() {
     return false
 }
 
+let current_presenter_number = 0
+
 function addNewPresenter() {
     const email = $("#add-presenter-email").val()
     const name = $("#add-presenter-name").val()
+    const is_lead = $("#add-presenter-is_lead").val()
     const bio = $("#add-presenter-bio").val()
     const country = $("#add-presenter-country").val()
     const state = $("#add-presenter-states").val()
-	$('#presenters tr:last').after(`
+    current_presenter_number++
+    $('#presenters tr:last').after(`
 <tr><td>
 	<div class="form-group">
 		<label class="control-label col-sm-2">Email</label>
 		<div class="col-sm-4">
-		    <input class="email_field" type="text" value="${ email }">
+		    <input class="email_field" id="email_field_${ current_presenter_number }" type="text" value="${ email }">
 		</div>
     </div>
 	<div class="form-group">
 	    <label class="control-label col-sm-2">Name</label>
 	    <div class="col-sm-4">
-		    <input class="name_field" type="text" value="${ name }">
+		    <input class="name_field" id="name_field_${ current_presenter_number }" type="text" value="${ name }">
 		</div>
 	</div>
 	<div class="form-group">
         <label class="control-label col-sm-2">Is Lead?</label>
         <div class="col-sm-4">
-            <input class="is_lead_field" type="checkbox" value="Is Lead?">
+            <input class="is_lead_field" id="is_lead_field_${ current_presenter_number }" type="checkbox" value="Is Lead?">
         </div>
     </div>
 	<div class="form-group">
 		<label class="control-label col-sm-2">Bio</label>
 		<div class="col-sm-4">
-	    	<textarea class="bio_field" rows="24" cols="50" placeholder="${ bio }"></textarea>
+	    	<textarea class="bio_field" id="bio_field_${ current_presenter_number }" rows="24" cols="50" placeholder="${ bio }"></textarea>
 		</div>
 	</div>
 	<div class="form-group">
 	    <label class="control-label col-sm-2">Country</label>
 		<div class="col-sm-4">
-	    	<input class="country_field" type="text" value="${ country }">
+	    	<input class="country_field" id="country_field_${ current_presenter_number }" type="text" value="${ country }">
 	    </div>
 	</div>
 	<div class="form-group">
 		<label class="control-label col-sm-2">State</label>
 		<div class="col-sm-4">
-		    <input class="state_field" type="text" value="${ state }">
+		    <input class="state_field" id="state_field_${ current_presenter_number }" type="text" value="${ state }">
 		</div>
 	</div>
 </td></tr>
 `)
-	$('.modal').on('hidden.bs.modal', () => {
-		$("#add-presenter-modal").find('form')[0].reset()
-	})
+    $('.modal').on('hidden.bs.modal', () => {
+	$("#add-presenter-modal").find('form')[0].reset()
+    })
     $("#add-presenter-modal").modal('hide')
     return false
 }

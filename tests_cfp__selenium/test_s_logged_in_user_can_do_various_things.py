@@ -13,7 +13,7 @@ import configure
 # NB PyCharm can't tell these are used as fixtures, but they are.
 # NB server is an session scope autouse fixture that no test needs direct access to.
 from fixtures import driver, server
-from test_utils.fixtures import registrant, proposal_single_presenter
+from test_utils.fixtures import registrant, proposal_single_presenter, proposal_multiple_presenters_single_lead
 
 user_is_logged_in = False
 
@@ -59,7 +59,7 @@ def test_logged_in_user_can_amend_registration_record(driver, registrant):
     assert 'Your registration details were successfully updated.' in driver.find_element_by_id('content').text
 
 
-def test_logged_in_user_can_submit_a_proposal(driver, registrant, proposal_single_presenter):
+def test_logged_in_user_can_submit_a_single_presenter_proposal(driver, registrant, proposal_single_presenter):
     register_and_login_user(driver, registrant)
     driver.get(base_url + 'submit')
     wait = WebDriverWait(driver, driver_wait_time)
@@ -71,16 +71,62 @@ def test_logged_in_user_can_submit_a_proposal(driver, registrant, proposal_singl
     for key in presenter.keys():
         if key == 'is_lead':
             if presenter[key]:
-                driver.find_element_by_class_name(key + '_field').click()
+                driver.find_element_by_id(key + '_field_0').click()
         elif key == 'country':
-            Select(driver.find_element_by_class_name(key + '_field')).select_by_value(presenter[key])
+            Select(driver.find_element_by_id(key + '_field_0')).select_by_value(presenter[key])
         else:
-            element = driver.find_element_by_class_name(key + '_field')
+            element = driver.find_element_by_id(key + '_field_0')
             element.clear()
             element.send_keys(presenter[key])
     button = wait.until(ecs.element_to_be_clickable((By.ID, 'submit')))
     assert 'Submit' == driver.find_element_by_id('submit').text
     assert 'submitProposal()' == button.get_attribute('onclick')
     button.click()
+    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Submission Successful'))
+    assert 'Thank you, you have successfully submitted a proposal for the ACCU' in driver.find_element_by_id('content').text
+
+
+def test_logged_in_user_can_submit_a_multiple_presenter_single_lead_proposal(driver, registrant, proposal_multiple_presenters_single_lead):
+    register_and_login_user(driver, registrant)
+    driver.get(base_url + 'submit')
+    wait = WebDriverWait(driver, driver_wait_time)
+    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Submit'))
+    driver.find_element_by_id('title').send_keys(proposal_multiple_presenters_single_lead['title'])
+    Select(driver.find_element_by_id('session_type')).select_by_value(proposal_multiple_presenters_single_lead['session_type'])
+    driver.find_element_by_id('summary').send_keys(proposal_multiple_presenters_single_lead['summary'])
+    presenter = proposal_multiple_presenters_single_lead['presenters'][0]
+    for key in presenter.keys():
+        if key == 'is_lead':
+            if presenter[key]:
+                driver.find_element_by_id(key + '_field_0').click()
+        elif key == 'country':
+            Select(driver.find_element_by_id(key + '_field_0')).select_by_value(presenter[key])
+        else:
+            element = driver.find_element_by_id(key + '_field_0')
+            element.clear()
+            element.send_keys(presenter[key])
+    add_presenter_button = wait.until(ecs.element_to_be_clickable((By.ID, 'add_presenter')))
+    assert 'Add Presenter' == driver.find_element_by_id('add_presenter').text
+    add_presenter_button.click()
+    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'modal-title'), 'Add Presenter'))
+    presenter = proposal_multiple_presenters_single_lead['presenters'][1]
+    for key in presenter.keys():
+        if key == 'is_lead':
+            if presenter[key]:
+                driver.find_element_by_id('add-presenter-' + key).click()
+        elif key == 'country':
+            Select(driver.find_element_by_id('add-presenter-' + key)).select_by_value(presenter[key])
+        else:
+            element = driver.find_element_by_id('add-presenter-' + key)
+            element.clear()
+            element.send_keys(presenter[key])
+    add_new_presenter_button = wait.until(ecs.element_to_be_clickable((By.ID, 'add_new_presenter')))
+    assert 'Add' == driver.find_element_by_id('add_new_presenter').text
+    assert 'addNewPresenter()' == add_new_presenter_button.get_attribute('onclick')
+    add_new_presenter_button.click()
+    submit_button = wait.until(ecs.element_to_be_clickable((By.ID, 'submit')))
+    assert 'Submit' == driver.find_element_by_id('submit').text
+    assert 'submitProposal()' == submit_button.get_attribute('onclick')
+    submit_button.click()
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Submission Successful'))
     assert 'Thank you, you have successfully submitted a proposal for the ACCU' in driver.find_element_by_id('content').text
