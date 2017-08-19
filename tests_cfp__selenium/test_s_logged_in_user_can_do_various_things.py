@@ -161,7 +161,7 @@ def test_can_see_both_previously_submitted_proposals(driver, registrant, proposa
     assert proposal_multiple_presenters_single_lead['title'] == proposal_list[1].text
 
 
-def test_can_amend_the_first_submitted_proposal(driver, registrant, proposal_single_presenter):
+def XXX_test_can_amend_the_first_submitted_proposal(driver, registrant, proposal_single_presenter):
     register_and_login_user(driver, registrant)
     driver.get(base_url + 'proposal_update/1')
     wait = WebDriverWait(driver, driver_wait_time)
