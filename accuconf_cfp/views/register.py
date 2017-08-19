@@ -71,7 +71,7 @@ def register():
         session['just_registered'] = True
         return jsonify('register_success')
     return render_template('register.html', page=utils.md(base_page, {
-        'title': 'Register',
+        'pagetitle': 'Register',
         'data': 'Register here for submitting proposals to the ACCU {} Conference'.format(year),
         'submit_button': 'Register',
         'passphrase_required': 'true',
@@ -89,7 +89,7 @@ def register_success():
         return redirect('/')
     session.pop('just_registered', None)
     return render_template("general.html", page=utils.md(base_page, {
-        'title': 'Registration Successful',
+        'pagetitle': 'Registration Successful',
         'data': Markup('''
 You have successfully registered for submitting proposals for the ACCU Conference.
 </p>
@@ -122,7 +122,7 @@ def registration_update():
         session['just_updated_register'] = True
         return jsonify('registration_update_success')
     return render_template('register.html', page=utils.md(base_page, {
-        'title': 'Registration Details Updating',
+        'pagetitle': 'Registration Details Updating',
         'email': user.email,
         'name': user.name,
         'phone': user.phone,
@@ -149,6 +149,6 @@ def registration_update_success():
     if not utils.is_logged_in():
         return redirect('/')
     return render_template('general.html',  page=utils.md(base_page, {
-        'title': 'Registration Update Successful',
+        'pagetitle': 'Registration Update Successful',
         'data': 'Your registration details were successfully updated.',
     }))

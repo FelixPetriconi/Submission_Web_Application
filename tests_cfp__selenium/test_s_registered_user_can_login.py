@@ -18,11 +18,6 @@ from test_utils.fixtures import registrant
 user_is_registered = False
 
 
-#  NB  The tests here are not independent, the sequence is critical.
-#  The last test cannot be run separately. This is because the driver
-# as well as the server is per module, so creates per module state.
-
-
 def register_user(driver, registrant):
     if not user_is_registered:
         driver.get(base_url + 'register')
@@ -42,7 +37,6 @@ def register_user(driver, registrant):
         user_is_registered = True
 
 
-# This test must come first as it assumes no-one is currently logged in.
 @pytest.mark.parametrize(('email', 'passphrase', 'error_key'), (
     ('', '', 'email'),
     ('russel.winder.org.uk', '', 'email'),
@@ -61,9 +55,6 @@ def test_malformed_data_cases_local_error(email, passphrase, error_key, driver):
     assert 'not valid.' in driver.find_element_by_id(error_key + '_alert').text
 
 
-# This test must come after the above since the above tests require the user not to be logged
-# in and this test leaves the per-module driver in logged in state. Pytest runs the tests in
-# declaration order so this should all be OK.
 def test_user_can_successfully_login(driver, registrant):
     register_user(driver, registrant)
     driver.get(base_url + 'login')
@@ -76,8 +67,6 @@ def test_user_can_successfully_login(driver, registrant):
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), 'Login Successful'))
 
 
-# The following tests assume the user is already logged in, which the above tests achieves.
-# Pytest runs the tests in declaration order so this should all be OK.
 def tests_cannot_get_login_page_when_logged_in(driver, registrant):
     driver.get(base_url + 'login')
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Call for Proposals'))

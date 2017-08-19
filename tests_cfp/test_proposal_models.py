@@ -28,7 +28,7 @@ presenter_data = {
 proposal_data = {
     'title': 'TDD with C++',
     'session_type': SessionType.quickie,
-    'text': 'A session about creating C++ programs with proper process.',
+    'summary': 'A session about creating C++ programs with proper process.',
     'notes': 'Some notes to the committee',
     'audience': SessionAudience.intermediate,
     'category': SessionCategory.agile,
@@ -60,7 +60,8 @@ def test_putting_proposal_in_database(database):
     assert {
         'title': proposal.title,
         'session_type': proposal.session_type,
-        'text': proposal.text, 'notes': proposal.notes,
+        'summary': proposal.summary,
+        'notes': proposal.notes,
         'audience': proposal.audience,
         'category': proposal.category} == proposal_data
     assert proposal.status == ProposalState.submitted

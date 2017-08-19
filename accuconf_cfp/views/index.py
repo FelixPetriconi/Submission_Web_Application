@@ -8,7 +8,7 @@ from accuconf_cfp.utils import md
 @app.route('/')
 def index():
     page = {
-        'title': 'Call for Proposals',
+        'pagetitle': 'Call for Proposals',
         'year': year,
     }
     if app.config['MAINTENANCE']:

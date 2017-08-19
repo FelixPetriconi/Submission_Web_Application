@@ -30,12 +30,6 @@ def submit_data_to_register_page(driver, registrant):
     button.click()
 
 
-def test_user_can_successfully_register(driver, registrant):
-    submit_data_to_register_page(driver, registrant)
-    WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Registration Successful'))
-    assert 'You have successfully registered for submitting proposals for the ACCU' in driver.find_element_by_id('content').text
-
-
 @pytest.mark.parametrize(('key', 'value', 'message'), (
     ('email', 'a.b.c', 'Email should be of the format user@example.com'),
     ('passphrase', 'hum', 'Passphrase and confirmation passphrase not the same.'),
@@ -50,3 +44,9 @@ def test_single_error_causing_local_failure(key, value, message, driver, registr
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Register'))
     assert 'Problem with form, not submitting.' == driver.find_element_by_id('alert').text
     assert message in driver.find_element_by_id(key + '_alert').text
+
+
+def test_anyone_can_successfully_register(driver, registrant):
+    submit_data_to_register_page(driver, registrant)
+    WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Registration Successful'))
+    assert 'You have successfully registered for submitting proposals for the ACCU' in driver.find_element_by_id('content').text

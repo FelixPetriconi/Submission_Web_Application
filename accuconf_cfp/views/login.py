@@ -47,7 +47,7 @@ def login():
         #  TODO  Change something so as to see the login state. Menu changes of course.
         return jsonify('login_success')
     return render_template('login.html', page=md(base_page, {
-            'title': 'Login',
+            'pagetitle': 'Login',
             'data': 'Please login using email and passphrase given at registration time.',
         }))
 
@@ -63,11 +63,11 @@ def login_success():
     session.pop('just_logged_in', None)
     if is_logged_in():
         return render_template('general.html', page=md(base_page, {
-            'title': 'Login Successful',
+            'pagetitle': 'Login Successful',
             'data': 'Login successful.',
         }))
     return render_template('login.html', page=md(base_page, {
-        'title': 'Login Failure',
+        'pagetitle': 'Login Failure',
         'data': 'Please login using email and passphrase given at registration time.',
     }))
 

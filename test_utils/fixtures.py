@@ -90,7 +90,7 @@ lengthy proposal''',
             {
                 'email': 'p1@b.c',
                 'is_lead': True,
-                'name': 'User Name',
+                'name': 'Presenter First',
                 'bio': 'A person with a good history of presentations working with someone new to presenting.',
                 'country': 'India',
                 'state': 'TamilNadu'
