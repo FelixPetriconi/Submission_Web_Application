@@ -110,7 +110,7 @@ describe('session types are well formed', () => {
         assert(!accuconf.isValidSessionType('fubar'))
     })
     it('valid session type works', () => {
-        assert(!accuconf.isValidSessionType('interactive'))
+        assert(accuconf.isValidSessionType('session'))
     })
 })
 
@@ -120,5 +120,14 @@ describe('presentation summaries are well formed', () => {
     })
     it('long summaries succeed', () => {
         assert(accuconf.isValidSummary('This session will involve someone doing something and then interacting with whatever audience happens to be present.'))
+    })
+})
+
+describe('audience is well formed', () => {
+    it('invalid audience fails', () => {
+        assert(!accuconf.isValidAudience('fubar'))
+    })
+    it('valid audience works', () => {
+        assert(accuconf.isValidAudience('intermediate'))
     })
 })
