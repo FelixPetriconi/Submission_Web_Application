@@ -1,0 +1,16 @@
+Usually in testing each test function is independent of all other tests. In this test suite,
+this is not the case. The test server and test driver for this suite are module based.
+This means that the tests in each module are coupled  because of the shared state of the
+server database and the driver. This means that the sequence of tests in a module is
+significant. Pytest by default executes tests in definition sequence and this is relied on
+in these tests.
+
+Some of the modules have a collection of independent tests, for example all the
+"page accessibility" tests. However the other modules are definitely sequences of tests.
+The tests rely on the build up of state in the database and possibly the driver. They are
+scenarios being played out. If tests in a module are rearranged the tests will most
+likely fail.
+
+By making the module the unit of independent testing, the incremental tested build
+up of state can be achieved. If there is an alternative way of achieving this that leads
+to independent tests do send in an issue.
