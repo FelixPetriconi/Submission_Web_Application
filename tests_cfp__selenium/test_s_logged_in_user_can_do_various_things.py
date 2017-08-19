@@ -110,7 +110,9 @@ def test_can_submit_a_multiple_presenter_single_lead_proposal(driver, registrant
     for key in presenter.keys():
         if key == 'is_lead':
             if presenter[key]:
-                driver.find_element_by_id(key + '_0_field').click()
+                selected = driver.find_element_by_id(key + '_0_field').is_selected()
+                if (presenter[key] and not selected) or (not presenter[key] and selected):
+                    driver.find_element_by_id(key + '_0_field').click()
         elif key == 'country':
             Select(driver.find_element_by_id(key + '_0_field')).select_by_value(presenter[key])
         else:
@@ -125,7 +127,9 @@ def test_can_submit_a_multiple_presenter_single_lead_proposal(driver, registrant
     for key in presenter.keys():
         if key == 'is_lead':
             if presenter[key]:
-                driver.find_element_by_id('add-presenter-' + key).click()
+                selected = driver.find_element_by_id('add-presenter-' + key).is_selected()
+                if (presenter[key] and not selected) or (not presenter[key] and selected):
+                    driver.find_element_by_id('add-presenter-' + key).click()
         elif key == 'country':
             Select(driver.find_element_by_id('add-presenter-' + key)).select_by_value(presenter[key])
         else:
