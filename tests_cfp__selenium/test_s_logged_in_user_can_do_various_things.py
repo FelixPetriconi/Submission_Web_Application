@@ -45,7 +45,7 @@ def register_and_login_user(driver, registrant):
         user_is_logged_in = True
 
 
-def test_logged_in_user_can_amend_registration_record(driver, registrant):
+def test_can_amend_registration_record(driver, registrant):
     register_and_login_user(driver, registrant)
     driver.get(base_url + 'registration_update')
     wait = WebDriverWait(driver, driver_wait_time)
@@ -59,7 +59,18 @@ def test_logged_in_user_can_amend_registration_record(driver, registrant):
     assert 'Your registration details were successfully updated.' in driver.find_element_by_id('content').text
 
 
-def test_logged_in_user_can_submit_a_single_presenter_proposal(driver, registrant, proposal_single_presenter):
+def test_sees_no_proposal_prior_to_submitting_one(driver, registrant):
+    register_and_login_user(driver, registrant)
+    driver.get(base_url + 'my_proposals')
+    wait = WebDriverWait(driver, driver_wait_time)
+    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – My Proposals'))
+    element = driver.find_element_by_class_name('first')
+    assert 'The following are your current proposals. Click on the one you wish to update.' == element.text
+    proposal_list = driver.find_elements_by_class_name('proposal-list')
+    assert len(proposal_list) == 0
+
+
+def test_can_submit_a_single_presenter_proposal(driver, registrant, proposal_single_presenter):
     register_and_login_user(driver, registrant)
     driver.get(base_url + 'submit')
     wait = WebDriverWait(driver, driver_wait_time)
@@ -86,7 +97,7 @@ def test_logged_in_user_can_submit_a_single_presenter_proposal(driver, registran
     assert 'Thank you, you have successfully submitted a proposal for the ACCU' in driver.find_element_by_id('content').text
 
 
-def test_logged_in_user_can_submit_a_multiple_presenter_single_lead_proposal(driver, registrant, proposal_multiple_presenters_single_lead):
+def test_can_submit_a_multiple_presenter_single_lead_proposal(driver, registrant, proposal_multiple_presenters_single_lead):
     register_and_login_user(driver, registrant)
     driver.get(base_url + 'submit')
     wait = WebDriverWait(driver, driver_wait_time)
@@ -124,6 +135,36 @@ def test_logged_in_user_can_submit_a_multiple_presenter_single_lead_proposal(dri
     assert 'Add' == driver.find_element_by_id('add_new_presenter').text
     assert 'addNewPresenter()' == add_new_presenter_button.get_attribute('onclick')
     add_new_presenter_button.click()
+    submit_button = wait.until(ecs.element_to_be_clickable((By.ID, 'submit')))
+    assert 'Submit' == driver.find_element_by_id('submit').text
+    assert 'submitProposal()' == submit_button.get_attribute('onclick')
+    submit_button.click()
+    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Submission Successful'))
+    assert 'Thank you, you have successfully submitted a proposal for the ACCU' in driver.find_element_by_id('content').text
+
+
+def test_can_see_both_previously_submitted_proposals(driver, registrant, proposal_single_presenter, proposal_multiple_presenters_single_lead):
+    register_and_login_user(driver, registrant)
+    driver.get(base_url + 'my_proposals')
+    wait = WebDriverWait(driver, driver_wait_time)
+    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – My Proposals'))
+    element = driver.find_element_by_class_name('first')
+    assert 'The following are your current proposals. Click on the one you wish to update.' == element.text
+    proposal_list = driver.find_elements_by_class_name('proposal-list')
+    assert len(proposal_list) == 2
+    assert proposal_single_presenter['title'] == proposal_list[0].text
+    assert proposal_multiple_presenters_single_lead['title'] == proposal_list[1].text
+
+
+def test_can_amend_the_first_submitted_proposal(driver, registrant, proposal_single_presenter):
+    register_and_login_user(driver, registrant)
+    driver.get(base_url + 'proposal_update/1')
+    wait = WebDriverWait(driver, driver_wait_time)
+    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Update a proposal'))
+    title_element = driver.find_element_by_id('title')
+    assert proposal_single_presenter['title'] == title_element.text
+    new_title = 'This is a new title for a proposal'
+    title_element.send_keys(new_title)
     submit_button = wait.until(ecs.element_to_be_clickable((By.ID, 'submit')))
     assert 'Submit' == driver.find_element_by_id('submit').text
     assert 'submitProposal()' == submit_button.get_attribute('onclick')

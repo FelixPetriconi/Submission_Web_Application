@@ -116,17 +116,23 @@ def submit():
                 session['just_submitted'] = True
                 return jsonify('submit_success')
             return render_template('general.html', page=md(base_page, {
-                'title': 'Submit POST Error',
+                'pagetitle': 'Submit POST Error',
                 'data': 'The logged in user is not in database. This cannot happen.',
             }))
         user = User.query.filter_by(email=session['email']).first()
         if user:
             return render_template('submit.html', page=md(base_page, {
-                'title': 'Submit a proposal for ACCU {}'.format(year),
-                'name': user.name,
-                'proposer': {
+                'pagetitle': 'Submit a proposal for ACCU {}'.format(year),
+                'title': '',
+                'session_type': SessionType.session,
+                'summary': '',
+                'category': '',
+                'notes': '',
+                'constraints': '',
+                'presenter': {
                     'email': user.email,
                     'name': user.name,
+                    'is_lead': True,
                     'bio': 'A human being we know, but we need something somewhat more uniquely personal.',
                     'country': user.country,
                     'state': user.state,
@@ -134,11 +140,11 @@ def submit():
                 'countries': sorted(countries.keys())
             }))
         return render_template('general.html', page=md(base_page, {
-            'title': 'Submission Problem',
+            'pagetitle': 'Submission Problem',
             'data': 'The logged in user is not in database. This cannot happen.',
         }))
     return render_template('general.html', page=md(base_page, {
-        'title': 'Submit Not Possible',
+        'pagetitle': 'Submit Not Possible',
         'data': 'You must be registered and logged in to submit a proposal.'
     }))
 
@@ -152,14 +158,14 @@ def submit_success():
     if 'just_submitted' in session:
         session.pop('just_submitted', None)
         return render_template('general.html', page=md(base_page, {
-            'title': 'Submission Successful',
+            'pagetitle': 'Submission Successful',
             'data': '''
 Thank you, you have successfully submitted a proposal for the ACCU {} conference!
 If you need to edit it you can via the 'My Proposal' menu item.
 '''.format(year),
         }))
     return render_template('general.html', page=md(base_page, {
-        'title': 'Submit Failed',
+        'pagetitle': 'Submit Failed',
         'data': 'You must be registered and logged in to submit a proposal.',
     }))
 
@@ -173,14 +179,12 @@ def my_proposals():
     if is_logged_in():
         user = User.query.filter_by(email=session['email']).first()
         return render_template('my_proposals.html', page=md(base_page, {
-            'title': 'My Proposals',
-            'data': '''
-The following are your current proposals. Click on the one you wish to update.
-''',
+            'pagetitle': 'My Proposals',
+            'data': 'The following are your current proposals. Click on the one you wish to update.',
             'proposals': [{'title': proposal.title, 'id': proposal.id} for proposal in user.proposals]
         }))
     return render_template('general.html', page=md(base_page, {
-        'title': 'My Proposals Failure',
+        'pagetitle': 'My Proposals Failure',
         'year': year,
         'data': 'You must be registered and logged in to discover your current proposals.',
     }))
@@ -194,23 +198,33 @@ def proposal_update(id):
     assert check[1] is None
     if is_logged_in():
         proposal = Proposal.query.filter_by(id=id).first()
+        proposal_presenter = ProposalPresenter.query.filter_by(proposal=proposal).first()
         if not proposal:
             return render_template('general.html', page=md(page, {
-                'title': 'Proposal Not Found',
+                'pagetitle': 'Proposal Not Found',
                 'data': 'The requested proposal cannot be found.'
             }))
+        # TODO How to deal with multi-presenter proposals?
+        presenter = proposal.presenters[0]
         return render_template('submit.html', page=md(base_page, {
-            'title': 'Update a proposal for ACCU {}'.format(year),
-            'name': proposal.proposer.name,
-            'proposer': {
-                'email': proposal.proposer.email,
-                'name': proposal.proposer.name,
-                'country': proposal.proposer.country,
-                'state': proposal.proposer.state,
+            'pagetitle': 'Update a proposal for ACCU {}'.format(year),
+            'title': proposal.title,
+            'session_type': proposal.session_type,
+            'summary': proposal.summary,
+            'category': proposal.category,
+            'notes': proposal.notes,
+            'constraints': proposal.constraints,
+            'presenter': {
+                'email': presenter.email,
+                'name': presenter.name,
+                'is_lead': proposal_presenter.is_lead,
+                'bio': presenter.bio,
+                'country': presenter.country,
+                'state': presenter.state,
             },
             'countries': sorted(countries.keys())
         }))
     return render_template('general.html', page=md(base_page, {
-        'title': 'Proposal Update Failure',
+        'pagetitle': 'Proposal Update Failure',
         'data': 'You must be registered and logged in to update a proposal.',
     }))

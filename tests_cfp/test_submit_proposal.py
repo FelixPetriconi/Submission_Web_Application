@@ -44,6 +44,16 @@ def test_submit_not_available_when_not_open(client, monkeypatch):
                           )
 
 
+def test_submit_success_not_available_when_not_open(client, monkeypatch):
+    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
+    monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
+    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+    get_and_check_content(client, '/submit_success',
+                          code=302,
+                          includes=('Redirecting', '<a href="/">'),
+                          )
+
+
 def test_my_proposals_not_available_when_not_open(client, monkeypatch):
     monkeypatch.setitem(app.config, 'CALL_OPEN', False)
     monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
@@ -64,6 +74,54 @@ def test_proposals_update_not_available_when_not_open(client, monkeypatch):
                           includes=('Redirect', '<a href="/">'),
                           excludes=(login_menu_item, register_menu_item),
                           )
+
+
+@pytest.mark.parametrize('presenters', (
+    proposal_single_presenter()['presenters'],
+    proposal_multiple_presenters_single_lead()['presenters'],
+))
+def test_validate_presenters_works_with_valid_data(presenters):
+    status, message = validate_presenters(presenters)
+    assert status
+    assert message == 'validated'
+
+
+@pytest.mark.parametrize('presenters', (
+    proposal_single_presenter_not_lead()['presenters'],
+    proposal_single_presenter_lead_field_set_to_none()['presenters'],
+    proposal_single_presenter_no_lead_field()['presenters'],
+    proposal_multiple_presenters_and_leads()['presenters'],
+))
+def test_validate_presenters_fails_with_invalid_data(presenters):
+    status, message = validate_presenters(presenters)
+    assert not status
+
+
+@pytest.mark.parametrize('proposal', (
+    proposal_single_presenter(),
+    proposal_multiple_presenters_single_lead(),
+))
+def test_validate_proposal_data_succeeds_with_reasonable_data(proposal):
+    status, message = validate_proposal_data(proposal)
+    assert status
+    assert message == 'validated'
+
+
+@pytest.mark.parametrize('proposal', (
+    proposal_single_presenter_not_lead(),
+    proposal_single_presenter_lead_field_set_to_none(),
+    proposal_single_presenter_no_lead_field(),
+    proposal_single_presenter_summary_field_is_none(),
+    proposal_single_presenter_no_summary_field(),
+    proposal_single_presenter_title_field_too_short(),
+    proposal_single_presenter_summary_field_too_short(),
+    proposal_single_presenter_presenters_field_empty_list(),
+    proposal_single_presenter_presenters_field_not_a_list(),
+    proposal_multiple_presenters_and_leads(),
+))
+def test_validate_proposal_data_fails_with_invalid_data(proposal):
+    status, message = validate_proposal_data(proposal)
+    assert not status
 
 
 def test_ensure_registration_and_login(client, registrant, monkeypatch):
@@ -183,7 +241,7 @@ def test_logged_in_get_proposals_page(client, registrant, proposal_single_presen
                           includes=(
                               'My Proposals',
                               'The following are your current proposals. Click on the one you wish to update.',
-                              '<li><a href="/proposal_update/1"> A single presenter proposal </a></li>',
+                              '<li class="proposal-list"><a href="/proposal_update/1"> A single presenter proposal </a></li>',
                               registration_update_menu_item,
                           ),
                           excludes=(login_menu_item, register_menu_item)
@@ -211,7 +269,7 @@ def test_not_logged_in_my_proposals_get_request_fails(client, registrant, propos
 def test_logged_in_submit_proposal_then_update_it(client, registrant, proposal_single_presenter, monkeypatch):
     test_logged_in_user_can_submit_a_single_presenter_proposal(client, registrant, proposal_single_presenter, monkeypatch)
     get_and_check_content(client, '/proposal_update/1',
-                          includes=(),
+                          includes=(proposal_single_presenter['title'], proposal_single_presenter['presenters'][0]['email']),
                           excludes=(),
                           )
 
@@ -231,61 +289,3 @@ def test_not_logged_in_submit_proposal_then_attempt_to_update_it_fails(client, r
                           ),
                           excludes=(),
                           )
-
-
-def test_attempt_get_sub_success_out_of_open_causes_redirect(client, monkeypatch):
-    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
-    monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
-    get_and_check_content(client, '/submit_success',
-                          code=302,
-                          includes=('Redirecting', '<a href="/">'),
-                          )
-
-
-@pytest.mark.parametrize('presenters', (
-    proposal_single_presenter()['presenters'],
-    proposal_multiple_presenters_single_lead()['presenters'],
-))
-def test_validate_presenters_works_with_valid_data(presenters):
-    status, message = validate_presenters(presenters)
-    assert status
-    assert message == 'validated'
-
-
-@pytest.mark.parametrize('presenters', (
-    proposal_single_presenter_not_lead()['presenters'],
-    proposal_single_presenter_lead_field_set_to_none()['presenters'],
-    proposal_single_presenter_no_lead_field()['presenters'],
-    proposal_multiple_presenters_and_leads()['presenters'],
-))
-def test_validate_presenters_fails_with_invalid_data(presenters):
-    status, message = validate_presenters(presenters)
-    assert not status
-
-
-@pytest.mark.parametrize('proposal', (
-    proposal_single_presenter(),
-    proposal_multiple_presenters_single_lead(),
-))
-def test_validate_proposal_data_succeeds_with_reasonable_data(proposal):
-    status, message = validate_proposal_data(proposal)
-    assert status
-    assert message == 'validated'
-
-
-@pytest.mark.parametrize('proposal', (
-    proposal_single_presenter_not_lead(),
-    proposal_single_presenter_lead_field_set_to_none(),
-    proposal_single_presenter_no_lead_field(),
-    proposal_single_presenter_summary_field_is_none(),
-    proposal_single_presenter_no_summary_field(),
-    proposal_single_presenter_title_field_too_short(),
-    proposal_single_presenter_summary_field_too_short(),
-    proposal_single_presenter_presenters_field_empty_list(),
-    proposal_single_presenter_presenters_field_not_a_list(),
-    proposal_multiple_presenters_and_leads(),
-))
-def test_validate_proposal_data_fails_with_invalid_data(proposal):
-    status, message = validate_proposal_data(proposal)
-    assert not status

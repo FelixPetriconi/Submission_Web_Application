@@ -2,7 +2,7 @@
 {% block content %}
 <div class="row">
     <div class="pagetitle">
-        ACCU {{ page.year }} – {{ page.title }}
+        ACCU {{ page.year }} – {{ page.pagetitle }}
     </div>
 </div>
 <div class="row">
@@ -12,7 +12,7 @@
        </p>
        <ul>
        {% for item in page.proposals %}
-           <li><a href="/proposal_update/{{ item['id'] }}"> {{ item['title'] }} </a></li>
+           <li class="proposal-list"><a href="/proposal_update/{{ item['id'] }}"> {{ item['title'] }} </a></li>
        {% endfor %}
        </ul>
    </div>

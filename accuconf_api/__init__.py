@@ -40,12 +40,12 @@ from models.proposal import Presenter, Proposal
 def index():
     if app.config['API_ACCESS']:
         return render_template('general.html', page={
-            'title': 'API Access Is Available',
+            'pagetitle': 'API Access Is Available',
             'year': year,
             'data': 'The ACCU {} API access to the schedule information is currently available.'.format(year),
         })
     return render_template('general.html', page={
-        'title': 'API Access Is Not Available',
+        'pagetitle': 'API Access Is Not Available',
         'year': year,
         'data': 'The ACCU {} API is not available at this time.'.format(year),
     })

@@ -46,56 +46,56 @@ def register_and_login_user(driver, registrant):
         wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), 'Login Successful'))
 
 
-def test_logged_in_user_can_get_root_page(driver, registrant):
+def test_can_get_root_page(driver, registrant):
     register_and_login_user(driver, registrant)
     driver.get(base_url)
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Call for Proposals'))
     check_menu_items(driver, ())
 
 
-def test_logged_in_user_cannot_get_register_page(driver, registrant):
+def test_cannot_get_register_page(driver, registrant):
     register_and_login_user(driver, registrant)
     driver.get(base_url + 'register')
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Call for Proposals'))
     check_menu_items(driver, ())
 
 
-def test_logged_in_user_cannot_access_register_success_even_after_logged_in(driver, registrant):
+def test_cannot_access_register_success_even_after_logged_in(driver, registrant):
     register_and_login_user(driver, registrant)
     driver.get(base_url + 'register_success')
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Call for Proposals'))
     check_menu_items(driver, ())
 
 
-def test_logged_in_user_can_get_registration_update_page(driver, registrant):
+def test_can_get_registration_update_page(driver, registrant):
     register_and_login_user(driver, registrant)
     driver.get(base_url + 'registration_update')
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Registration Details Updating'))
     check_menu_items(driver, ())
 
 
-def test_logged_in_user_cannot_access_registration_update_success_page_logged_in(driver, registrant):
+def test_cannot_access_registration_update_success_page_logged_in(driver, registrant):
     register_and_login_user(driver, registrant)
     driver.get(base_url + 'registration_update_success')
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Call for Proposals'))
     check_menu_items(driver, ())
 
 
-def test_logged_in_user_cannot_get_login_page(driver, registrant):
+def test_cannot_get_login_page(driver, registrant):
     register_and_login_user(driver, registrant)
     driver.get(base_url + 'login')
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Call for Proposals'))
     check_menu_items(driver, ())
 
 
-def test_logged_in_user_cannot_access_login_success_page(driver, registrant):
+def test_cannot_access_login_success_page(driver, registrant):
     register_and_login_user(driver, registrant)
     driver.get(base_url + 'login_success')
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Call for Proposals'))
     check_menu_items(driver, ())
 
 
-def test_logged_in_user_can_get_submit_page(driver, registrant):
+def test_can_get_submit_page(driver, registrant):
     register_and_login_user(driver, registrant)
     driver.get(base_url + 'submit')
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Submit a proposal for ACCU'))
@@ -109,7 +109,7 @@ def test_logged_in_cannot_get_submit_success_page_if_not_just_submitted(driver):
     check_menu_items(driver, ())
 
 
-def test_logged_in_user_can_get_my_proposals_page(driver, registrant):
+def test_can_get_my_proposals_page(driver, registrant):
     register_and_login_user(driver, registrant)
     driver.get(base_url + 'my_proposals')
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – My Proposals'))
@@ -118,7 +118,7 @@ def test_logged_in_user_can_get_my_proposals_page(driver, registrant):
 
 # This test changes the state of the per module driver and so must be run as the last test in this module.
 # By default pytest runs tests in declaration order so this should not be fragile.
-def test_logged_in_user_can_get_logout_page(driver, registrant):
+def test_can_get_logout_page(driver, registrant):
     register_and_login_user(driver, registrant)
     driver.get(base_url + 'logout')
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Call for Proposals'))
