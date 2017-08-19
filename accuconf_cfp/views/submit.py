@@ -87,6 +87,10 @@ def submit():
             if user:
                 proposal_data = request.json
                 status, message = validate_proposal_data(proposal_data)
+
+                print('XXXX', proposal_data)
+                print('XXXX', status, '-', message)
+
                 if not status:
                     # NB This should never be executed.
                     response = jsonify(message)
@@ -122,11 +126,11 @@ def submit():
         user = User.query.filter_by(email=session['email']).first()
         if user:
             return render_template('submit.html', page=md(base_page, {
-                'pagetitle': 'Submit a proposal for ACCU {}'.format(year),
+                'pagetitle': 'Submit a proposal',
                 'title': '',
-                'session_type': SessionType.session,
+                'session_type': SessionType.session.value,
                 'summary': '',
-                'audience': SessionAudience.all,
+                'audience': SessionAudience.all.value,
                 'category': '',
                 'notes': '',
                 'constraints': '',
@@ -134,7 +138,7 @@ def submit():
                     'email': user.email,
                     'name': user.name,
                     'is_lead': True,
-                    'bio': 'A human being we know, but we need something somewhat more uniquely personal.',
+                    'bio': '',
                     'country': user.country,
                     'state': user.state,
                 },
@@ -201,7 +205,7 @@ def proposal_update(id):
         proposal = Proposal.query.filter_by(id=id).first()
         proposal_presenter = ProposalPresenter.query.filter_by(proposal=proposal).first()
         if not proposal:
-            return render_template('general.html', page=md(page, {
+            return render_template('general.html', page=md(base_page, {
                 'pagetitle': 'Proposal Not Found',
                 'data': 'The requested proposal cannot be found.'
             }))

@@ -306,6 +306,10 @@ function isValidSessionType(sessionType) {
 	return ['quickie', 'session', 'miniworkshop', 'workshop', 'fulldayworkshop'].indexOf(sessionType) > -1
 }
 
+function isValidAudience(audience) {
+	return ['beginner', 'intermediate', 'expert', 'all'].indexOf(audience) > -1
+}
+
 function isValidSummary(summary) {
 	return summary.length >= 50
 }
@@ -318,7 +322,7 @@ function isValidConstraints(constraint) {
 	return true
 }
 
-function isValidSubmission(title, sessionType, summary, notes, constraints, presenters) {
+function isValidSubmission(title, sessionType, summary, audience, notes, constraints, presenters) {
 	let returnCode = true
 	if (!isValidTitle(title)) {
 		$('#title_alert').text('Title not valid.')
@@ -337,6 +341,12 @@ function isValidSubmission(title, sessionType, summary, notes, constraints, pres
 		returnCode = false
 	} else {
 		$('#summary_alert').text('')
+	}
+	if (!isValidAudience(audience)) {
+		$('#audience_alert').text('Audience not valid.')
+		returnCode = false
+	} else {
+		$('#audience_alert').text('')
 	}
 	if (!isValidNotes(notes)) {
 		$('#notes_alert').text('Notes not valid.')
@@ -381,9 +391,13 @@ function submitProposal() {
 	const title = $('#title').val()
 	const sessionType = $('#session_type').val()
 	const summary = $('#summary').val()
+	const audience = $('#audience').val()
 	const notes = $('#notes').val()
 	const constraints = $('#constraints').val()
     const presenters = []
+
+	console.log('ZZZZ: ' + sessionType + ', ' + audience)
+
 	/*
 	  For some reason the jQuery approach fails to do the right thing because
 	  $(this) fails to be set. So do things with pure JavaScript (or is that ECMAScript)
@@ -394,6 +408,8 @@ function submitProposal() {
 		const email = document.getElementById(`email_${i}_field`).value
 		const name = document.getElementById(`name_${i}_field`).value
 		const is_lead = document.getElementById(`is_lead_${i}_field`).checked
+		const element = document.getElementById(`is_lead_${i}_field`).value
+		console.log('AAAA: ' + element  + ', ' + i + ', ' + is_lead)
 		const bio = document.getElementById(`bio_${i}_field`).value
 		const countryNode = document.getElementById(`country_${i}_field`)
 		const country = countryNode.options[countryNode.selectedIndex].value
@@ -407,7 +423,7 @@ function submitProposal() {
 			'state': state,
 		})
 	}
-	if (isValidSubmission(title, sessionType, summary, notes, constraints, presenters)) {
+	if (isValidSubmission(title, sessionType, summary, audience, notes, constraints, presenters)) {
 		$.ajax({
 			method: 'POST',
 			url: '/submit',
@@ -415,6 +431,7 @@ function submitProposal() {
 				'title': title,
 				'session_type': sessionType,
 				'summary': summary,
+				'audience': audience,
 				'notes': notes,
 				'constraints': constraints,
 				'presenters': presenters,
@@ -553,6 +570,7 @@ if (typeof exports !== 'undefined') {
 	exports.isValidBio = isValidBio
 	exports.isValidSessionType = isValidSessionType
 	exports.isValidSummary = isValidSummary
+	exports.isValidAudience = isValidAudience
 	exports.isValidNotes = isValidNotes
 	exports.isValidConstraints = isValidConstraints
 }

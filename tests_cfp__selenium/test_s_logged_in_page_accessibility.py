@@ -98,7 +98,7 @@ def test_cannot_access_login_success_page(driver, registrant):
 def test_can_get_submit_page(driver, registrant):
     register_and_login_user(driver, registrant)
     driver.get(base_url + 'submit')
-    WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Submit a proposal for ACCU'))
+    WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Submit a proposal'))
     check_menu_items(driver, ())
 
 
