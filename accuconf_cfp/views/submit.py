@@ -10,7 +10,7 @@ from accuconf_cfp.utils import (is_acceptable_route, is_logged_in, md,
 
 from models.user import User
 from models.proposal import Presenter, Proposal, ProposalPresenter
-from models.proposal_types import SessionType
+from models.proposal_types import SessionAudience, SessionType
 
 base_page = {
     'year': year,
@@ -126,6 +126,7 @@ def submit():
                 'title': '',
                 'session_type': SessionType.session,
                 'summary': '',
+                'audience': SessionAudience.all,
                 'category': '',
                 'notes': '',
                 'constraints': '',
@@ -211,6 +212,7 @@ def proposal_update(id):
             'title': proposal.title,
             'session_type': proposal.session_type,
             'summary': proposal.summary,
+            'audience': proposal.audience,
             'category': proposal.category,
             'notes': proposal.notes,
             'constraints': proposal.constraints,

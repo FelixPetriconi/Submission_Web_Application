@@ -47,13 +47,13 @@
         </div>
       </div>
       <div class="form-group">
-        <label for="audience_level" class="control-label col-sm-3">Audience Level</label>
+        <label for="audience" class="control-label col-sm-3">Audience</label>
         <div class="col-lg-8">
-          <select name="audience_level" id="audience_level">
-            <option value="beginner" {% if page.audience_level == "beginner" %} selected {% endif %}>Beginner</option>
-            <option value="intermediate" {% if page.audience_level == "intermediate" %} selected {% endif %}>Intermediate</option>
-            <option value="expert" {% if page.audience_level == "expert" %} selected {% endif %}>Expert</option>
-            <option value="all" {% if page.audience_level == "all" %} selected {% endif %}>All</option>
+          <select name="audience" id="audience">
+            <option value="beginner" {% if page.audience == "beginner" %} selected {% endif %}>Beginner</option>
+            <option value="intermediate" {% if page.audience == "intermediate" %} selected {% endif %}>Intermediate</option>
+            <option value="expert" {% if page.audience == "expert" %} selected {% endif %}>Expert</option>
+            <option value="all" {% if page.audience == "all" %} selected {% endif %}>All</option>
           </select>
         </div>
       </div>
