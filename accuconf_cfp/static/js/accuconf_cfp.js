@@ -395,9 +395,6 @@ function submitProposal() {
 	const notes = $('#notes').val()
 	const constraints = $('#constraints').val()
     const presenters = []
-
-	console.log('ZZZZ: ' + sessionType + ', ' + audience)
-
 	/*
 	  For some reason the jQuery approach fails to do the right thing because
 	  $(this) fails to be set. So do things with pure JavaScript (or is that ECMAScript)
@@ -408,8 +405,7 @@ function submitProposal() {
 		const email = document.getElementById(`email_${i}_field`).value
 		const name = document.getElementById(`name_${i}_field`).value
 		const is_lead = document.getElementById(`is_lead_${i}_field`).checked
-		const element = document.getElementById(`is_lead_${i}_field`).value
-		console.log('AAAA: ' + element  + ', ' + i + ', ' + is_lead)
+		console.log(`AAAA: ${i}, ${email}, ${name}, ${is_lead}`)
 		const bio = document.getElementById(`bio_${i}_field`).value
 		const countryNode = document.getElementById(`country_${i}_field`)
 		const country = countryNode.options[countryNode.selectedIndex].value

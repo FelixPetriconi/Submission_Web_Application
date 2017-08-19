@@ -81,7 +81,8 @@ def test_can_submit_a_single_presenter_proposal(driver, registrant, proposal_sin
     presenter = proposal_single_presenter['presenters'][0]
     for key in presenter.keys():
         if key == 'is_lead':
-            if presenter[key]:
+            selected = driver.find_element_by_id(key + '_0_field').is_selected()
+            if (presenter[key] and not selected) or (not presenter[key] and selected):
                 driver.find_element_by_id(key + '_0_field').click()
         elif key == 'country':
             Select(driver.find_element_by_id(key + '_0_field')).select_by_value(presenter[key])

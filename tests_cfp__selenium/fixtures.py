@@ -2,6 +2,7 @@
 Various fixtures used in the test modules.
 """
 
+import os
 import pytest
 import pathlib
 import subprocess
@@ -19,7 +20,11 @@ def server():
     """
     # NB do not spawn with a shell since then you can't terminate the server.
     process = subprocess.Popen(('python3', '{}'.format(pathlib.PurePath(__file__).parent / 'start_server.py')))
-    time.sleep(1.5)  # Need a short while for the server to settle, 0.5 works locally but Travis-CI needs longer.
+    # Need a short while for the server to settle, 0.5 works locally but Travis-CI needs longer.
+    if 'TRAVIS' in os.environ and os.environ['TRAVIS']:
+        time.sleep(4)
+    else:
+        time.sleep(0.5)
     process.poll()
     assert process.returncode is None, 'Server start return code {}'.format(process.returncode)
     yield

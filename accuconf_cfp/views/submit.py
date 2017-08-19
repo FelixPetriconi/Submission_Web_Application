@@ -103,6 +103,7 @@ def submit():
                     proposal_data.get('summary').strip(),
                     proposal_data.get('notes').strip() if proposal_data.get('notes') else '',
                     proposal_data.get('constraints').strip() if proposal_data.get('constraints') else '',
+                    SessionAudience(proposal_data.get('audience').strip()) if proposal_data.get('audience') else SessionAudience.all,
                 )
                 db.session.add(proposal)
                 presenters_data = proposal_data.get('presenters')
