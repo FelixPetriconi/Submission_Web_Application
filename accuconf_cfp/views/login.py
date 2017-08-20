@@ -1,4 +1,4 @@
-from flask import jsonify, redirect, render_template, request, session
+from flask import jsonify, redirect, render_template, request, session, Markup
 
 from accuconf_cfp import app, year
 from accuconf_cfp.utils import hash_passphrase, is_acceptable_route, is_logged_in, is_valid_email, md
@@ -64,7 +64,19 @@ def login_success():
     if is_logged_in():
         return render_template('general.html', page=md(base_page, {
             'pagetitle': 'Login Successful',
-            'data': 'Login successful.',
+            'data': Markup('''
+Login successful.
+</p>
+<p>
+The menu on the left should now show entries for submitting a new proposal,
+amending the registration details for the logged in user, listing the previously
+submitted proposals, or logging out.
+</p>
+<p>
+if you have not previously submitted a proposal the "My Proposals" list will be empty.
+Once you have submitted one or more proposals, they can be amended via the
+"My Proposals" list.
+'''),
         }))
     return render_template('login.html', page=md(base_page, {
         'pagetitle': 'Login Failure',

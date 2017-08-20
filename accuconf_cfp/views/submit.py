@@ -1,4 +1,4 @@
-from flask import jsonify, render_template, request, session
+from flask import jsonify, render_template, request, session, Markup
 
 from accuconf_cfp import app, db, year, countries
 from accuconf_cfp.utils import (is_acceptable_route, is_logged_in, md,
@@ -183,7 +183,7 @@ def my_proposals():
         user = User.query.filter_by(email=session['email']).first()
         return render_template('my_proposals.html', page=md(base_page, {
             'pagetitle': 'My Proposals',
-            'data': 'The following are your current proposals. Click on the one you wish to update.',
+            'data': 'The following are your current proposals. Click on a list entry to review that proposal and possibly change it should you wish to.',
             'proposals': [{'title': proposal.title, 'id': proposal.id} for proposal in user.proposals]
         }))
     return render_template('general.html', page=md(base_page, {
@@ -252,6 +252,15 @@ def proposal_update(id):
         presenter = proposal.presenters[0]
         return render_template('submit.html', page=md(base_page, {
             'pagetitle': 'Update a proposal',
+            'data': Markup('''
+This page should present all the data of the submission using editable fields.
+If you wish to change anything amend the field as needed and click Update.
+</p>
+<p>
+If you do not wish to make any changes just navigate away from this page. There
+is no specific button for "leave things as they are" that is the default action.
+(Or rather inaction.)
+'''),
             'title': proposal.title,
             'session_type': proposal.session_type,
             'summary': proposal.summary,

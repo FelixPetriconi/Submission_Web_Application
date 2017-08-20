@@ -247,7 +247,7 @@ def test_logged_in_get_my_proposals_page(client, registrant, proposal_single_pre
     get_and_check_content(client, '/my_proposals',
                           includes=(
                               'My Proposals',
-                              'The following are your current proposals. Click on the one you wish to update.',
+                              'The following are your current proposals.',
                               '<li class="proposal-list"><a href="/proposal_update/1"> A single presenter proposal </a></li>',
                               registration_update_menu_item,
                           ),

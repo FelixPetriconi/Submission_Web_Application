@@ -65,7 +65,7 @@ def test_sees_no_proposal_prior_to_submitting_one(driver, registrant):
     wait = WebDriverWait(driver, driver_wait_time)
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – My Proposals'))
     element = driver.find_element_by_class_name('first')
-    assert 'The following are your current proposals. Click on the one you wish to update.' == element.text
+    assert 'The following are your current proposals.' in element.text
     proposal_list = driver.find_elements_by_class_name('proposal-list')
     assert len(proposal_list) == 0
 
@@ -154,7 +154,7 @@ def test_can_see_both_previously_submitted_proposals(driver, registrant, proposa
     wait = WebDriverWait(driver, driver_wait_time)
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – My Proposals'))
     element = driver.find_element_by_class_name('first')
-    assert 'The following are your current proposals. Click on the one you wish to update.' == element.text
+    assert 'The following are your current proposals.' in element.text
     proposal_list = driver.find_elements_by_class_name('proposal-list')
     assert len(proposal_list) == 2
     assert proposal_single_presenter['title'] == proposal_list[0].text

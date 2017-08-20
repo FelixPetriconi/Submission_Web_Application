@@ -123,6 +123,14 @@ def registration_update():
         return jsonify('registration_update_success')
     return render_template('register.html', page=utils.md(base_page, {
         'pagetitle': 'Registration Details Updating',
+        'data': Markup('''
+Here you can edit your registration information.
+</p>
+<p>
+If you do not wish to make any changes just navigate away from this page. There
+is no specific button for "leave things as they are" that is the default action.
+(Or rather inaction.)
+'''),
         'email': user.email,
         'name': user.name,
         'phone': user.phone,
@@ -131,7 +139,6 @@ def registration_update():
         'state': user.state,
         'postal_code': user.postal_code,
         'country': user.country,
-        'data': 'Here you can edit your registration information',
         'submit_button': 'Save',
         'passphrase_required': 'false',
         'countries': sorted(list(countries.keys())),
