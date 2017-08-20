@@ -387,7 +387,7 @@ function clearSubmitAlerts() {
 	return true
 }
 
-function submitProposal() {
+function submitProposal(proposalId) {
 	const title = $('#title').val()
 	const sessionType = $('#session_type').val()
 	const summary = $('#summary').val()
@@ -405,7 +405,6 @@ function submitProposal() {
 		const email = document.getElementById(`email_${i}_field`).value
 		const name = document.getElementById(`name_${i}_field`).value
 		const is_lead = document.getElementById(`is_lead_${i}_field`).checked
-		console.log(`AAAA: ${i}, ${email}, ${name}, ${is_lead}`)
 		const bio = document.getElementById(`bio_${i}_field`).value
 		const countryNode = document.getElementById(`country_${i}_field`)
 		const country = countryNode.options[countryNode.selectedIndex].value
@@ -422,7 +421,7 @@ function submitProposal() {
 	if (isValidSubmission(title, sessionType, summary, audience, notes, constraints, presenters)) {
 		$.ajax({
 			method: 'POST',
-			url: '/submit',
+			url: (proposalId ? `/proposal_update/${proposalId}` : '/submit'),
 			data: JSON.stringify({
 				'title': title,
 				'session_type': sessionType,
@@ -538,7 +537,6 @@ function uploadReview(button) {
         data: JSON.stringify(reviewData),
         contentType: "application/json",
         success: function(data) {
-            console.log(data);
             if (data.success) {
                 window.location = data.redirect;
             } else {

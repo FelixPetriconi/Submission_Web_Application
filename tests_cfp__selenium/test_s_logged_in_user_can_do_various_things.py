@@ -161,18 +161,23 @@ def test_can_see_both_previously_submitted_proposals(driver, registrant, proposa
     assert proposal_multiple_presenters_single_lead['title'] == proposal_list[1].text
 
 
-def XXX_test_can_amend_the_first_submitted_proposal(driver, registrant, proposal_single_presenter):
+def test_can_amend_the_first_submitted_proposal(driver, registrant, proposal_single_presenter):
     register_and_login_user(driver, registrant)
     driver.get(base_url + 'proposal_update/1')
     wait = WebDriverWait(driver, driver_wait_time)
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Update a proposal'))
+    assert proposal_single_presenter['summary'] == driver.find_element_by_id('summary').text
     title_element = driver.find_element_by_id('title')
-    assert proposal_single_presenter['title'] == title_element.text
+    assert proposal_single_presenter['title'] == title_element.get_attribute('value')
+    assert '' == title_element.text
     new_title = 'This is a new title for a proposal'
+    title_element.clear()
     title_element.send_keys(new_title)
+    assert new_title == title_element.get_attribute('value')
+    assert '' == title_element.text
     submit_button = wait.until(ecs.element_to_be_clickable((By.ID, 'submit')))
-    assert 'Submit' == driver.find_element_by_id('submit').text
-    assert 'submitProposal()' == submit_button.get_attribute('onclick')
+    assert 'Update' == driver.find_element_by_id('submit').text
+    assert 'submitProposal(1)' == submit_button.get_attribute('onclick')
     submit_button.click()
-    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Submission Successful'))
-    assert 'Thank you, you have successfully submitted a proposal for the ACCU' in driver.find_element_by_id('content').text
+    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal Update Successful'))
+    assert 'you have successfully updated your proposal for the ACCU' in driver.find_element_by_id('content').text
