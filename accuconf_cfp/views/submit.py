@@ -10,7 +10,7 @@ from accuconf_cfp.utils import (is_acceptable_route, is_logged_in, md,
 
 from models.user import User
 from models.proposal import Presenter, Proposal, ProposalPresenter
-from models.proposal_types import SessionAudience, SessionType
+from models.proposal_types import SessionAudience, SessionCategory, SessionType
 
 base_page = {
     'year': year,
@@ -143,7 +143,8 @@ def submit():
                     'country': user.country,
                     'state': user.state,
                 },
-                'countries': sorted(countries.keys())
+                'countries': sorted(countries.keys()),
+                'submit_label': 'Submit',
             }))
         return render_template('general.html', page=md(base_page, {
             'pagetitle': 'Submission Problem',
@@ -196,13 +197,17 @@ def my_proposals():
     }))
 
 
-@app.route('/proposal_update/<int:id>')
+@app.route('/proposal_update/<int:id>', methods=['GET', 'POST'])
 def proposal_update(id):
     check = is_acceptable_route()
     if not check[0]:
         return check[1]
     assert check[1] is None
     if is_logged_in():
+        if request.method == 'POST':
+            response = jsonify("This really isn't implemented yet")
+            response.status_code = 400
+            return response
         proposal = Proposal.query.filter_by(id=id).first()
         proposal_presenter = ProposalPresenter.query.filter_by(proposal=proposal).first()
         if not proposal:
@@ -213,12 +218,12 @@ def proposal_update(id):
         # TODO How to deal with multi-presenter proposals?
         presenter = proposal.presenters[0]
         return render_template('submit.html', page=md(base_page, {
-            'pagetitle': 'Update a proposal for ACCU {}'.format(year),
+            'pagetitle': 'Update a proposal',
             'title': proposal.title,
             'session_type': proposal.session_type,
             'summary': proposal.summary,
             'audience': proposal.audience,
-            'category': proposal.category,
+            'category': '' if proposal.category == SessionCategory.not_sure else proposal.category,
             'notes': proposal.notes,
             'constraints': proposal.constraints,
             'presenter': {
@@ -229,7 +234,9 @@ def proposal_update(id):
                 'country': presenter.country,
                 'state': presenter.state,
             },
-            'countries': sorted(countries.keys())
+            'countries': sorted(countries.keys()),
+            'submit_label': 'Update',
+            'proposal_id': id,
         }))
     return render_template('general.html', page=md(base_page, {
         'pagetitle': 'Proposal Update Failure',

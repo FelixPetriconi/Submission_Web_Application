@@ -387,7 +387,7 @@ function clearSubmitAlerts() {
 	return true
 }
 
-function submitProposal() {
+function submitProposal(proposalId) {
 	const title = $('#title').val()
 	const sessionType = $('#session_type').val()
 	const summary = $('#summary').val()
@@ -422,7 +422,7 @@ function submitProposal() {
 	if (isValidSubmission(title, sessionType, summary, audience, notes, constraints, presenters)) {
 		$.ajax({
 			method: 'POST',
-			url: '/submit',
+			url: (proposalId ? `/proposal_update/${proposalId}` : '/submit'),
 			data: JSON.stringify({
 				'title': title,
 				'session_type': sessionType,
