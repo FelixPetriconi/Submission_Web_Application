@@ -87,10 +87,6 @@ def submit():
             if user:
                 proposal_data = request.json
                 status, message = validate_proposal_data(proposal_data)
-
-                print('XXXX', proposal_data)
-                print('XXXX', status, '-', message)
-
                 if not status:
                     # NB This should never be executed.
                     response = jsonify(message)
@@ -205,9 +201,46 @@ def proposal_update(id):
     assert check[1] is None
     if is_logged_in():
         if request.method == 'POST':
-            response = jsonify("This really isn't implemented yet")
-            response.status_code = 400
-            return response
+            user = User.query.filter_by(email=session['email']).first()
+            if user:
+                proposal_data = request.json
+                status, message = validate_proposal_data(proposal_data)
+                if not status:
+                    # NB This should never be executed.
+                    response = jsonify(message)
+                    response.status_code = 400
+                    return response
+                # TODO is the the right algorithm or even strategy?
+                proposal = Proposal.query.filter_by(id=id).first()
+                changeset = {}
+                for item in ('title', 'summary', 'session_type', 'audience', 'notes', 'constraints', 'category'):
+                    if item in proposal_data:
+                        if item == 'session_type':
+                            datum = SessionType(proposal_data[item])
+                        elif item == 'audience':
+                            datum = SessionAudience(proposal_data[item])
+                        else:
+                            datum = proposal_data[item]
+                        if datum != proposal.__dict__[item]:
+                            changeset[item] = datum
+                if changeset:
+                    Proposal.query.filter_by(id=id).update(changeset)
+                assert len(proposal.presenters) == len(proposal_data['presenters'])
+                for i, presenter in enumerate(proposal.presenters):
+                    changeset = {}
+                    presenters_data = proposal_data['presenters'][i]
+                    for item in ('email', 'name', 'bio', 'country', 'state'):
+                        if item in presenters_data and presenter.__dict__[item] != presenters_data[item]:
+                            changeset[item] = presenters_data[item]
+                    if changeset:
+                        Presenter.query.filter_by(email=proposal.presenters[i].email).update(changeset)
+                db.session.commit()
+                session['just_updated'] = True
+                return jsonify('proposal_update_success')
+            return render_template('general.html', page=md(base_page, {
+                'pagetitle': 'Proposal Update POST Error',
+                'data': 'The logged in user is not in database. This cannot happen.',
+            }))
         proposal = Proposal.query.filter_by(id=id).first()
         proposal_presenter = ProposalPresenter.query.filter_by(proposal=proposal).first()
         if not proposal:
@@ -241,4 +274,25 @@ def proposal_update(id):
     return render_template('general.html', page=md(base_page, {
         'pagetitle': 'Proposal Update Failure',
         'data': 'You must be registered and logged in to update a proposal.',
+    }))
+
+
+@app.route('/proposal_update_success')
+def proposal_update_success():
+    check = is_acceptable_route()
+    if not check[0]:
+        return check[1]
+    assert check[1] is None
+    if 'just_updated' in session:
+        session.pop('just_updated', None)
+        return render_template('general.html', page=md(base_page, {
+            'pagetitle': 'Proposal Update Successful',
+            'data': '''
+Thank you, you have successfully updated your proposal for the ACCU {} conference!
+If you need to edit it again you can via the 'My Proposal' menu item.
+'''.format(year),
+        }))
+    return render_template('general.html', page=md(base_page, {
+        'pagetitle': 'Update Failed',
+        'data': 'You must be registered and logged in to submit a proposal.',
     }))

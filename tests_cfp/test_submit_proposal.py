@@ -76,6 +76,16 @@ def test_proposals_update_not_available_when_not_open(client, monkeypatch):
                           )
 
 
+def test_proposal_update_success_not_available_when_not_open(client, monkeypatch):
+    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
+    monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
+    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+    get_and_check_content(client, '/proposal_update_success',
+                          code=302,
+                          includes=('Redirecting', '<a href="/">'),
+                          )
+
+
 @pytest.mark.parametrize('presenters', (
     proposal_single_presenter()['presenters'],
     proposal_multiple_presenters_single_lead()['presenters'],
@@ -164,6 +174,10 @@ def test_logged_in_user_can_submit_a_single_presenter_proposal(client, registran
                            includes=('submit_success',),
                            excludes=(login_menu_item, register_menu_item),
                            )
+    get_and_check_content(client, '/submit_success',
+                          includes=('Submission Successful', 'Thank you, you have successfully submitted'),
+                          excludes=(login_menu_item, register_menu_item),
+                          )
     user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 1
     user = user[0]
@@ -171,6 +185,7 @@ def test_logged_in_user_can_submit_a_single_presenter_proposal(client, registran
     assert len(user.proposals) == 1
     proposal = user.proposals[0]
     assert proposal is not None
+    assert proposal.title == proposal_single_presenter['title']
     assert proposal.session_type == SessionType.quickie
     assert len(proposal.presenters) == 1
     presenter = proposal.presenters[0]
@@ -183,14 +198,6 @@ def test_logged_in_user_can_submit_a_single_presenter_proposal(client, registran
     assert len(presenter.presenter_proposals) == 1
     pp = presenter.presenter_proposals[0]
     assert p == pp
-
-
-def test_get_submit_success_after_successful_submission(client, registrant, proposal_single_presenter, monkeypatch):
-    test_logged_in_user_can_submit_a_single_presenter_proposal(client, registrant, proposal_single_presenter, monkeypatch)
-    get_and_check_content(client, '/submit_success',
-                          includes=('Submission Successful', 'Thank you, you have successfully submitted'),
-                          excludes=(login_menu_item, register_menu_item),
-                          )
 
 
 def test_logged_in_user_can_submit_multipresenter_single_lead_proposal(client, registrant, proposal_multiple_presenters_single_lead, monkeypatch):
@@ -235,7 +242,7 @@ def test_logged_in_user_cannot_submit_multipresenter_multilead_proposal(client, 
     assert len(user.proposals) == 0
 
 
-def test_logged_in_get_proposals_page(client, registrant, proposal_single_presenter, monkeypatch):
+def test_logged_in_get_my_proposals_page(client, registrant, proposal_single_presenter, monkeypatch):
     test_logged_in_user_can_submit_a_single_presenter_proposal(client, registrant, proposal_single_presenter, monkeypatch)
     get_and_check_content(client, '/my_proposals',
                           includes=(
@@ -289,3 +296,39 @@ def test_not_logged_in_submit_proposal_then_attempt_to_update_it_fails(client, r
                           ),
                           excludes=(),
                           )
+
+
+def test_logged_in_user_can_update_a_previously_submitted_single_presenter_proposal(client, registrant, proposal_single_presenter, monkeypatch):
+    test_logged_in_user_can_submit_a_single_presenter_proposal(client, registrant, proposal_single_presenter, monkeypatch)
+    alternate_title = 'This is an alternate title'
+    alternate_email = 'x@y.z'
+    monkeypatch.setitem(proposal_single_presenter, 'title', alternate_title)
+    monkeypatch.setitem(proposal_single_presenter['presenters'][0], 'email', alternate_email)
+    post_and_check_content(client, '/proposal_update/1', json.dumps(proposal_single_presenter), 'application/json',
+                           includes=('proposal_update_success',),
+                           excludes=(login_menu_item, register_menu_item),
+                           )
+    get_and_check_content(client, '/proposal_update_success',
+                          includes=('Update Successful', 'Thank you, you have successfully updated'),
+                          excludes=(login_menu_item, register_menu_item),
+                          )
+    user = User.query.filter_by(email=registrant['email']).all()
+    assert len(user) == 1
+    user = user[0]
+    assert user is not None
+    assert len(user.proposals) == 1
+    proposal = user.proposals[0]
+    assert proposal is not None
+    assert proposal.title == alternate_title
+    assert proposal.session_type == SessionType.quickie
+    assert len(proposal.presenters) == 1
+    presenter = proposal.presenters[0]
+    assert presenter.email == alternate_email
+    assert len(proposal.proposal_presenters) == 1
+    p = proposal.proposal_presenters[0]
+    assert p.proposal == proposal
+    assert p.presenter == presenter
+    assert p.is_lead
+    assert len(presenter.presenter_proposals) == 1
+    pp = presenter.presenter_proposals[0]
+    assert p == pp

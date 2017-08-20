@@ -180,4 +180,4 @@ def test_can_amend_the_first_submitted_proposal(driver, registrant, proposal_sin
     assert 'submitProposal(1)' == submit_button.get_attribute('onclick')
     submit_button.click()
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal Update Successful'))
-    assert 'You have successfully submitted update (one of) your proposal(s) for the ACCU' in driver.find_element_by_id('content').text
+    assert 'you have successfully updated your proposal for the ACCU' in driver.find_element_by_id('content').text
