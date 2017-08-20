@@ -175,6 +175,44 @@ def test_can_amend_the_first_submitted_proposal(driver, registrant, proposal_sin
     title_element.send_keys(new_title)
     assert new_title == title_element.get_attribute('value')
     assert '' == title_element.text
+    name_field = driver.find_element_by_id('name_0_field')
+    assert proposal_single_presenter['presenters'][0]['name'] == name_field.get_attribute('value')
+    assert '' == name_field.text
+    new_presenter_name = 'Monty the Gerbil'
+    name_field.clear()
+    name_field.send_keys(new_presenter_name)
+    assert new_presenter_name == name_field.get_attribute('value')
+    assert '' == name_field.text
+    submit_button = wait.until(ecs.element_to_be_clickable((By.ID, 'submit')))
+    assert 'Update' == driver.find_element_by_id('submit').text
+    assert 'submitProposal(1)' == submit_button.get_attribute('onclick')
+    submit_button.click()
+    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal Update Successful'))
+    assert 'you have successfully updated your proposal for the ACCU' in driver.find_element_by_id('content').text
+
+
+def XXX_test_can_amend_the_second_submitted_proposal(driver, registrant, proposal_multiple_presenters_single_lead):
+    register_and_login_user(driver, registrant)
+    driver.get(base_url + 'proposal_update/2')
+    wait = WebDriverWait(driver, driver_wait_time)
+    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Update a proposal'))
+    assert proposal_multiple_presenters_single_lead['summary'] == driver.find_element_by_id('summary').text
+    title_element = driver.find_element_by_id('title')
+    assert proposal_multiple_presenters_single_lead['title'] == title_element.get_attribute('value')
+    assert '' == title_element.text
+    new_title = 'This is a new title for a proposal'
+    title_element.clear()
+    title_element.send_keys(new_title)
+    assert new_title == title_element.get_attribute('value')
+    assert '' == title_element.text
+    name_field = driver.find_element_by_id('name_1_field')
+    assert proposal_single_presenter['presenters'][1]['name'] == name_field.get_attribute('value')
+    assert '' == name_field.text
+    new_presenter_name = 'Monty the Gerbil'
+    name_field.clear()
+    name_field.send_keys(new_presenter_name)
+    assert new_presenter_name == name_field.get_attribute('value')
+    assert '' == name_field.text
     submit_button = wait.until(ecs.element_to_be_clickable((By.ID, 'submit')))
     assert 'Update' == driver.find_element_by_id('submit').text
     assert 'submitProposal(1)' == submit_button.get_attribute('onclick')

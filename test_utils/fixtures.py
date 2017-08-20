@@ -83,7 +83,7 @@ def proposal_multiple_presenters_single_lead():
     return {
         'title': 'A mulit presenter proposal',
         'session_type': 'miniworkshop',
-        'summary': ''' This is a test proposal that will have
+        'summary': '''This is a proposal for a miniworkshop that has
 dummy data. Also this is not a very
 lengthy proposal''',
         'presenters': [

@@ -332,3 +332,41 @@ def test_logged_in_user_can_update_a_previously_submitted_single_presenter_propo
     assert len(presenter.presenter_proposals) == 1
     pp = presenter.presenter_proposals[0]
     assert p == pp
+
+
+def test_logged_in_user_can_update_a_previously_submitted_multiple_presenter_proposal(client, registrant, proposal_multiple_presenters_single_lead, monkeypatch):
+    test_logged_in_user_can_submit_multipresenter_single_lead_proposal(client, registrant, proposal_multiple_presenters_single_lead, monkeypatch)
+    alternate_title = 'This is an alternate title'
+    alternate_email = 'x@y.z'
+    monkeypatch.setitem(proposal_multiple_presenters_single_lead, 'title', alternate_title)
+    monkeypatch.setitem(proposal_multiple_presenters_single_lead['presenters'][1], 'email', alternate_email)
+    post_and_check_content(client, '/proposal_update/1', json.dumps(proposal_multiple_presenters_single_lead), 'application/json',
+                           includes=('proposal_update_success',),
+                           excludes=(login_menu_item, register_menu_item),
+                           )
+    get_and_check_content(client, '/proposal_update_success',
+                          includes=('Update Successful', 'Thank you, you have successfully updated'),
+                          excludes=(login_menu_item, register_menu_item),
+                          )
+    user = User.query.filter_by(email=registrant['email']).all()
+    assert len(user) == 1
+    user = user[0]
+    assert user is not None
+    assert len(user.proposals) == 1
+    proposal = user.proposals[0]
+    assert proposal is not None
+    assert proposal.title == alternate_title
+    assert proposal.session_type == SessionType.miniworkshop
+    presenters = proposal.presenters
+    proposal_presenters = proposal.proposal_presenters
+    assert len(presenters) == 2
+    assert len(proposal_presenters) == 2
+    presenter = proposal.presenters[1]
+    assert presenter.email == alternate_email
+    original_presenters = proposal_multiple_presenters_single_lead['presenters']
+    if proposal_presenters[0].is_lead:
+        assert presenters[0].email == original_presenters[0]['email']
+        assert presenters[1].email == original_presenters[1]['email']
+    else:
+        assert presenters[0].email == original_presenters[1]['email']
+        assert presenters[1].email == original_presenters[0]['email']
