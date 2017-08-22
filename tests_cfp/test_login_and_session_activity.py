@@ -10,7 +10,7 @@ from models.user import User
 # PyCharm fails to spot the use of this symbol as a fixture.
 from fixtures import registrant
 
-from test_utils.constants import login_menu_item, register_menu_item
+from test_utils.constants import login_menu_item, logout_menu_item, my_proposals_menu_item, register_menu_item, registration_update_menu_item, submit_menu_item
 # PyCharm fails to spot the use of this symbol as a fixture.
 from test_utils.fixtures import client
 from test_utils.functions import get_and_check_content, post_and_check_content
@@ -38,8 +38,8 @@ def test_user_can_register(client, registrant, monkeypatch):
                            excludes=(login_menu_item, register_menu_item,),
                            )
     get_and_check_content(client, '/register_success',
-                          includes=(' – Registration Successful', 'You have successfully registered'),
-                          excludes=(),
+                          includes=(' – Registration Successful', 'You have successfully registered', login_menu_item, register_menu_item),
+                          excludes=(logout_menu_item, my_proposals_menu_item, registration_update_menu_item, submit_menu_item),
                           )
     user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 1
@@ -65,8 +65,8 @@ def test_successful_login(client, registrant, monkeypatch):
                            excludes=(),
                            )
     get_and_check_content(client, '/login_success',
-                          includes=(' – Login Successful', 'Login successful'),
-                          excludes=(),
+                          includes=(' – Login Successful', 'Login successful', logout_menu_item, my_proposals_menu_item, registration_update_menu_item, submit_menu_item),
+                          excludes=(login_menu_item, register_menu_item),
                           )
 
 
