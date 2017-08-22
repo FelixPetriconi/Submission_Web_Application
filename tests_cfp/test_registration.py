@@ -63,6 +63,10 @@ def test_successful_user_registration(client, registrant, monkeypatch):
                            includes=('register_success',),
                            excludes=(login_menu_item, register_menu_item,),
                            )
+    get_and_check_content(client, '/register_success',
+                          includes=(' – Registration Successful', 'You have successfully registered'),
+                          excludes=(),
+                          )
     user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 1
     assert user[0].email == registrant['email']
@@ -104,14 +108,6 @@ def test_attempt_get_register_success_out_of_open_causes_redirect(client, monkey
     get_and_check_content(client, '/register_success',
                           code=302,
                           includes=('Redirecting', '<a href="/">'),
-                          )
-
-
-def test_attempt_to_get_register_success_after_registration_delivers_correct_page(client, registrant, monkeypatch):
-    test_successful_user_registration(client, registrant, monkeypatch)
-    get_and_check_content(client, '/register_success',
-                          includes=(' – Registration Successful', 'You have successfully registered'),
-                          excludes=(),
                           )
 
 

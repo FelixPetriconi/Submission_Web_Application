@@ -153,6 +153,7 @@ def registration_update_success():
     assert check[1] is None
     if 'just_updated_register' not in session:
         return redirect('/')
+    session.pop('just_updated_registration', False)
     if not utils.is_logged_in():
         return redirect('/')
     return render_template('general.html',  page=utils.md(base_page, {
