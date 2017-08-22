@@ -18,6 +18,7 @@ user_is_registered = False
 
 
 def register_user(driver, registrant):
+    global user_is_registered
     if not user_is_registered:
         driver.get(base_url + 'register')
         wait = WebDriverWait(driver, driver_wait_time)
@@ -32,7 +33,6 @@ def register_user(driver, registrant):
         button.click()
         wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Registration Successful'))
         assert 'You have successfully registered for submitting proposals for the ACCU' in driver.find_element_by_id('content').text
-        global user_is_registered
         user_is_registered = True
 
 

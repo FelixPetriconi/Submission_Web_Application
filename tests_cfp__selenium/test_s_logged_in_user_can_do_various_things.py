@@ -17,6 +17,7 @@ user_is_logged_in = False
 
 
 def register_and_login_user(driver, registrant):
+    global user_is_logged_in
     if not user_is_logged_in:
         driver.get(base_url + 'register')
         wait = WebDriverWait(driver, driver_wait_time)
@@ -39,7 +40,6 @@ def register_and_login_user(driver, registrant):
         button = wait.until(ecs.element_to_be_clickable((By.ID, 'login')))
         button.click()
         wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Login Successful'))
-        global user_is_logged_in
         user_is_logged_in = True
 
 
