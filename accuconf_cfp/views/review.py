@@ -16,6 +16,7 @@ def review_list():
     assert check[1] is None
     return render_template('review_list.html', page=md(base_page, {
         'pagetitle': 'Review List Failed',
+        'data': 'You must be registered, logged in, and a reviewer to review proposals',
     }))
 
 
@@ -27,4 +28,5 @@ def review_proposal(id):
     assert check[1] is None
     return render_template('review_proposal.html', page=md(base_page, {
         'pagetitle': 'Review Proposal Failed',
+        'data': 'You must be registered, logged in, and a reviewer to review a proposal',
     }))

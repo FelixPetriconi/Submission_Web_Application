@@ -122,6 +122,20 @@ def test_can_get_proposal_update_page(driver):
     check_menu_items(driver, ())
 
 
+def test_cannot_get_review_list_page_unless_logged_in(driver):
+    driver.get(base_url + 'review_list')
+    WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Review List Failed'))
+    assert 'You must be registered, logged in, and a reviewer to review proposals' in driver.find_element_by_class_name('first').text
+    check_menu_items(driver, ())
+
+
+def test_cannot_get_review_proposal_page_unless_logged_in(driver):
+    driver.get(base_url + 'review_proposal/1')
+    WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Review Proposal Failed'))
+    assert 'You must be registered, logged in, and a reviewer to review a proposal' in driver.find_element_by_class_name('first').text
+    check_menu_items(driver, ())
+
+
 # This test changes the state of the per module driver and so must be run as the last test in this module.
 # By default pytest runs tests in declaration order so this should not be fragile.
 def test_can_get_logout_page(driver, registrant):
