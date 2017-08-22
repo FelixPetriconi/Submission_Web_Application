@@ -9,7 +9,9 @@ import pytest
 # Apparently unused but loading has crucial side effects.
 import configure
 
-from accuconf import app
+from accuconf_cfp import app
+from accuconf_cfp.utils import hash_passphrase
+from accuconf_cfp.views.submit import validate_presenters, validate_proposal_data
 
 from models.user import User
 from models.proposal_types import SessionType
@@ -28,9 +30,6 @@ from test_utils.fixtures import (client,
                                  proposal_single_presenter_presenters_field_empty_list, proposal_single_presenter_presenters_field_not_a_list,
                                  )
 from test_utils.functions import get_and_check_content, post_and_check_content
-
-from accuconf_cfp.utils import hash_passphrase
-from accuconf_cfp.views.submit import validate_presenters, validate_proposal_data
 
 
 def test_submit_not_available_when_not_open(client, monkeypatch):

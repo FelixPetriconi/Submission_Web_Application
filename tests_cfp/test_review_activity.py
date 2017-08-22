@@ -1,9 +1,12 @@
 import json
 
+from flask import session
+
 # Apparently unused but loading has crucial side effects
 import configure
 
-from accuconf import app, db
+from accuconf_cfp import app, db
+from accuconf_cfp.utils import hash_passphrase
 
 from models.user import User
 from models.role_types import Role
@@ -11,12 +14,10 @@ from models.role_types import Role
 # PyCharm fails to spot the use of this symbol as a fixture.
 from fixtures import registrant
 
-from test_utils.constants import login_menu_item, register_menu_item
+from test_utils.constants import login_menu_item, logout_menu_item, my_proposals_menu_item, register_menu_item, registration_update_menu_item, submit_menu_item
 # PyCharm fails to spot the use of this symbol as a fixture.
 from test_utils.fixtures import client
 from test_utils.functions import get_and_check_content, post_and_check_content
-
-from accuconf_cfp.utils import hash_passphrase
 
 
 def test_attempt_to_get_review_list_page_outside_open_period_causes_redirect(client, monkeypatch):
@@ -36,11 +37,11 @@ def test_reviewer_can_register_and_login(client, registrant, monkeypatch):
     assert len(user) == 0
     post_and_check_content(client, '/register', json.dumps(registrant), 'application/json',
                            includes=('register_success',),
-                           excludes=(login_menu_item, register_menu_item,),
+                           excludes=(),
                            )
     get_and_check_content(client, '/register_success',
-                          includes=(' – Registration Successful', 'You have successfully registered'),
-                          excludes=(),
+                          includes=(' – Registration Successful', 'You have successfully registered', login_menu_item, register_menu_item),
+                          excludes=(logout_menu_item, my_proposals_menu_item, registration_update_menu_item, submit_menu_item),
                           )
     user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 1
@@ -56,8 +57,8 @@ def test_reviewer_can_register_and_login(client, registrant, monkeypatch):
                            excludes=(),
                            )
     get_and_check_content(client, '/login_success',
-                          includes=(' – Login Successful', 'Login successful'),
-                          excludes=(),
+                          includes=(' – Login Successful', 'Login successful', logout_menu_item, my_proposals_menu_item, registration_update_menu_item, submit_menu_item),
+                          excludes=(login_menu_item, register_menu_item),
                           )
 
 
