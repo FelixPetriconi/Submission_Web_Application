@@ -3,9 +3,10 @@ import json
 # Apparently unused but loading has crucial side effects
 import configure
 
-from accuconf import app
+from accuconf import app, db
 
 from models.user import User
+from models.role_types import Role
 
 # PyCharm fails to spot the use of this symbol as a fixture.
 from fixtures import registrant
@@ -28,7 +29,7 @@ def test_attempt_to_get_review_list_page_outside_open_period_causes_redirect(cli
                           )
 
 
-def test_user_can_register_and_login(client, registrant, monkeypatch):
+def test_reviewer_can_register_and_login(client, registrant, monkeypatch):
     monkeypatch.setitem(app.config, 'CALL_OPEN', True)
     monkeypatch.setitem(app.config, 'MAINTENANCE', False)
     user = User.query.filter_by(email=registrant['email']).all()
@@ -43,8 +44,12 @@ def test_user_can_register_and_login(client, registrant, monkeypatch):
                           )
     user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 1
-    assert user[0].email == registrant['email']
-    assert user[0].passphrase == hash_passphrase(registrant['passphrase'])
+    user = user[0]
+    assert user.email == registrant['email']
+    assert user.passphrase == hash_passphrase(registrant['passphrase'])
+    assert user.role == Role.user
+    user.role = Role.reviewer
+    db.session.commit()
     post_and_check_content(client, '/login',
                            json.dumps({'email': registrant['email'], 'passphrase': registrant['passphrase']}), 'application/json',
                            includes=('login_success',),
@@ -52,5 +57,13 @@ def test_user_can_register_and_login(client, registrant, monkeypatch):
                            )
     get_and_check_content(client, '/login_success',
                           includes=(' – Login Successful', 'Login successful'),
+                          excludes=(),
+                          )
+
+
+def XXX_test_logged_in_reviewer_can_get_review_list(client, registrant, monkeypatch):
+    test_reviewer_can_register_and_login(client, registrant, monkeypatch)
+    get_and_check_content(client, '/review_list',
+                          includes=(' – List of Proposals',),
                           excludes=(),
                           )
