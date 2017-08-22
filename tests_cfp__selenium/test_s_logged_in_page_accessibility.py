@@ -116,6 +116,12 @@ def test_can_get_my_proposals_page(driver, registrant):
     check_menu_items(driver, ())
 
 
+def test_can_get_proposal_update_page(driver):
+    driver.get(base_url + 'proposal_update/1')
+    WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal Not Found'))
+    check_menu_items(driver, ())
+
+
 # This test changes the state of the per module driver and so must be run as the last test in this module.
 # By default pytest runs tests in declaration order so this should not be fragile.
 def test_can_get_logout_page(driver, registrant):
