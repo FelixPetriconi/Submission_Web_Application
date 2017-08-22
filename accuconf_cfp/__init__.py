@@ -72,9 +72,10 @@ nav.init_app(app)
 
 # Only now bring in the views since they likely rely on some of the setup above.
 # Ignore the violations of PEP-8.
-from accuconf_cfp.views.index import index
-from accuconf_cfp.views.register import register
-from accuconf_cfp.views.login import login, logout
-from accuconf_cfp.views.submit import submit
+import accuconf_cfp.views.index
+import accuconf_cfp.views.register
+import accuconf_cfp.views.login
+import accuconf_cfp.views.submit
+import accuconf_cfp.views.review
 
 

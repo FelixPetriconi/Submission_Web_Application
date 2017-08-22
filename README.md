@@ -28,7 +28,8 @@ schedule is finalised up to the end of the conference for that year.
 
 ## Contributing
 
-Contributions are welcome from anyone and everyone who believes they have something to contribute.
+Contributions are welcome from anyone and everyone who believes they have something constructive to
+contribute.
 
 First step is to clone the repository so as to be able to run the applications. Second step is to make sure
 all the necessary Python bits and pieces are installed. The files _pip\_runtime\_requirements.txt_,
@@ -41,15 +42,24 @@ approach is to use pip to install. Many people will use a virtual environment, i
 will install all the packages needed for running the applications. For testing install the test requirements
 as well. The admin requirements are for using the scaffolded admin interface to work on the database.
 
+With everything installed, a database is needed. Executing:
+
+    ./cli.sh db_init
+
+should do the needful.
+
 Running the submission application is then a matter of executing:
 
     ./run_cfp.py
 
 This should set the submission application running on localhost:8000. The state of the application is
 determined at application start time. The default is the "off" state, so should just put up a "not open"
-message..
+message. To get the application into the "open" state you need to have a file _accuconf\_config.py_ in place
+before starting the application. This file should have the line:
 
-Once set up chip in with issues and, if you willing, pull requests.
+    from models.configuration import CallForProposalsOpen as Config
+
+Once set up chip in with issues and, if you are willing, pull requests.
 
 These two applications are straightforward, relatively small [Flask](http://flask.pocoo.org/) applications
 using [SQLAlchemy](https://www.sqlalchemy.org/) and SQLite. There are the _accuconf\_cfp_ and
@@ -58,14 +68,9 @@ shared packages for the two applications. [Jinja2](http://jinja.pocoo.org/docs/2
 rendering.
 
 Tests are [pytest](https://docs.pytest.org/en/latest/) ones. Unit tests (exercising the route controllers)
-are in _tests_, whilst _test\_selenium_ holds the webdriver driven tests.
-
-The current state of the application is determined by a file _accuconf\_config.py_ which is not
-versioned. An example of such a file is:
-
-    from models.configuration import CallForProposalsOpen as Config
-
-If this file is not present then the state is _ApplicationOff_.
+are in _tests\_cfp_, whilst _tests\_cfp\_\_selenium_ holds the webdriver driven tests. The latter use
+_chromedriver_ so you will need to ensure you have that installed. PhantomJS appears not to be up to the job
+of being a headless driver for these tests hence using Chromedriver in headless mode.
 
 ## Historical note
 

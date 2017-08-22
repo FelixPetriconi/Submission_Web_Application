@@ -37,6 +37,10 @@ def test_user_can_register(client, registrant, monkeypatch):
                            includes=('register_success',),
                            excludes=(login_menu_item, register_menu_item,),
                            )
+    get_and_check_content(client, '/register_success',
+                          includes=(' – Registration Successful', 'You have successfully registered'),
+                          excludes=(),
+                          )
     user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 1
     assert user[0].email == registrant['email']
@@ -60,10 +64,6 @@ def test_successful_login(client, registrant, monkeypatch):
                            includes=('login_success',),
                            excludes=(),
                            )
-
-
-def test_successful_login_checking_after_redirect(client, registrant, monkeypatch):
-    test_successful_login(client, registrant, monkeypatch)
     get_and_check_content(client, '/login_success',
                           includes=(' – Login Successful', 'Login successful'),
                           excludes=(),
