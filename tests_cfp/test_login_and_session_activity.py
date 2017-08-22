@@ -64,10 +64,6 @@ def test_successful_login(client, registrant, monkeypatch):
                            includes=('login_success',),
                            excludes=(),
                            )
-
-
-def test_successful_login_checking_after_redirect(client, registrant, monkeypatch):
-    test_successful_login(client, registrant, monkeypatch)
     get_and_check_content(client, '/login_success',
                           includes=(' – Login Successful', 'Login successful'),
                           excludes=(),

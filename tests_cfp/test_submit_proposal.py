@@ -150,6 +150,10 @@ def test_ensure_registration_and_login(client, registrant, monkeypatch):
                            includes=('login_success',),
                            excludes=(),
                            )
+    get_and_check_content(client, '/login_success',
+                          includes=(' – Login Successful', 'Login successful'),
+                          excludes=(),
+                          )
 
 
 def test_not_logged_in_user_cannot_get_submission_page(client, monkeypatch):
@@ -235,6 +239,10 @@ def test_logged_in_user_cannot_submit_multipresenter_multilead_proposal(client, 
                            includes=("['{}', '{}'] marked as lead presenters".format(presenters[0]['email'], presenters[1]['email']),),
                            excludes=(login_menu_item, register_menu_item),
                            )
+    get_and_check_content(client, '/register_success',
+                          includes=(' – Registration Successful', 'You have successfully registered'),
+                          excludes=(),
+                          )
     user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 1
     user = user[0]
