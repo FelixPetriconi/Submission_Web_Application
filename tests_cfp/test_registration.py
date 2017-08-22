@@ -7,7 +7,8 @@ import json
 # Apparently unused but loading has crucial side effects.
 import configure
 
-from accuconf import app
+from accuconf_cfp import app
+from accuconf_cfp.utils import hash_passphrase
 
 from models.user import User
 
@@ -18,8 +19,6 @@ from test_utils.constants import login_menu_item, register_menu_item
 # PyCharm fails to spot this is used as a fixture.
 from test_utils.fixtures import client
 from test_utils.functions import get_and_check_content, post_and_check_content
-
-from accuconf_cfp.utils import hash_passphrase
 
 
 def test_attempt_to_get_registration_page_outside_open_period_causes_redirect(client, monkeypatch):

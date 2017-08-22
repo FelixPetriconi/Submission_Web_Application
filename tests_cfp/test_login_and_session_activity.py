@@ -4,6 +4,7 @@ import json
 import configure
 
 from accuconf import app
+from accuconf_cfp.utils import hash_passphrase
 
 from models.user import User
 
@@ -14,8 +15,6 @@ from test_utils.constants import login_menu_item, logout_menu_item, my_proposals
 # PyCharm fails to spot the use of this symbol as a fixture.
 from test_utils.fixtures import client
 from test_utils.functions import get_and_check_content, post_and_check_content
-
-from accuconf_cfp.utils import hash_passphrase
 
 
 def test_attempt_to_get_login_page_outside_open_period_causes_redirect(client, monkeypatch):

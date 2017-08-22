@@ -7,7 +7,7 @@ any unexpected content.
 # Apparently unused but loading has crucial side effects
 import configure
 
-from accuconf import app
+from accuconf_cfp import app
 
 from test_utils.constants import login_menu_item, register_menu_item
 # PyCharm fails to spot the use of this symbol as a fixture.
