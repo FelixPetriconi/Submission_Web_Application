@@ -1,7 +1,5 @@
 import json
 
-from flask import session
-
 # Apparently unused but loading has crucial side effects
 import configure
 
@@ -14,7 +12,10 @@ from models.role_types import Role
 # PyCharm fails to spot the use of this symbol as a fixture.
 from fixtures import registrant
 
-from test_utils.constants import login_menu_item, logout_menu_item, my_proposals_menu_item, register_menu_item, registration_update_menu_item, submit_menu_item
+from test_utils.constants import (
+    login_menu_item, logout_menu_item, my_proposals_menu_item,
+    register_menu_item, registration_update_menu_item, submit_menu_item
+)
 # PyCharm fails to spot the use of this symbol as a fixture.
 from test_utils.fixtures import client
 from test_utils.functions import get_and_check_content, post_and_check_content
@@ -31,7 +32,8 @@ def test_attempt_to_get_review_list_page_outside_open_period_causes_redirect(cli
 
 
 def test_reviewer_can_register_and_login(client, registrant, monkeypatch):
-    monkeypatch.setitem(app.config, 'CALL_OPEN', True)
+    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
+    monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', True)
     monkeypatch.setitem(app.config, 'MAINTENANCE', False)
     user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 0
@@ -57,12 +59,12 @@ def test_reviewer_can_register_and_login(client, registrant, monkeypatch):
                            excludes=(),
                            )
     get_and_check_content(client, '/login_success',
-                          includes=(' – Login Successful', 'Login successful', logout_menu_item, my_proposals_menu_item, registration_update_menu_item, submit_menu_item),
-                          excludes=(login_menu_item, register_menu_item),
+                          includes=(' – Login Successful', 'Login successful', logout_menu_item, registration_update_menu_item),
+                          excludes=(login_menu_item, my_proposals_menu_item, register_menu_item, submit_menu_item),
                           )
 
 
-def XXX_test_logged_in_reviewer_can_get_review_list(client, registrant, monkeypatch):
+def test_logged_in_reviewer_can_get_review_list(client, registrant, monkeypatch):
     test_reviewer_can_register_and_login(client, registrant, monkeypatch)
     get_and_check_content(client, '/review_list',
                           includes=(' – List of Proposals',),

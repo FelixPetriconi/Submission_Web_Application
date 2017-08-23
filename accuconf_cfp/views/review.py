@@ -20,16 +20,16 @@ def review_list():
     if is_logged_in():
         user = User.query.filter_by(email=session['email']).first()
         if not user:
-            render_template('/general.html', page=md(base_page, {
+            return render_template('/general.html', page=md(base_page, {
                 'pagetitle': 'Review List Failed',
                 'data': 'Logged in user is not a registered user. This cannot happen.',
             }))
         if user.role != Role.reviewer:
-            render_template('/general.html', page=md(base_page, {
+            return render_template('/general.html', page=md(base_page, {
                 'pagetitle': 'Review List Failed',
                 'data': 'Logged in user is not a registered reviewer.',
             }))
-        render_template('/review_list.html', page=md(base_page, {
+        return render_template('/review_list.html', page=md(base_page, {
             'pagetitle': 'List of Proposals',
             'data': 'Please click on the proposal you wish to review.',
         }))
