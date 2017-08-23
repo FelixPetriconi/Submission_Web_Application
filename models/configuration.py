@@ -1,6 +1,4 @@
-"""
-Classes to define the states of the application.
-"""
+"""Classes to define the states of the application."""
 
 from pathlib import Path
 

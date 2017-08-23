@@ -1,3 +1,5 @@
+"""Support types for proposals"""
+
 from enum import Enum
 
 

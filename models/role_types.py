@@ -1,3 +1,5 @@
+"""Support types for the role of a user."""
+
 from enum import Enum
 
 

@@ -1,3 +1,5 @@
+"""Support types for the conference schedule."""
+
 from enum import Enum
 
 

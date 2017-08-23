@@ -1,3 +1,5 @@
+"""The routes associated with registering and updating registration details."""
+
 from flask import Markup, jsonify, redirect, render_template, request, session
 
 from accuconf_cfp import app, countries, db, year

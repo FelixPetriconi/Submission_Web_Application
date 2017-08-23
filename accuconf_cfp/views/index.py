@@ -1,3 +1,5 @@
+"""The top level, / or /index.html."""
+
 from flask import render_template, Markup
 
 from accuconf_cfp import app, year

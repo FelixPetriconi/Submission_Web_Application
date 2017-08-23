@@ -1,3 +1,5 @@
+"""Routes associated with submitting and amending submitted proposals."""
+
 from flask import jsonify, render_template, request, session, Markup
 
 from accuconf_cfp import app, db, year, countries

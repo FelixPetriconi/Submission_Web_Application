@@ -1,3 +1,5 @@
+"""Classes associated with the scaffolding of the admin interface."""
+
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.form.fields import Select2Field
 

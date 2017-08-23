@@ -1,3 +1,5 @@
+"""Routes associated with reviewing submitted proposals."""
+
 from flask import render_template, session
 
 from accuconf_cfp import app, year

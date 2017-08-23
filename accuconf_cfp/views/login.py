@@ -1,3 +1,5 @@
+"""The routes associated with logging in and out."""
+
 from flask import jsonify, redirect, render_template, request, session, Markup
 
 from accuconf_cfp import app, year
@@ -11,6 +13,12 @@ base_page = {
 
 
 def validate_login_data(login_data):
+    """Check some aspects of putative login details.
+
+    Return a pair with the zero element being a Boolean determining whether validation
+    has been successful, the one element is a message in the case of failure and "validated"
+    in the case of success.
+    """
     if not login_data:
         return False, 'No JSON data returned.'
     mandatory_keys = ['email', 'passphrase']

@@ -1,3 +1,5 @@
+"""SQLAlchemy model classes associated with proposals and their presenters."""
+
 from sqlalchemy.ext.associationproxy import association_proxy
 
 #  The accuconf name is created as an alias for the application package at run time.
