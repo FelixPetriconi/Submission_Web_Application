@@ -53,6 +53,33 @@ def review_proposal(id):
     if not check[0]:
         return check[1]
     assert check[1] is None
+    check = is_acceptable_route()
+    if not check[0]:
+        return check[1]
+    assert check[1] is None
+    if is_logged_in():
+        user = User.query.filter_by(email=session['email']).first()
+        if not user:
+            return render_template('/general.html', page=md(base_page, {
+                'pagetitle': 'Review Proposal Failed',
+                'data': 'Logged in user is not a registered user. This cannot happen.',
+            }))
+        if user.role != Role.reviewer:
+            return render_template('/general.html', page=md(base_page, {
+                'pagetitle': 'Review Proposal Failed',
+                'data': 'Logged in user is not a registered reviewer.',
+            }))
+        proposal = Proposal.query.filter_by(id=id).first()
+        presenters = [{'name': p.name, 'bio': p.bio} for p in proposal.presenters]
+        return render_template('/review_proposal.html', page=md(base_page, {
+            'pagetitle': 'Proposals to Review',
+            'data': 'There is no specific "do nothing" button, to not do anything simply navigate away from this page.',
+            'title': proposal.title,
+            'summary': proposal.summary,
+            'notes': proposal.notes,
+            'presenters': presenters,
+            'button_label': 'Submit',
+        }))
     return render_template('review_proposal.html', page=md(base_page, {
         'pagetitle': 'Review Proposal Failed',
         'data': 'You must be registered, logged in, and a reviewer to review a proposal',
