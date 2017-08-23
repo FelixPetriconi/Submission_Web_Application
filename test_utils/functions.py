@@ -1,6 +1,13 @@
 """
 Various bits of code used in various testing places.
+
+The symbol accuconf must be defined prior to loading of this module.
 """
+
+from accuconf import db
+
+from models.user import User
+from models.proposal import Proposal, Presenter, ProposalPresenter
 
 
 def get_and_check_content(client, url, code=200, includes=(), excludes=()):
@@ -32,3 +39,32 @@ def post_and_check_content(client, url, data, content_type=None, code=200, inclu
     for item in excludes:
         assert item not in rvd, '######## `{}` in\n{}'.format(item, rvd)
     return rvd
+
+
+def add_new_user(user_details):
+    """Given a dictionary of user details create a user in the data base."""
+    user = User(**user_details)
+    db.session.add(user)
+    db.session.commit()
+
+
+def add_a_proposal_as_user(user_email, proposal_data):
+    """Given a user email and a dictionary of details about a proposal add the proposal to the database."""
+    user = User.query.filter_by(email=user_email).first()
+    proposal = Proposal(
+        user,
+        proposal_data['title'],
+        proposal_data['session_type'],
+        proposal_data['summary'],
+    )
+    db.session.add(proposal)
+    for presenter_data in proposal_data['presenters']:
+        presenter = Presenter(
+            presenter_data['email'],
+            presenter_data['name'],
+            presenter_data['bio'],
+            presenter_data['country'],
+        )
+        db.session.add(presenter)
+        ProposalPresenter(proposal, presenter, presenter_data['is_lead'])
+    db.session.commit()
