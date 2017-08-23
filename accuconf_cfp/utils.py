@@ -39,7 +39,7 @@ def is_logged_in():
     On logging in a record is placed into the session data structure with key 'email'.
     The record is removed on logout.
     """
-    return 'email' in session and session['email']
+    return 'email' in session and bool(session['email'])
 
 
 def is_valid_email(email):

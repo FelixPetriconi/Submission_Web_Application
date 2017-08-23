@@ -123,7 +123,7 @@ def test_can_get_proposal_update_page(driver):
 def test_cannot_get_review_list_page_unless_logged_in(driver):
     driver.get(base_url + 'review_list')
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Review List Failed'))
-    assert 'You must be registered, logged in, and a reviewer to review proposals' in driver.find_element_by_class_name('first').text
+    assert 'Logged in user is not a registered reviewer.' in driver.find_element_by_class_name('first').text
     check_menu_items(driver, ())
 
 

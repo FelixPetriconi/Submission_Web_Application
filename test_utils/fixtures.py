@@ -81,7 +81,7 @@ lengthy proposal''',
 @pytest.fixture
 def proposal_multiple_presenters_single_lead():
     return {
-        'title': 'A mulit presenter proposal',
+        'title': 'A multi presenter proposal',
         'session_type': 'miniworkshop',
         'summary': '''This is a proposal for a miniworkshop that has
 dummy data. Also this is not a very
