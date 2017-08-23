@@ -30,6 +30,7 @@ file_directory = Path(__file__).parent
 sys.path.insert(0, str(file_directory.parent))
 
 from accuconf_cfp import app, db
+from accuconf_cfp.utils import hash_passphrase
 
 from models.user import User
 from models.proposal import Proposal, Presenter, ProposalPresenter
@@ -38,22 +39,47 @@ from models.proposal_types import SessionType, ProposalState, SessionCategory, S
 from models.schedule_types import ConferenceDay, SessionSlot, QuickieSlot, Track, Room
 from models.role_types import Role
 
+from test_utils.fixtures import registrant, proposal_single_presenter, proposal_multiple_presenters_single_lead
+from test_utils.functions import add_a_proposal_as_user, add_new_user
+
 start_date = date(2018, 4, 10)  # The day of the full-day pre-conference workshops
 
 
 @app.cli.command()
 def db_init():
-    """
-    Create an initial database.
-    """
+    """Create an initial database."""
     db.create_all()
 
 
 @app.cli.command()
+def db_init_add_sample_data():
+    """Create a new database and put a user in it with two proposals."""
+    db.create_all()
+    user_data = registrant()
+    del user_data['cpassphrase']
+    user_data['passphrase'] = hash_passphrase('yes and no')
+    add_new_user(user_data)
+    add_a_proposal_as_user(user_data['email'], proposal_single_presenter())
+    add_a_proposal_as_user(user_data['email'], proposal_multiple_presenters_single_lead())
+    russel_email = 'russel@winder.org.uk'
+    add_new_user({
+        'email': russel_email,
+        'passphrase': hash_passphrase('yes and no'),
+        'name': 'Russel Winder',
+        'phone': '+442075852200',
+        'country': 'United Kingdom',
+        'postal_code': 'SW11 1EN',
+        'town_city': 'London',
+        'street_address': '41 Buckmaster Road',
+    })
+    russel_data = User.query.filter_by(email=russel_email).first()
+    russel_data.role = Role.reviewer
+    db.session.commit()
+
+
+@app.cli.command()
 def all_reviewers():
-    """
-    Print a list of all the registrants labelled as a reviewers.
-    """
+    """Print a list of all the registrants labelled as a reviewers."""
     for x in User.query.filter_by(role=Role.reviewer).all():
         print('{} {} <{}>'.format(x.first_name, x.last_name, x.user_id))
 
@@ -61,9 +87,7 @@ def all_reviewers():
 @app.cli.command()
 @click.argument('committee_email_file_path')
 def are_committee_all_reviewers(committee_email_file_path):
-    """
-    Ensure consistency between committee list and reviewers list.
-    """
+    """Ensure consistency between committee list and reviewers list."""
     try:
         with open(committee_email_file_path) as committee_email_file:
             committee_emails = {s.strip() for s in committee_email_file.read().split()}
@@ -83,9 +107,7 @@ def are_committee_all_reviewers(committee_email_file_path):
 @app.cli.command()
 @click.argument('committee_email_file_path')
 def set_committee_as_reviewers(committee_email_file_path):
-    """
-    Update database to ensure all committee members are reviewers.
-    """
+    """Update database to ensure all committee members are reviewers."""
     try:
         with open(committee_email_file_path) as committee_email_file:
             committee_emails = {s.strip() for s in committee_email_file.read().split()}
@@ -109,9 +131,7 @@ def set_committee_as_reviewers(committee_email_file_path):
 
 @app.cli.command()
 def create_proposal_sheets():
-    """
-    Create the bits of papers for constructing an initial schedule.
-    """
+    """Create the bits of papers for constructing an initial schedule."""
     file_path = str(file_directory.parent / 'proposal_sheets.pdf')
     style_sheet = getSampleStyleSheet()['BodyText']
     style_sheet.fontSize = 18
@@ -135,9 +155,7 @@ def create_proposal_sheets():
 
 @app.cli.command()
 def create_proposals_document():
-    """
-    Create an Asciidoc document of all the proposals in the various sections.
-    """
+    """Create an Asciidoc document of all the proposals in the various sections."""
     file_path = str(file_directory.parent / 'proposals.adoc')
     total_proposals = len(Proposal.query.all())
     proposals_processed = 0
@@ -191,8 +209,7 @@ def create_proposals_document():
 
 @app.cli.command()
 def check_database_consistency():
-    """
-    Make sure that all columns in all tables have the right sort of value.
+    """Make sure that all columns in all tables have the right sort of value.
 
     The tests for enum valued columns should never fail since the data
     schema contains the string constraints to ensure there is never a
@@ -247,9 +264,7 @@ def check_database_consistency():
 
 @app.cli.command()
 def ensure_consistency_of_schedule():
-    """
-    Run a number of checks to ensure that the schedule has no obvious problems.
-    """
+    """Run a number of checks to ensure that the schedule has no obvious problems."""
     accepted = Proposal.query.filter_by(status=ProposalState.accepted).all()
     acknowledged = Proposal.query.filter_by(status=ProposalState.acknowledged).all()
     if len(accepted) > 0:
@@ -339,9 +354,7 @@ def ensure_consistency_of_schedule():
 
 @app.cli.command()
 def list_of_unacknowledged():
-    """
-    List the sessions and emails of unacknowledged sessions.
-    """
+    """List the sessions and emails of unacknowledged sessions."""
     proposals = Proposal.query.filter_by(status=ProposalState.accepted).all()
     quickies = tuple(p for p in proposals if p.session_type == SessionType.quickie)
     others = tuple(p for p in proposals if p.session_type != SessionType.quickie)
@@ -354,9 +367,7 @@ def list_of_unacknowledged():
 
 @app.cli.command()
 def  list_of_lead_presenters():
-    """
-    List of people eligible for the presenter deal.
-    """
+    """List of people eligible for the presenter deal."""
     accepted = Proposal.query.filter_by(status=ProposalState.accepted).all()
     acknowledged = Proposal.query.filter_by(status=ProposalState.acknowledged).all()
     not_quickies = tuple(s for s in accepted + acknowledged if s.session_type != SessionType.quickie and s.session_type != SessionType.fulldayworkshop)
@@ -367,10 +378,7 @@ def  list_of_lead_presenters():
 
 @app.cli.command()
 def generate_pages():
-    """
-    Generate the schedule, presenters, and sessions Asciidoc files for placing into the
-    static part of the website.
-    """
+    """Generate the schedule, presenters, and sessions Asciidoc files for placing into the static part of the website."""
     accepted = Proposal.query.filter_by(status=ProposalState.accepted).all()
     assert len(accepted) == 0, 'There are unacknowledged accepted proposals.'
     acknowledged = Proposal.query.filter_by(status=ProposalState.acknowledged).all()
@@ -602,10 +610,8 @@ _The schedule is subject to change without notice until {}._
 
 @app.cli.command()
 def deploy_new_schedule_files():
-    """
-    Copy the three generated Asciidoc pages for the schedule, sessions,
-    and presenters to their place in the static stories area.
-    """
+    """Copy the three generated Asciidoc pages for the schedule, sessions,
+    and presenters to their place in the static stories area."""
     destination = Path('..') / 'static_nikola_part' / 'stories' / str(start_date.year)
     for name in ('sessions.adoc', 'presenters.adoc', 'schedule.adoc'):
         shutil.copyfile(name, str(destination / name))
@@ -615,8 +621,8 @@ def deploy_new_schedule_files():
 @click.option('--trial/--not-trial', default=True)
 @click.argument('emailout_spec')
 def do_emailout(trial, emailout_spec):
-    """
-    Perform an emailout given data in the `emailout_spec`.
+    """Perform an emailout given data in the `emailout_spec`.
+
     The default is to run a trial emailout, the --trial|-t option must
     be explicitly set to False to do a real emailout.
     """
@@ -676,9 +682,7 @@ def do_emailout(trial, emailout_spec):
 @click.option('--selector', '-s', type=click.Choice(['bio', 'blurb']))
 @click.argument('values', nargs=-1)
 def edit(selector, values):
-    """
-    Edit either a bio (given an email) or a blurb (given a title) using the user's default editor.
-    """
+    """Edit either a bio (given an email) or a blurb (given a title) using the user's default editor."""
     if selector is None:
         click.echo(click.style('Must provide a --selector|-s option [bio|blurb]', fg='red'))
         return 1
@@ -724,8 +728,7 @@ def edit(selector, values):
 @app.cli.command()
 @click.argument('person')
 def replace_presenter_of_proposal(person):
-    """
-    Replace the, or one of the, presenters associated with a proposal.
+    """Replace the, or one of the, presenters associated with a proposal.
 
     The name is in the format <first_name>_<last_name> and refers to a directory
     in presenter_replacements directory. This directory must contain a file
@@ -800,7 +803,8 @@ def replace_presenter_of_proposal(person):
 @app.cli.command()
 @click.argument('email_address')
 def expunge_user(email_address):
-    """
+    """Remove user of given email from database.
+
     Relationships have the wrong cascade settings and so we cannot just delete the user and have all
     the user related objects removed, we thus have to follow all the relationship entries in a class
     to perform a deep removal.

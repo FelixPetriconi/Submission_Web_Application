@@ -7,7 +7,7 @@ import sys
 
 import pycountry
 
-from flask import Flask, request
+from flask import Flask, request, session
 # from flask_bootstrap import Bootstrap
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
@@ -42,6 +42,9 @@ countries = {country.name: country.alpha_3 for country in pycountry.countries}
 # This include require app to be already defined in this module.
 from accuconf_cfp.utils import is_logged_in
 
+from models.user import User
+from models.role_types import Role
+
 
 def top_nav():
     """The callable that delivers the left-side menu for the current state ."""
@@ -61,6 +64,10 @@ def top_nav():
         entries.append(View('Registration Update', 'registration_update'))
     if app.config['CALL_OPEN'] and logged_in and request.path != '/my_proposals':
         entries.append(View('My Proposals', 'my_proposals'))
+    if app.config['REVIEWING_ALLOWED'] and logged_in and request.path != '/review_list':
+        user = User.query.filter_by(email=session['email']).first()
+        if user and user.role == Role.reviewer:
+            entries.append(View('Review Proposals', 'review_list'))
     if logged_in:
         entries.append(View('Logout', 'logout'))
     return Navbar('', *entries)
