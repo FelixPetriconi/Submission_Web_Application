@@ -4,6 +4,7 @@ from accuconf_cfp import app, year
 from accuconf_cfp.utils import is_acceptable_route, is_logged_in, md
 
 from models.user import User
+from models.proposal import Proposal
 from models.role_types import Role
 
 base_page = {
@@ -29,9 +30,14 @@ def review_list():
                 'pagetitle': 'Review List Failed',
                 'data': 'Logged in user is not a registered reviewer.',
             }))
+        proposals = [(p.id, p.title, lead.presenter.name)
+                     for p in Proposal.query.all() if p.proposer != user
+                     for lead in p.proposal_presenters if lead.is_lead
+                     ]
         return render_template('/review_list.html', page=md(base_page, {
             'pagetitle': 'List of Proposals',
             'data': 'Please click on the proposal you wish to review.',
+            'proposals': proposals,
         }))
     return render_template('review_list.html', page=md(base_page, {
         'pagetitle': 'Review List Failed',
