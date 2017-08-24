@@ -48,6 +48,7 @@ def test_can_amend_registration_record(driver, registrant):
     driver.get(base_url + 'registration_update')
     wait = WebDriverWait(driver, driver_wait_time)
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Registration Details Updating'))
+    assert 'India' == Select(driver.find_element_by_id('country')).first_selected_option.text
     driver.find_element_by_id('name').send_keys('Jo Bloggs')
     button = wait.until(ecs.element_to_be_clickable((By.ID, 'submit')))
     assert 'Save' == driver.find_element_by_id('submit').text
