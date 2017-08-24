@@ -2,7 +2,15 @@
     font-size: 20pt;
 }
 
+.help-block {
+    color: orange;
+}
+
+.alert {
+    color: red;
+}
+
 #footer {
-    foreground-color: #000000;
+    color: black;
     background-color: #eeeeee;
 }
