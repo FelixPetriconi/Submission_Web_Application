@@ -72,12 +72,15 @@ def register():
         db.session.commit()
         session['just_registered'] = True
         return jsonify('register_success')
+    default_country = 'United Kingdom'
+    assert default_country in countries.keys()
     return render_template('register.html', page=utils.md(base_page, {
         'pagetitle': 'Register',
         'data': 'Register here for submitting proposals to the ACCU {} Conference'.format(year),
         'submit_button': 'Register',
         'passphrase_required': 'true',
-        'countries': sorted(list(countries.keys())),
+        'country': default_country,
+        'countries': sorted(countries.keys()),
     }))
 
 
@@ -143,7 +146,7 @@ is no specific button for "leave things as they are" that is the default action.
         'country': user.country,
         'submit_button': 'Save',
         'passphrase_required': 'false',
-        'countries': sorted(list(countries.keys())),
+        'countries': sorted(countries.keys()),
     }))
 
 

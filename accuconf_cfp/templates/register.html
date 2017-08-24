@@ -88,7 +88,7 @@
                 <div class="col-sm-offset-1">
                     <select id="country" name="country"  aria-describedby="country_alert">
                         {% for x in  page.countries   %}
-                        <option value="{{x}}" {% if x == "United Kingdom" %} selected  {% endif %}>{{x}}</option>
+                        <option value="{{x}}" {% if x == page.country %} selected  {% endif %}>{{x}}</option>
                         {% endfor %}
                     </select>
                     <span class="help-block" id="country_alert"></span>
