@@ -53,10 +53,6 @@ def review_proposal(id):
     if not check[0]:
         return check[1]
     assert check[1] is None
-    check = is_acceptable_route()
-    if not check[0]:
-        return check[1]
-    assert check[1] is None
     if is_logged_in():
         user = User.query.filter_by(email=session['email']).first()
         if not user:

@@ -31,6 +31,45 @@ def test_attempt_to_get_review_list_page_outside_open_period_causes_redirect(cli
                           )
 
 
+def test_user_not_a_reviewer_can_register_and_login(client, registrant, monkeypatch):
+    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
+    monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', True)
+    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+    post_and_check_content(client, '/register', json.dumps(registrant), 'application/json',
+                           includes=('register_success',),
+                           excludes=(),
+                           )
+    get_and_check_content(client, '/register_success',
+                          includes=(' – Registration Successful', 'You have successfully registered', login_menu_item, register_menu_item),
+                          excludes=(logout_menu_item, my_proposals_menu_item, registration_update_menu_item, submit_menu_item),
+                          )
+    post_and_check_content(client, '/login',
+                           json.dumps({'email': registrant['email'], 'passphrase': registrant['passphrase']}), 'application/json',
+                           includes=('login_success',),
+                           excludes=(),
+                           )
+    get_and_check_content(client, '/login_success',
+                          includes=(' – Login Successful', 'Login successful', logout_menu_item, registration_update_menu_item),
+                          excludes=(login_menu_item, my_proposals_menu_item, register_menu_item, submit_menu_item),
+                          )
+
+
+def test_user_not_a_reviewer_can_register_and_login_but_not_see_review_page(client, registrant, monkeypatch):
+    test_user_not_a_reviewer_can_register_and_login(client, registrant, monkeypatch)
+    get_and_check_content(client, '/review_list',
+                          includes=(' – Review List Failed', 'Logged in user is not a registered reviewer.', logout_menu_item, registration_update_menu_item),
+                          excludes=(login_menu_item, my_proposals_menu_item, register_menu_item, submit_menu_item),
+                          )
+
+
+def test_user_not_a_reviewer_can_register_and_login_but_not_see_review_proposal_page(client, registrant, monkeypatch):
+    test_user_not_a_reviewer_can_register_and_login(client, registrant, monkeypatch)
+    get_and_check_content(client, '/review_proposal/1',
+                          includes=(' – Review Proposal Failed', 'Logged in user is not a registered reviewer.', logout_menu_item, registration_update_menu_item),
+                          excludes=(login_menu_item, my_proposals_menu_item, register_menu_item, submit_menu_item),
+                          )
+
+
 def test_reviewer_can_register_and_login(client, registrant, monkeypatch):
     monkeypatch.setitem(app.config, 'CALL_OPEN', False)
     monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', True)
@@ -106,4 +145,26 @@ def test_logged_in_reviewer_can_get_review_list_and_see_no_own_entries(client, r
                               '<td><a href="/review_proposal/1">A single presenter proposal</a></td>',
                               '<td><a href="/review_proposal/2">A multi presenter proposal</a></td>'
                           ),
+                          )
+
+
+def test_logged_in_reviewer_can_get_review_proposal_for_not_own_entries(client, registrant, monkeypatch):
+    user_email = 'p@a.b.c'
+    add_new_user({
+        'email': user_email,
+        'passphrase': 'A passphrase',
+        'name': 'A B C Person',
+        'street_address': '1 Some Road',
+        'town_city': 'Somewhere',
+        'postal_code': '12345',
+        'country': 'United Kingdom',
+    })
+    add_a_proposal_as_user(user_email, proposal_single_presenter())
+    add_a_proposal_as_user(user_email, proposal_multiple_presenters_single_lead())
+    test_reviewer_can_register_and_login(client, registrant, monkeypatch)
+    get_and_check_content(client, '/review_proposal/1',
+                          includes=(
+                              ' – Proposals to Review',
+                          ),
+                          excludes=(),
                           )
