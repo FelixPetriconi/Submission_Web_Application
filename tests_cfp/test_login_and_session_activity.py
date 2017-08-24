@@ -89,6 +89,26 @@ def test_logged_in_user_cannot_login_again(client, registrant, monkeypatch):
                            )
 
 
+def test_missing_passphrase_causes_login_failure(client, registrant, monkeypatch):
+    test_user_can_register(client, registrant, monkeypatch)
+    post_and_check_content(client, '/login',
+                           json.dumps({'email': registrant['email']}), 'application/json',
+                           code=400,
+                           includes=("Missing keys in registration data: ['passphrase']",),
+                           excludes=(),
+                           )
+
+
+def test_malformed_email_causes_login_failure(client, registrant, monkeypatch):
+    test_user_can_register(client, registrant, monkeypatch)
+    post_and_check_content(client, '/login',
+                           json.dumps({'email': 'a.b.c.d', 'passphrase': 'some words or other'}), 'application/json',
+                           code=400,
+                           includes=('The email address is invalid',),
+                           excludes=(),
+                           )
+
+
 def test_wrong_passphrase_causes_login_failure(client, registrant, monkeypatch):
     test_user_can_register(client, registrant, monkeypatch)
     post_and_check_content(client, '/login',
