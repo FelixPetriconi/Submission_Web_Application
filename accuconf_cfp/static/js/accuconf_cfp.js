@@ -69,23 +69,16 @@ function isValidRegistrationData(passphraseRequired) {
     } else {
     	$('#passphrase_alert').text('')
     }
-    const cpassphrase = $('#cpassphrase').val()
-    if (passphraseRequired && !isValidPassphrase(cpassphrase)) {
-    	$('#cpassphrase_alert').text('Confirmation passphrase is not valid.')
+    if (passphrase !== $('#cpassphrase').val()) {
+    	$('#cpassphrase_alert').text('Passphrase and confirmation passphrase not the same.')
         returnCode = false
     } else {
     	$('#cpassphrase_alert').text('')
     }
-    if (passphrase !== cpassphrase) {
-    	$('#passphrase_alert').text('Passphrase and confirmation passphrase not the same.')
-        returnCode = false
-    } else {
-    	$('#passphrase_alert').text('')
-    }
-   if (!isValidName($('#name').val())) {
-    	$('#name_alert').text('Invalid name.')
-        returnCode = false
-    } else {
+	if (!isValidName($('#name').val())) {
+		$('#name_alert').text('Invalid name.')
+		returnCode = false
+	} else {
     	$('#name_alert').text('')
     }
     if (!isValidPhone($('#phone').val())) {
