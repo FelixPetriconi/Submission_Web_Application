@@ -20,7 +20,8 @@ class Proposal(db.Model):
     constraints = db.Column(db.Text, nullable=True)
     presenters = association_proxy('proposal_presenters', 'presenter')
     audience = db.Column(db.Enum(SessionAudience), nullable=False)
-    category = db.Column(db.Enum(SessionCategory), nullable=False)
+    # category = db.Column(db.Enum(SessionCategory), nullable=False)
+    category = db.Column(db.String(100), nullable=True)
     scores = db.relationship('Score', back_populates='proposal')
     comments = db.relationship('Comment', back_populates='proposal')
     status = db.Column(db.Enum(ProposalState), nullable=False)
@@ -36,7 +37,7 @@ class Proposal(db.Model):
     video_url = db.Column(db.String(100))
 
     def __init__(self, proposer, title, session_type, summary, notes='', constraints='',
-                 audience=SessionAudience.all, category=SessionCategory.not_sure, status=ProposalState.submitted,
+                 audience=SessionAudience.all, category='', status=ProposalState.submitted,
                  day=None, session=None, quickie_slot=None, track=None, room=None,
                  slides_pdf=None, video_url=None):
         self.proposer = proposer

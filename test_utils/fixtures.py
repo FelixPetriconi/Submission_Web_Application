@@ -6,6 +6,8 @@ import pytest
 
 from accuconf import app, db
 
+from models.proposal_types import SessionType, SessionAudience
+
 
 @pytest.fixture
 def database():
@@ -61,10 +63,14 @@ def registrant():
 def proposal_single_presenter():
     return {
         'title': 'A single presenter proposal',
-        'session_type': 'quickie',
+        'session_type': SessionType.quickie.value,
         'summary': '''This is a test proposal that will have
 dummy data. Also this is not a very
 lengthy proposal''',
+        'audience': SessionAudience.expert.value,
+        'category': 'Stuff',
+        'notes': 'Please accept this proposal.',
+        'constraints': 'None',
         'presenters': [
             {
                 'email': 'a@b.c',

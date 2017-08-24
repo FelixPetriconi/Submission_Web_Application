@@ -303,6 +303,10 @@ function isValidAudience(audience) {
 	return ['beginner', 'intermediate', 'expert', 'all'].indexOf(audience) > -1
 }
 
+function isValidCategory(category) {
+	return true
+}
+
 function isValidSummary(summary) {
 	return summary.length >= 50
 }
@@ -315,7 +319,7 @@ function isValidConstraints(constraint) {
 	return true
 }
 
-function isValidSubmission(title, sessionType, summary, audience, notes, constraints, presenters) {
+function isValidSubmission(title, sessionType, summary, audience, category, notes, constraints, presenters) {
 	let returnCode = true
 	if (!isValidTitle(title)) {
 		$('#title_alert').text('Title not valid.')
@@ -340,6 +344,12 @@ function isValidSubmission(title, sessionType, summary, audience, notes, constra
 		returnCode = false
 	} else {
 		$('#audience_alert').text('')
+	}
+	if (!isValidCategory(category)) {
+		$('#category_alert').text('Category not valid.')
+		returnCode = false
+	} else {
+		$('#category_alert').text('')
 	}
 	if (!isValidNotes(notes)) {
 		$('#notes_alert').text('Notes not valid.')
@@ -385,6 +395,7 @@ function submitProposal(proposalId) {
 	const sessionType = $('#session_type').val()
 	const summary = $('#summary').val()
 	const audience = $('#audience').val()
+	const category = $('#category').val()
 	const notes = $('#notes').val()
 	const constraints = $('#constraints').val()
     const presenters = []
@@ -411,7 +422,7 @@ function submitProposal(proposalId) {
 			'state': state,
 		})
 	}
-	if (isValidSubmission(title, sessionType, summary, audience, notes, constraints, presenters)) {
+	if (isValidSubmission(title, sessionType, summary, audience, category, notes, constraints, presenters)) {
 		$.ajax({
 			method: 'POST',
 			url: (proposalId ? `/proposal_update/${proposalId}` : '/submit'),
@@ -420,6 +431,7 @@ function submitProposal(proposalId) {
 				'session_type': sessionType,
 				'summary': summary,
 				'audience': audience,
+				'category': category,
 				'notes': notes,
 				'constraints': constraints,
 				'presenters': presenters,

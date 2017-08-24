@@ -31,7 +31,7 @@ proposal_data = {
     'summary': 'A session about creating C++ programs with proper process.',
     'notes': 'Some notes to the committee',
     'audience': SessionAudience.intermediate,
-    'category': SessionCategory.agile,
+    'category': 'agile',
 }
 
 

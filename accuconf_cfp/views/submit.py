@@ -102,6 +102,7 @@ def submit():
                     proposal_data.get('notes').strip() if proposal_data.get('notes') else '',
                     proposal_data.get('constraints').strip() if proposal_data.get('constraints') else '',
                     SessionAudience(proposal_data.get('audience').strip()) if proposal_data.get('audience') else SessionAudience.all,
+                    proposal_data.get('category').strip() if proposal_data.get('category') else '',
                 )
                 db.session.add(proposal)
                 presenters_data = proposal_data.get('presenters')
@@ -264,10 +265,10 @@ is no specific button for "leave things as they are" that is the default action.
 (Or rather inaction.)
 '''),
             'title': proposal.title,
-            'session_type': proposal.session_type,
+            'session_type': proposal.session_type.value,
             'summary': proposal.summary,
-            'audience': proposal.audience,
-            'category': '' if proposal.category == SessionCategory.not_sure else proposal.category,
+            'audience': proposal.audience.value,
+            'category': proposal.category,
             'notes': proposal.notes,
             'constraints': proposal.constraints,
             'presenter': {

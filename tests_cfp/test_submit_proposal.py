@@ -14,7 +14,7 @@ from accuconf_cfp.utils import hash_passphrase
 from accuconf_cfp.views.submit import validate_presenters, validate_proposal_data
 
 from models.user import User
-from models.proposal_types import SessionType
+from models.proposal_types import SessionType, SessionAudience
 
 # PyCharm fails to spot the use of this symbol as a fixture.
 from fixtures import registrant
@@ -190,6 +190,10 @@ def test_logged_in_user_can_submit_a_single_presenter_proposal(client, registran
     assert proposal is not None
     assert proposal.title == proposal_single_presenter['title']
     assert proposal.session_type == SessionType.quickie
+    assert proposal.audience == SessionAudience.expert
+    assert proposal.category == proposal_single_presenter['category']
+    assert proposal.notes == proposal_single_presenter['notes']
+    assert proposal.constraints == proposal_single_presenter['constraints']
     assert len(proposal.presenters) == 1
     presenter = proposal.presenters[0]
     assert presenter.email == user.email
@@ -328,6 +332,10 @@ def test_logged_in_user_can_update_a_previously_submitted_single_presenter_propo
     assert proposal is not None
     assert proposal.title == alternate_title
     assert proposal.session_type == SessionType.quickie
+    assert proposal.audience == SessionAudience.expert
+    assert proposal.category == proposal_single_presenter['category']
+    assert proposal.notes == proposal_single_presenter['notes']
+    assert proposal.constraints == proposal_single_presenter['constraints']
     assert len(proposal.presenters) == 1
     presenter = proposal.presenters[0]
     assert presenter.email == alternate_email
