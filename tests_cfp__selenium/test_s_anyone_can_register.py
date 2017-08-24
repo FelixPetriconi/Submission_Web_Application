@@ -32,8 +32,8 @@ def submit_data_to_register_page(driver, registrant):
 
 @pytest.mark.parametrize(('key', 'value', 'message'), (
     ('email', 'a.b.c', 'Email should be of the format user@example.com'),
-    ('passphrase', 'hum', 'Passphrase and confirmation passphrase not the same.'),
-    ('cpassphrase', 'dedum', 'Confirmation passphrase is not valid.'),
+    ('passphrase', 'hum', 'Passphrase is not valid.'),
+    ('cpassphrase', 'dedum', 'Passphrase and confirmation passphrase not the same.'),
     ('name', 'R', 'Invalid name.'),
     ('phone', 'blurb', 'Invalid phone number.'),
     ('postal_code', 'Fubar', 'Invalid postal code.'),
