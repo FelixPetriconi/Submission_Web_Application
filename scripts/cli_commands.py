@@ -53,7 +53,11 @@ def db_init():
 
 @app.cli.command()
 def db_init_add_sample_data():
-    """Create a new database and put a user in it with two proposals."""
+    """Create a new database and put a user in it with two proposals.
+
+    This is a function for creating a database for manual experimentation
+    and testing of the application UI and UX.
+    """
     db.create_all()
     user_data = registrant()
     del user_data['cpassphrase']
@@ -81,7 +85,7 @@ def db_init_add_sample_data():
 def all_reviewers():
     """Print a list of all the registrants labelled as a reviewers."""
     for x in User.query.filter_by(role=Role.reviewer).all():
-        print('{} {} <{}>'.format(x.first_name, x.last_name, x.user_id))
+        print('{} <{}>'.format(x.name, x.email))
 
 
 @app.cli.command()
