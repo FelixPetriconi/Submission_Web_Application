@@ -1,6 +1,6 @@
 """Routes associated with reviewing submitted proposals."""
 
-from flask import render_template, session
+from flask import render_template, request, session
 
 from accuconf_cfp import app, year
 from accuconf_cfp.utils import is_acceptable_route, is_logged_in, md
@@ -47,13 +47,18 @@ def review_list():
     }))
 
 
-@app.route('/review_proposal/<int:id>')
+@app.route('/review_proposal/<int:id>', methods=['GET', 'POST'])
 def review_proposal(id):
     check = is_acceptable_route()
     if not check[0]:
         return check[1]
     assert check[1] is None
     if is_logged_in():
+        if request.method == 'POST':
+            return render_template('/general.html', page=md(base_page, {
+                'pagetitle': 'Review Proposal POST Failed',
+                'data': 'This cannot happen.',
+            }))
         user = User.query.filter_by(email=session['email']).first()
         if not user:
             return render_template('/general.html', page=md(base_page, {
