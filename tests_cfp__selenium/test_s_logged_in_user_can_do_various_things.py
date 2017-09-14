@@ -78,7 +78,7 @@ def test_can_submit_a_single_presenter_proposal(driver, registrant, proposal_sin
     Select(driver.find_element_by_id('session_type')).select_by_value(proposal_single_presenter['session_type'])
     driver.find_element_by_id('summary').send_keys(proposal_single_presenter['summary'])
     Select(driver.find_element_by_id('audience')).select_by_value(proposal_single_presenter['audience'])
-    driver.find_element_by_id('category').send_keys(proposal_single_presenter['category'])
+    # driver.find_element_by_id('category').send_keys(proposal_single_presenter['category'])
     driver.find_element_by_id('notes').send_keys(proposal_single_presenter['notes'])
     driver.find_element_by_id('constraints').send_keys(proposal_single_presenter['constraints'])
     presenter = proposal_single_presenter['presenters'][0]
@@ -177,7 +177,7 @@ def test_can_amend_the_first_submitted_proposal(driver, registrant, proposal_sin
     assert proposal_single_presenter['audience'] == Select(driver.find_element_by_id('audience')).first_selected_option.get_attribute('value')
     assert proposal_single_presenter['notes'] == driver.find_element_by_id('notes').text
     assert proposal_single_presenter['constraints'] == driver.find_element_by_id('constraints').text
-    assert proposal_single_presenter['category'] == driver.find_element_by_id('category').get_attribute('value')
+    # assert proposal_single_presenter['category'] == driver.find_element_by_id('category').get_attribute('value')
     new_title = 'This is a new title for a proposal'
     title_element.clear()
     title_element.send_keys(new_title)
