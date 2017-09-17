@@ -74,7 +74,7 @@ of being a headless driver for these tests hence using Chromedriver in headless 
 
 Running:
 
-    ./run_tests.py
+    ./run_tests.sh
 
 should run all of the tests and create coverage reports in _cov\_html\_accuconf\_api_,
 _cov\_html\_accuconf\_cfp, and _cov\_html\_accuconf\_cfp\_\_selenium_.
