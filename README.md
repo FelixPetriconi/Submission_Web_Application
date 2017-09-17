@@ -13,7 +13,7 @@ shared data model, and shared utilities.
 The submission application:
 
 1. Allows people to register as users.
-1. Allows registered users to login and submit session proposals.
+1. Allows registered users to login and submit and amend session proposals.
 1. Allows registered users who are designated reviewers to review the submitted proposals.
 
 The schedule application provides a RESTful API to access the final conference schedule data. The API is
@@ -61,8 +61,8 @@ before starting the application. This file should have the line:
 
 Once set up chip in with issues and, if you are willing, pull requests.
 
-These two applications are straightforward, relatively small [Flask](http://flask.pocoo.org/) applications
-using [SQLAlchemy](https://www.sqlalchemy.org/) and SQLite. There are the _accuconf\_cfp_ and
+These two applications are relatively straightforward, relatively small [Flask](http://flask.pocoo.org/)
+applications using [SQLAlchemy](https://www.sqlalchemy.org/) and SQLite. There are the _accuconf\_cfp_ and
 _accuconf\_api_ packages which are the two applications, and the _models_ and _utils_ packages which are the
 shared packages for the two applications. [Jinja2](http://jinja.pocoo.org/docs/2.9/) templating is used for
 rendering.
@@ -71,6 +71,13 @@ Tests are [pytest](https://docs.pytest.org/en/latest/) ones. Unit tests (exercis
 are in _tests\_cfp_, whilst _tests\_cfp\_\_selenium_ holds the webdriver driven tests. The latter use
 _chromedriver_ so you will need to ensure you have that installed. PhantomJS appears not to be up to the job
 of being a headless driver for these tests hence using Chromedriver in headless mode.
+
+Running:
+
+    ./run_tests.py
+
+should run all of the tests and create coverage reports in _cov\_html\_accuconf\_api_,
+_cov\_html\_accuconf\_cfp, and _cov\_html\_accuconf\_cfp\_\_selenium_.
 
 ## Historical note
 
