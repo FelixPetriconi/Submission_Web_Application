@@ -10,7 +10,7 @@ from constants import driver_wait_time
 import configure
 
 # NB PyCharm can't tell these are used as fixtures, but they are.
-# NB server is an session scope autouse fixture that no test needs direct access to.
+# NB server is a session scope autouse fixture that no test needs direct access to.
 from fixtures import driver, server
 
 
