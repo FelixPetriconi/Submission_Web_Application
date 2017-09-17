@@ -13,6 +13,8 @@ import configure
 from fixtures import driver, server
 from test_utils.fixtures import registrant, proposal_single_presenter, proposal_multiple_presenters_single_lead
 
+from models.proposal_types import SessionAudience
+
 user_is_logged_in = False
 
 
@@ -205,8 +207,8 @@ def XXX_test_can_amend_the_second_submitted_proposal(driver, registrant, proposa
     wait = WebDriverWait(driver, driver_wait_time)
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Update a proposal'))
     assert proposal_multiple_presenters_single_lead['session_type'] == Select(driver.find_element_by_id('session_type')).first_selected_option.get_attribute('value')
-    assert proposal_multiple_presenters_single_lead['audience'] == Select(driver.find_element_by_id('audience')).first_selected_option.get_attribute('value')
-    assert proposal_multiple_presenters_single_lead['category'] == driver.find_element_by_id('category').text
+    assert SessionAudience.all.value == Select(driver.find_element_by_id('audience')).first_selected_option.get_attribute('value')
+    # assert proposal_multiple_presenters_single_lead['category'] == driver.find_element_by_id('category').text
     assert proposal_multiple_presenters_single_lead['summary'] == driver.find_element_by_id('summary').text
     title_element = driver.find_element_by_id('title')
     assert proposal_multiple_presenters_single_lead['title'] == title_element.get_attribute('value')
