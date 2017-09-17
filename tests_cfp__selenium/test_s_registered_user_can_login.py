@@ -70,3 +70,8 @@ def test_user_can_successfully_login(driver, registrant):
 def tests_cannot_get_login_page_when_logged_in(driver, registrant):
     driver.get(base_url + 'login')
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Call for Proposals'))
+
+
+def test_logged_in_user_can_logout(driver):
+    driver.get(base_url + 'logout')
+    WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Call for Proposals'))
