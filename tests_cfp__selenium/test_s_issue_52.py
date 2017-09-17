@@ -13,36 +13,9 @@ import configure
 from fixtures import driver, server
 from test_utils.fixtures import registrant, proposal_single_presenter, proposal_multiple_presenters_single_lead
 
+from functions import register_user, login_user, logout_user
+
 new_passphrase = 'squirrels having a bundle'
-
-
-def register_user(driver, registrant):
-    driver.get(base_url + 'register')
-    wait = WebDriverWait(driver, driver_wait_time)
-    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Register'))
-    for key, value in registrant.items():
-        driver.find_element_by_id(key).send_keys(value)
-    puzzle_text = driver.find_element_by_id('puzzle_label').text
-    driver.find_element_by_id('puzzle').send_keys(eval(puzzle_text))
-    button = wait.until(ecs.element_to_be_clickable((By.ID, 'submit')))
-    button.click()
-    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Registration Successful'))
-
-
-def login_user(driver, registrant, passphrase):
-    driver.get(base_url + 'login')
-    wait = WebDriverWait(driver, driver_wait_time)
-    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Login'))
-    driver.find_element_by_id('email').send_keys(registrant['email'])
-    driver.find_element_by_id('passphrase').send_keys(passphrase)
-    button = wait.until(ecs.element_to_be_clickable((By.ID, 'login')))
-    button.click()
-    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Login Successful'))
-
-
-def logout_user(driver):
-    driver.get(base_url + 'logout')
-    WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Call for Proposals'))
 
 
 def amend_passphrase(driver, registrant):
@@ -113,11 +86,12 @@ def amend_proposal_one(driver):
 def test_issue_52_amend_proposal_after_password_change(driver, registrant, proposal_single_presenter):
     # Register, login, submit a proposal, change password, logout, login, amend proposal
     register_user(driver, registrant)
-    login_user(driver, registrant, registrant['passphrase'])
+    login_user(driver, registrant)
     submit_proposal(driver, proposal_single_presenter)
     amend_passphrase(driver, registrant)
-    logout_user(driver)
-    login_user(driver, registrant, new_passphrase)
+    logout_user(driver, registrant)
+    registrant['passphrase'] = new_passphrase
+    login_user(driver, registrant)
     amend_proposal_one(driver)
 
 

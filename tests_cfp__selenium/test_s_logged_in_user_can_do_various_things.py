@@ -15,34 +15,7 @@ from test_utils.fixtures import registrant, proposal_single_presenter, proposal_
 
 from models.proposal_types import SessionAudience
 
-user_is_logged_in = False
-
-
-def register_and_login_user(driver, registrant):
-    global user_is_logged_in
-    if not user_is_logged_in:
-        driver.get(base_url + 'register')
-        wait = WebDriverWait(driver, driver_wait_time)
-        wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Register'))
-        for key, value in registrant.items():
-            driver.find_element_by_id(key).send_keys(value)
-        puzzle_text = driver.find_element_by_id('puzzle_label').text
-        driver.find_element_by_id('puzzle').send_keys(eval(puzzle_text))
-        button = wait.until(ecs.element_to_be_clickable((By.ID, 'submit')))
-        assert 'Register' in button.text
-        assert 'registerUser(true)' in button.get_attribute('onclick')
-        button.click()
-        wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Registration Successful'))
-        assert 'You have successfully registered for submitting proposals for the ACCU' in driver.find_element_by_id('content').text
-        driver.get(base_url + 'login')
-        wait = WebDriverWait(driver, driver_wait_time)
-        wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Login'))
-        driver.find_element_by_id('email').send_keys(registrant['email'])
-        driver.find_element_by_id('passphrase').send_keys(registrant['passphrase'])
-        button = wait.until(ecs.element_to_be_clickable((By.ID, 'login')))
-        button.click()
-        wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Login Successful'))
-        user_is_logged_in = True
+from functions import register_and_login_user
 
 
 def test_can_amend_registration_record(driver, registrant):

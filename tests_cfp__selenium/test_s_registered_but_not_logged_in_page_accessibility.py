@@ -14,26 +14,7 @@ import configure
 from fixtures import driver, server
 from test_utils.fixtures import registrant
 
-user_is_registered = False
-
-
-def register_user(driver, registrant):
-    global user_is_registered
-    if not user_is_registered:
-        driver.get(base_url + 'register')
-        wait = WebDriverWait(driver, driver_wait_time)
-        wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Register'))
-        for key, value in registrant.items():
-            driver.find_element_by_id(key).send_keys(value)
-        puzzle_text = driver.find_element_by_id('puzzle_label').text
-        driver.find_element_by_id('puzzle').send_keys(eval(puzzle_text))
-        button = wait.until(ecs.element_to_be_clickable((By.ID, 'submit')))
-        assert 'Register' == button.text
-        assert 'registerUser(true)' == button.get_attribute('onclick')
-        button.click()
-        wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Registration Successful'))
-        assert 'You have successfully registered for submitting proposals for the ACCU' in driver.find_element_by_id('content').text
-        user_is_registered = True
+from functions import register_user
 
 
 def test_can_get_root_page(driver, registrant):
