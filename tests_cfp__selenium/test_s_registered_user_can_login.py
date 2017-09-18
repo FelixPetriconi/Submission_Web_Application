@@ -48,11 +48,15 @@ def test_registered_user_can_successfully_login(driver, registrant):
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), 'Login Successful'))
 
 
+#  This test relies on the above test having run successfully in order to set the per module
+#  state to registered user logged in.
 def tests_cannot_get_login_page_when_logged_in(driver, registrant):
     driver.get(base_url + 'login')
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Call for Proposals'))
 
 
+# This test changes the state of the per module driver and so must be run as the last test in this module.
+# By default pytest runs tests in declaration order so this should not be fragile.
 def test_logged_in_user_can_logout(driver):
     driver.get(base_url + 'logout')
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Call for Proposals'))

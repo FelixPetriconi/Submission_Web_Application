@@ -174,6 +174,7 @@ def test_can_amend_the_first_submitted_proposal(driver, registrant, proposal_sin
     assert 'you have successfully updated your proposal for the ACCU' in driver.find_element_by_id('content').text
 
 
+# TODO Make this work.
 def XXX_test_can_amend_the_second_submitted_proposal(driver, registrant, proposal_multiple_presenters_single_lead):
     register_and_login_user(driver, registrant)
     driver.get(base_url + 'proposal_update/2')

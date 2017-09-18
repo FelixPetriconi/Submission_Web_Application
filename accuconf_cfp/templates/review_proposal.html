@@ -7,6 +7,11 @@
 </div>
 <div class="row">
   <div class="container-fluid">
+    <p class="alert" id="alert"></p>
+  </div>
+</div>
+<div class="row">
+  <div class="container-fluid">
     <p class="first">
       <i>{{page.data}}</i>
     </p>
@@ -43,7 +48,7 @@
         </div>
       </div>
       <div class="form-group">
-        <button type="button" name="submit" id="submit" class="btn btn-primary" onclick="submitComment({{page.proposal_id}})">{{page.button_label}}</button>
+        <button type="button" name="submit" id="submit" class="btn btn-primary" onclick="submitScoreAndComment({{page.proposal_id}})">{{page.button_label}}</button>
         <button type="reset" class="btn btn-default">Reset</button>
       </div>
     </form>

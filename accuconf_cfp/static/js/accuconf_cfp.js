@@ -363,7 +363,6 @@ function isValidSubmission(title, sessionType, summary, audience, category, note
 	} else {
 		$('#constraints_alert').text('')
 	}
-	return returnCode
 	for (const i in presenters) {
 		if (!isValidPresenter(presenters[i])) {
 			$('#presenter_alert').text('Presenter not valid.')
@@ -524,6 +523,55 @@ function addNewPresenter() {
     })
     $("#add-presenter-modal").modal('hide')
     return false
+}
+
+
+function submitScoreAndComment(id) {
+	const score = $('#score').val()
+	const comment = $('#comment').val()
+	console.info(id)
+	if (score) {
+		$('#score_alert').text('')
+		$('#comment_alert').text('')
+		$('#alert').text('Submitting login details.')
+		$.ajax({
+			method: 'POST',
+			url: `/review_proposal/${id}`,
+			data: JSON.stringify({
+				'score': score,
+				'comment': comment,
+			}),
+			dataType: 'json',
+			contentType: 'application/json',
+			statusCode: {
+				200: (data, textStatus, jqXHR) => {
+					$('#alert').text('Score submitted')
+				},
+				400: (jqXHR, textStatus, errorThrown) => {
+					alert(jqXHR.status + '\n' + jqXHR.responseText);
+				},
+			},
+		})
+	} else {
+		$('#score_alert').text('Need to select a score to submit.')
+	}
+	return false
+}
+
+function navigatePrevious(id) {
+}
+
+function navigatePreviousUnscored(id) {
+}
+
+function navigateToList() {
+	window.location.replace('/review_list');
+}
+
+function navigateNextUnscored(id) {
+}
+
+function navigateNext(id) {
 }
 
 /*

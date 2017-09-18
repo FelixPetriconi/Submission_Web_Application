@@ -2,7 +2,7 @@
 
 from flask import render_template, request, session
 
-from accuconf_cfp import app, year
+from accuconf_cfp import app, db, year
 from accuconf_cfp.utils import is_acceptable_route, is_logged_in, md
 
 from models.user import User
@@ -12,6 +12,10 @@ from models.role_types import Role
 base_page = {
     'year': year,
 }
+
+
+def already_reviewed(p):
+    return False
 
 
 @app.route('/review_list')
@@ -32,7 +36,7 @@ def review_list():
                 'pagetitle': 'Review List Failed',
                 'data': 'Logged in user is not a registered reviewer.',
             }))
-        proposals = [(p.id, p.title, lead.presenter.name)
+        proposals = [(p.id, p.title, lead.presenter.name, already_reviewed(p))
                      for p in Proposal.query.all() if p.proposer != user
                      for lead in p.proposal_presenters if lead.is_lead
                      ]
@@ -75,6 +79,7 @@ def review_proposal(id):
         return render_template('/review_proposal.html', page=md(base_page, {
             'pagetitle': 'Proposals to Review',
             'data': 'There is no specific "do nothing" button, to not do anything simply navigate away from this page.',
+            'proposal_id': id,
             'title': proposal.title,
             'summary': proposal.summary,
             'notes': proposal.notes,
