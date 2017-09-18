@@ -73,7 +73,8 @@ def test_can_get_submit_page(driver, registrant):
     check_menu_items(driver, ())
 
 
-def test_logged_in_cannot_get_submit_success_page_if_not_just_submitted(driver):
+def test_logged_in_cannot_get_submit_success_page_if_not_just_submitted(driver, registrant):
+    register_and_login_user(driver, registrant)
     driver.get(base_url + 'submit_success')
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Submit Failed'))
     assert 'You must be registered and logged in to submit a proposal.' in driver.find_element_by_class_name('first').text
@@ -87,20 +88,23 @@ def test_can_get_my_proposals_page(driver, registrant):
     check_menu_items(driver, ())
 
 
-def test_can_get_proposal_update_page(driver):
+def test_can_get_proposal_update_page(driver, registrant):
+    register_and_login_user(driver, registrant)
     driver.get(base_url + 'proposal_update/1')
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal Not Found'))
     check_menu_items(driver, ())
 
 
-def test_cannot_get_review_list_page_unless_logged_in(driver):
+def test_cannot_get_review_list_page_unless_logged_in(driver, registrant):
+    register_and_login_user(driver, registrant)
     driver.get(base_url + 'review_list')
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Review List Failed'))
     assert 'Logged in user is not a registered reviewer.' in driver.find_element_by_class_name('first').text
     check_menu_items(driver, ())
 
 
-def test_cannot_get_review_proposal_page_unless_logged_in(driver):
+def test_cannot_get_review_proposal_page_unless_logged_in(driver, registrant):
+    register_and_login_user(driver, registrant)
     driver.get(base_url + 'review_proposal/1')
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Review Proposal Failed'))
     assert 'Logged in user is not a registered reviewer.' in driver.find_element_by_class_name('first').text

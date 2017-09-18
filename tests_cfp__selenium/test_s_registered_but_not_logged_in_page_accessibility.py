@@ -82,7 +82,8 @@ def test_cannot_get_submit_page_if_not_logged_in(driver, registrant):
     check_menu_items(driver, ('Register', 'Login'))
 
 
-def test_cannot_get_submit_success_page_if_not_logged_in(driver):
+def test_cannot_get_submit_success_page_if_not_logged_in(driver, registrant):
+    register_user(driver, registrant)
     driver.get(base_url + 'submit_success')
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Submit Failed'))
     assert 'You must be registered and logged in to submit a proposal.' in driver.find_element_by_class_name('first').text
@@ -97,21 +98,24 @@ def test_cannot_get_my_proposals_page_unless_logged_in(driver, registrant):
     check_menu_items(driver, ('Register', 'Login'))
 
 
-def test_cannot_get_proposal_update_page_unless_logged_in(driver):
+def test_cannot_get_proposal_update_page_unless_logged_in(driver, registrant):
+    register_user(driver, registrant)
     driver.get(base_url + 'proposal_update/1')
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal Update Failure'))
     assert 'You must be registered and logged in to update a proposal' in driver.find_element_by_class_name('first').text
     check_menu_items(driver, ('Register', 'Login'))
 
 
-def test_cannot_get_review_list_page_unless_logged_in(driver):
+def test_cannot_get_review_list_page_unless_logged_in(driver, registrant):
+    register_user(driver, registrant)
     driver.get(base_url + 'review_list')
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Review List Failed'))
     assert 'You must be registered, logged in, and a reviewer to review proposals' in driver.find_element_by_class_name('first').text
     check_menu_items(driver, ('Register', 'Login'))
 
 
-def test_cannot_get_review_proposal_page_unless_logged_in(driver):
+def test_cannot_get_review_proposal_page_unless_logged_in(driver, registrant):
+    register_user(driver, registrant)
     driver.get(base_url + 'review_proposal/1')
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Review Proposal Failed'))
     assert 'You must be registered, logged in, and a reviewer to review a proposal' in driver.find_element_by_class_name('first').text

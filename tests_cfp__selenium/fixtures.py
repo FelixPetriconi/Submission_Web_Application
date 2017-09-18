@@ -11,6 +11,8 @@ import time
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
+from seleniumrequests import Chrome
+
 
 @pytest.fixture(scope='module', autouse=True)
 def server():
@@ -37,11 +39,6 @@ def server():
 
 @pytest.fixture(scope='module')
 def driver():
-    # It seems that PhantomJS cannot handle the button clicking.
-    # wd = webdriver.PhantomJS()
-    # It seems geckodriver cannot work headless easily.
-    # wd = webdriver.Firefox()
-    # So we end up associating with the Borg.
     capabilities = DesiredCapabilities.CHROME
     capabilities['loggingPrefs'] = {
         'browser': 'ALL',
@@ -49,7 +46,7 @@ def driver():
     }
     options = webdriver.ChromeOptions()
     options.add_argument('headless')
-    wd = webdriver.Chrome(chrome_options=options, desired_capabilities=capabilities)
+    wd = Chrome(chrome_options=options, desired_capabilities=capabilities)
     yield wd
     # print('Browser', wd.get_log('browser'))
     # print('Driver', wd.get_log('driver'))
