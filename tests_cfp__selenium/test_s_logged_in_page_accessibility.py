@@ -111,6 +111,22 @@ def test_cannot_get_review_proposal_page_unless_logged_in(driver, registrant):
     check_menu_items(driver, ())
 
 
+def test_cannot_get_previous_proposal_if_not_logged_in(driver, registrant):
+    register_and_login_user(driver, registrant)
+    driver.get(base_url + 'previous_proposal/2/0')
+    WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal Navigation Failed'))
+    assert 'Logged in user is not a registered reviewer.' in driver.find_element_by_class_name('first').text
+    check_menu_items(driver, ())
+
+
+def test_cannot_get_next_proposal_if_not_logged_in(driver, registrant):
+    register_and_login_user(driver, registrant)
+    driver.get(base_url + 'next_proposal/2/0')
+    WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal Navigation Failed'))
+    assert 'Logged in user is not a registered reviewer.' in driver.find_element_by_class_name('first').text
+    check_menu_items(driver, ())
+
+
 # This test changes the state of the per module driver and so must be run as the last test in this module.
 # By default pytest runs tests in declaration order so this should not be fragile.
 def test_can_get_logout_page(driver, registrant):

@@ -88,9 +88,19 @@ def review_proposal(id):
                 'pagetitle': 'Review Proposal Failed',
                 'data': 'Logged in user is not a registered reviewer.',
             }))
+        # TODO What to do if id < 1 or > the proposal count?
         proposal = Proposal.query.filter_by(id=id).first()
         presenters = [{'name': p.name, 'bio': p.bio} for p in proposal.presenters]
         # TODO do not display if the reviewer is the proposer or one of the presenters.
+        score = ''
+        comment = ''
+        if already_reviewed(proposal, user):
+            scores = [s for s in user.scores if s.proposal == proposal]
+            assert len(scores) == 1
+            score = scores[0].score
+            comments = [c for c in user.comments if c.proposal == proposal]
+            if comments:
+                comment = comments[0].comment
         return render_template('/review_proposal.html', page=md(base_page, {
             'pagetitle': 'Proposal to Review',
             'data': 'There is no specific "do nothing" button, to not do anything simply navigate away from this page.',
@@ -100,8 +110,86 @@ def review_proposal(id):
             'notes': proposal.notes,
             'presenters': presenters,
             'button_label': 'Submit',
+            'score': score,
+            'comment': comment,
         }))
     return render_template('review_proposal.html', page=md(base_page, {
         'pagetitle': 'Review Proposal Failed',
+        'data': 'You must be registered, logged in, and a reviewer to review a proposal',
+    }))
+
+
+@app.route('/previous_proposal/<int:id>/<int:unreviewed>')
+def previous_proposal(id, unreviewed):
+    check = is_acceptable_route()
+    if not check[0]:
+        return check[1]
+    assert check[1] is None
+    if is_logged_in():
+        user = User.query.filter_by(email=session['email']).first()
+        if user.role != Role.reviewer:
+            return render_template('/general.html', page=md(base_page, {
+                'pagetitle': 'Proposal Navigation Failed',
+                'data': 'Logged in user is not a registered reviewer.',
+            }))
+        if not unreviewed:
+            if Proposal.query.filter_by(id=(id - 1)).first():
+                return jsonify(id - 1)
+            else:
+                response = jsonify("Requested proposal does not exist.")
+                response.status_code = 400
+                return response
+        else:
+            reviewer = User.query.filter_by(email=session['email']).first()
+            for i in range(id - 1, 0, -1):
+                proposal = Proposal.query.filter_by(id=i).first()
+                if not proposal:
+                    break
+                if not already_reviewed(proposal, reviewer):
+                    return jsonify(i)
+            response = jsonify("Requested proposal does not exist.")
+            response.status_code = 400
+            return response
+    return render_template('general.html', page=md(base_page, {
+        'pagetitle': 'Proposal Navigation Failed',
+        'data': 'You must be registered, logged in, and a reviewer to review a proposal',
+    }))
+
+
+@app.route('/next_proposal/<int:id>/<int:unreviewed>')
+def next_proposal(id, unreviewed):
+    check = is_acceptable_route()
+    if not check[0]:
+        return check[1]
+    assert check[1] is None
+    if is_logged_in():
+        user = User.query.filter_by(email=session['email']).first()
+        if user.role != Role.reviewer:
+            return render_template('/general.html', page=md(base_page, {
+                'pagetitle': 'Proposal Navigation Failed',
+                'data': 'Logged in user is not a registered reviewer.',
+            }))
+        if not unreviewed:
+            if Proposal.query.filter_by(id=(id + 1)).first():
+                return jsonify(id + 1)
+            else:
+                response = jsonify("Requested proposal does not exist.")
+                response.status_code = 400
+                return response
+        else:
+            reviewer = User.query.filter_by(email=session['email']).first()
+            i = id + 1
+            while True:
+                proposal = Proposal.query.filter_by(id=i).first()
+                if not proposal:
+                    break
+                if not already_reviewed(proposal, reviewer):
+                    return jsonify(i)
+                i += 1
+            response = jsonify("Requested proposal does not exist.")
+            response.status_code = 400
+            return response
+    return render_template('general.html', page=md(base_page, {
+        'pagetitle': 'Proposal Navigation Failed',
         'data': 'You must be registered, logged in, and a reviewer to review a proposal',
     }))

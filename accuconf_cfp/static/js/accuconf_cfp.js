@@ -164,7 +164,7 @@ function registerUser(passphraseRequiredText) {
 			        window.location.replace("/" + data)
 		        },
 		        400: (jqXHR, textStatus, errorThrown) => {
-			        alert(jqXHR.status + '\n' +  jqXHR.responseText)
+			        alert(jqXHR.responseText)
 		        },
 	        }
         })
@@ -214,7 +214,7 @@ function loginUser() {
 					window.location.replace("/" + data);
 				},
 				400: (jqXHR, textStatus, errorThrown) => {
-					alert(jqXHR.status + '\n' +  jqXHR.responseText)
+					alert(jqXHR.responseText)
 				},
 			},
 		})
@@ -442,7 +442,7 @@ function submitProposal(proposalId) {
 					window.location.replace('/' + data);
 				},
 				400: (jqXHR, textStatus, errorThrown) => {
-					alert(jqXHR.status + '\n' + jqXHR.responseText);
+					alert(jqXHR.responseText);
 				},
 			},
 		})
@@ -548,7 +548,7 @@ function submitScoreAndComment(id) {
 					$('#alert').text(data)
 				},
 				400: (jqXHR, textStatus, errorThrown) => {
-					alert(jqXHR.status + '\n' + jqXHR.responseText);
+					alert(jqXHR.responseText);
 				},
 			},
 		})
@@ -559,9 +559,33 @@ function submitScoreAndComment(id) {
 }
 
 function navigatePrevious(id) {
+	$.ajax({
+		method: 'GET',
+		url: `/previous_proposal/${id}/0`,
+		statusCode: {
+			200: (data, textStatus, jqXHR) => {
+				window.location.replace(`/review_proposal/${data}`);
+			},
+			400: (jqXHR, textStatus, errorThrown) => {
+				alert(jqXHR.responseText);
+			},
+		},
+	})
 }
 
 function navigatePreviousUnscored(id) {
+	$.ajax({
+		method: 'GET',
+		url: `/previous_proposal/${id}/1`,
+		statusCode: {
+			200: (data, textStatus, jqXHR) => {
+				window.location.replace(`/review_proposal/${data}`);
+			},
+			400: (jqXHR, textStatus, errorThrown) => {
+				alert(jqXHR.responseText);
+			},
+		},
+	})
 }
 
 function navigateToList() {
@@ -569,9 +593,33 @@ function navigateToList() {
 }
 
 function navigateNextUnscored(id) {
+	$.ajax({
+		method: 'GET',
+		url: `/next_proposal/${id}/1`,
+		statusCode: {
+			200: (data, textStatus, jqXHR) => {
+				window.location.replace(`/review_proposal/${data}`);
+			},
+			400: (jqXHR, textStatus, errorThrown) => {
+				alert(jqXHR.responseText);
+			},
+		},
+	})
 }
 
 function navigateNext(id) {
+	$.ajax({
+		method: 'GET',
+		url: `/next_proposal/${id}/0`,
+		statusCode: {
+			200: (data, textStatus, jqXHR) => {
+				window.location.replace(`/review_proposal/${data}`);
+			},
+			400: (jqXHR, textStatus, errorThrown) => {
+				alert(jqXHR.responseText);
+			},
+		},
+	})
 }
 
 /*

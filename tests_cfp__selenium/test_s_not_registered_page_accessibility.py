@@ -103,3 +103,17 @@ def test_cannot_get_review_proposal_page_unless_logged_in(driver):
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Review Proposal Failed'))
     assert 'You must be registered, logged in, and a reviewer to review a proposal' in driver.find_element_by_class_name('first').text
     check_menu_items(driver, ('Register', 'Login'))
+
+
+def test_cannot_get_previous_proposal_if_not_logged_in(driver):
+    driver.get(base_url + 'previous_proposal/2/0')
+    WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal Navigation Failed'))
+    assert 'You must be registered, logged in, and a reviewer to review a proposal' in driver.find_element_by_class_name('first').text
+    check_menu_items(driver, ('Register', 'Login'))
+
+
+def test_cannot_get_next_proposal_if_not_logged_in(driver):
+    driver.get(base_url + 'next_proposal/2/0')
+    WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal Navigation Failed'))
+    assert 'You must be registered, logged in, and a reviewer to review a proposal' in driver.find_element_by_class_name('first').text
+    check_menu_items(driver, ('Register', 'Login'))
