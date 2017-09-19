@@ -1,13 +1,14 @@
 """Routes associated with reviewing submitted proposals."""
 
-from flask import render_template, request, session
+from flask import jsonify, render_template, request, session
 
 from accuconf_cfp import app, db, year
 from accuconf_cfp.utils import is_acceptable_route, is_logged_in, md
 
-from models.user import User
 from models.proposal import Proposal
 from models.role_types import Role
+from models.score import Comment, Score
+from models.user import User
 
 base_page = {
     'year': year,
@@ -60,10 +61,22 @@ def review_proposal(id):
     assert check[1] is None
     if is_logged_in():
         if request.method == 'POST':
-            return render_template('/general.html', page=md(base_page, {
-                'pagetitle': 'Review Proposal POST Failed',
-                'data': 'This cannot happen.',
-            }))
+            review_data = request.json
+            reviewer = User.query.filter_by(email=session['email']).first()
+            if not reviewer:
+                response = jsonify('Logged in person is not a reviewer. This cannot happen.')
+                response.status_code = 400
+                return response
+            proposal = Proposal.query.filter_by(id=id).first()
+            if not proposal:
+                response = jsonify('Proposal cannot be found. This cannot happen.')
+                response.status_code = 400
+                return response
+            db.session.add(Score(proposal, reviewer, review_data['score']))
+            if review_data['comment']:
+                db.session.add(Comment(proposal, reviewer, review_data['comment']))
+            db.session.commit()
+            return jsonify('Review stored.')
         user = User.query.filter_by(email=session['email']).first()
         if not user:
             return render_template('/general.html', page=md(base_page, {

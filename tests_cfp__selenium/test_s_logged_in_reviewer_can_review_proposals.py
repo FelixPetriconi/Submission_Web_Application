@@ -83,13 +83,18 @@ def test_logged_in_reviewer_can_review_submitted_proposal(driver, registrant, pr
     link = wait.until(ecs.element_to_be_clickable((By.LINK_TEXT, proposal_single_presenter['title'])))
     link.click()
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal to Review'))
-    driver.find_element_by_id('score').send_keys('7')
-    driver.find_element_by_id('comment').send_keys('An OK proposal but…')
+    score = '7'
+    comment = 'An OK proposal but…'
+    driver.find_element_by_id('score').send_keys(score)
+    driver.find_element_by_id('comment').send_keys(comment)
     submit_button = wait.until(ecs.element_to_be_clickable((By.ID, 'submit')))
     assert 'Submit' == submit_button.text
     assert 'submitScoreAndComment(1)' == submit_button.get_attribute('onclick')
     submit_button.click()
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal to Review'))
+    assert 'Review stored.' == driver.find_element_by_id('alert').text
+    assert score == driver.find_element_by_id('score').get_attribute('value')
+    assert comment == driver.find_element_by_id('comment').get_attribute('value')
     logout_user(driver, reviewer)
 
 

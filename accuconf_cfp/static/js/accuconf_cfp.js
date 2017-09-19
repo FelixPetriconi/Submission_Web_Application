@@ -545,7 +545,7 @@ function submitScoreAndComment(id) {
 			contentType: 'application/json',
 			statusCode: {
 				200: (data, textStatus, jqXHR) => {
-					$('#alert').text('Score submitted')
+					$('#alert').text(data)
 				},
 				400: (jqXHR, textStatus, errorThrown) => {
 					alert(jqXHR.status + '\n' + jqXHR.responseText);
