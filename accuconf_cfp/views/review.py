@@ -14,8 +14,8 @@ base_page = {
 }
 
 
-def already_reviewed(p):
-    return False
+def already_reviewed(proposal, reviewer):
+    return any(x.proposal == proposal for x in reviewer.scores)
 
 
 @app.route('/review_list')
@@ -36,7 +36,8 @@ def review_list():
                 'pagetitle': 'Review List Failed',
                 'data': 'Logged in user is not a registered reviewer.',
             }))
-        proposals = [(p.id, p.title, lead.presenter.name, already_reviewed(p))
+        # TODO reviewer can review proposed proposal (done) but what about being a presenter?
+        proposals = [(p.id, p.title, lead.presenter.name, already_reviewed(p, user))
                      for p in Proposal.query.all() if p.proposer != user
                      for lead in p.proposal_presenters if lead.is_lead
                      ]
@@ -76,8 +77,9 @@ def review_proposal(id):
             }))
         proposal = Proposal.query.filter_by(id=id).first()
         presenters = [{'name': p.name, 'bio': p.bio} for p in proposal.presenters]
+        # TODO do not display if the reviewer is the proposer or one of the presenters.
         return render_template('/review_proposal.html', page=md(base_page, {
-            'pagetitle': 'Proposals to Review',
+            'pagetitle': 'Proposal to Review',
             'data': 'There is no specific "do nothing" button, to not do anything simply navigate away from this page.',
             'proposal_id': id,
             'title': proposal.title,

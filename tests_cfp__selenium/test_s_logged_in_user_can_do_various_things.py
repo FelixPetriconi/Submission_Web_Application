@@ -69,7 +69,7 @@ def test_can_submit_a_single_presenter_proposal(driver, registrant, proposal_sin
             element.clear()
             element.send_keys(presenter[key])
     button = wait.until(ecs.element_to_be_clickable((By.ID, 'submit')))
-    assert 'Submit' == driver.find_element_by_id('submit').text
+    assert 'Submit' == button.text
     assert 'submitProposal()' == button.get_attribute('onclick')
     button.click()
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Submission Successful'))

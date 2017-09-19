@@ -5,9 +5,12 @@ import configure
 
 from accuconf_cfp import app, db
 from accuconf_cfp.utils import hash_passphrase
+from accuconf_cfp.views.review import already_reviewed
 
-from models.user import User
+from models.proposal import Proposal
 from models.role_types import Role
+from models.score import Score
+from models.user import User
 
 # PyCharm fails to spot the use of this symbol as a fixture.
 from fixtures import registrant
@@ -19,6 +22,30 @@ from test_utils.constants import (
 # PyCharm fails to spot the use of symbols as fixtures.
 from test_utils.fixtures import client, proposal_single_presenter, proposal_multiple_presenters_single_lead
 from test_utils.functions import add_a_proposal_as_user, add_new_user, get_and_check_content, post_and_check_content
+
+
+def test_already_reviewed(registrant, proposal_single_presenter, proposal_multiple_presenters_single_lead):
+    reviewer = User(**new_user)
+    proposer = User(**registrant)
+    proposals = (
+        Proposal(
+            proposer,
+            proposal_single_presenter['title'],
+            proposal_single_presenter['session_type'],
+            proposal_single_presenter['summary'],
+        ),
+        Proposal(
+            proposer,
+            proposal_multiple_presenters_single_lead['title'],
+            proposal_multiple_presenters_single_lead['session_type'],
+            proposal_multiple_presenters_single_lead['summary'],
+        )
+    )
+    assert not already_reviewed(proposals[0], reviewer)
+    assert not already_reviewed(proposals[1], reviewer)
+    score = Score(proposals[1], reviewer, 7)
+    assert not already_reviewed(proposals[0], reviewer)
+    assert already_reviewed(proposals[1], reviewer)
 
 
 def test_attempt_to_get_review_list_page_outside_open_period_causes_redirect(client, monkeypatch):
@@ -111,19 +138,21 @@ def test_logged_in_reviewer_can_get_review_list(client, registrant, monkeypatch)
                           )
 
 
+new_user = {
+    'email': 'p@a.b.c',
+    'passphrase': 'A passphrase',
+    'name': 'A B C Person',
+    'street_address': '1 Some Road',
+    'town_city': 'Somewhere',
+    'postal_code': '12345',
+    'country': 'United Kingdom',
+}
+
+
 def test_logged_in_reviewer_can_get_review_list_and_see_all_not_own_entries(client, registrant, monkeypatch):
-    user_email = 'p@a.b.c'
-    add_new_user({
-        'email': user_email,
-        'passphrase': 'A passphrase',
-        'name': 'A B C Person',
-        'street_address': '1 Some Road',
-        'town_city': 'Somewhere',
-        'postal_code': '12345',
-        'country': 'United Kingdom',
-    })
-    add_a_proposal_as_user(user_email, proposal_single_presenter())
-    add_a_proposal_as_user(user_email, proposal_multiple_presenters_single_lead())
+    add_new_user(new_user)
+    add_a_proposal_as_user(new_user['email'], proposal_single_presenter())
+    add_a_proposal_as_user(new_user['email'], proposal_multiple_presenters_single_lead())
     test_reviewer_can_register_and_login(client, registrant, monkeypatch)
     get_and_check_content(client, '/review_list',
                           includes=(
@@ -149,22 +178,13 @@ def test_logged_in_reviewer_can_get_review_list_and_see_no_own_entries(client, r
 
 
 def test_logged_in_reviewer_can_get_review_proposal_for_not_own_entries(client, registrant, monkeypatch):
-    user_email = 'p@a.b.c'
-    add_new_user({
-        'email': user_email,
-        'passphrase': 'A passphrase',
-        'name': 'A B C Person',
-        'street_address': '1 Some Road',
-        'town_city': 'Somewhere',
-        'postal_code': '12345',
-        'country': 'United Kingdom',
-    })
-    add_a_proposal_as_user(user_email, proposal_single_presenter())
-    add_a_proposal_as_user(user_email, proposal_multiple_presenters_single_lead())
+    add_new_user(new_user)
+    add_a_proposal_as_user(new_user['email'], proposal_single_presenter())
+    add_a_proposal_as_user(new_user['email'], proposal_multiple_presenters_single_lead())
     test_reviewer_can_register_and_login(client, registrant, monkeypatch)
     get_and_check_content(client, '/review_proposal/1',
                           includes=(
-                              ' – Proposals to Review',
+                              ' – Proposal to Review',
                           ),
                           excludes=(),
                           )
