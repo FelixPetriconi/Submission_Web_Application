@@ -18,3 +18,7 @@
 .reviewed-column {
     text-align: right;
 }
+
+.proposal-notes-title {
+    font-style: italic;
+}

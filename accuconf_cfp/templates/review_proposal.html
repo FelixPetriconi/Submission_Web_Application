@@ -15,23 +15,28 @@
     <p class="first">
       <i>{{page.data}}</i>
     </p>
-    <p class="proposal-title">
-    <h3>{{page.title}}</h3>
-    </p>
+    <h3 class="proposal-title">
+      {{page.title}}
+    </h3>
     <p class="proposal-summary">
       {{page.summary}}
     </p>
-    <p class="proposal-notes">
-      {{page.notes}}
-    </p>
     {% for presenter in page.presenters %}
-    <p class="presenter-name">
-    <h4>{{presenter.name}}</h4>
-    </p>
+    <h4 class="presenter-name">
+      {{presenter.name}}
+    </h4>
     <p class="presenter-bio">
       {{presenter.bio}}
     </p>
     {% endfor %}
+    {% if page.notes %}
+    <h5 class="proposal-notes-title">
+      Notes for the Committee
+    </h5>
+    <p class="proposal-notes">
+      {{page.notes}}
+    </p>
+    {% endif %}
     <form id="review_form">
       <div class="form-group">
         <label for="score" class="control-label col-sm-3">Score</label>
@@ -61,4 +66,5 @@
     </div>
   </div>
 </div>
+<p></p>
 {% endblock %}
