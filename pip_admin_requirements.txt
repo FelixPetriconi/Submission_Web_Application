@@ -4,6 +4,7 @@ flask-admin
 
 # Needed for the Flask CLI stuff.
 
+click
 reportlab
 
 # Needed for database migrations.
