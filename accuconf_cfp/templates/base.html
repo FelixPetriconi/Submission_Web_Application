@@ -4,143 +4,147 @@
 
 <!DOCTYPE html>
 <html lang="en">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="copyright" content="2016, 2017  Balachandran Sivakumar, Russel Winder, Felix Petriconi">
-    <head>
-        {% block head %}
-        <link href="https://conference.accu.org/assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
-        <link rel="stylesheet" type="text/css" href="https://conference.accu.org/assets/css/custom.css">
-        <link rel="icon" type="image/png" href="https://conference.accu.org/assets/images/accu2018_32x32.png">
-        <script src="https://conference.accu.org/assets/js/all-nocdn.js" type="text/javascript"></script>
-        <link rel="stylesheet" type="text/css" href="/static/css/accuconf.css">
-        <script src="/static/js/accuconf_cfp.js" type="text/javascript"></script>
-        <title> ACCU {{page.year}} – {{page.pagetitle}} </title>
-        {% endblock %}
-    </head>
-    <body>
-        <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
-        <!--  Banner -->
-        <div class="container-fluid banner">
-            <a href="/"><img class="img-responsive" src="https://conference.accu.org/assets/images/accu2018_369x124.png" align="left" alt="ACCU 2018 Logo"/></a>
-            <a href="http://www.accu.org"><img class="img-responsive" src="https://conference.accu.org/assets/images/accu_logo.png" align="right" alt="ACCU Logo"/></a>
-        </div>
-        <!-- Banner logo -->
-        <div class="row">
-            <!-- Menubar -->
-            <div class="col-sm-3 col-md-3 col-lg-3 ">
-                <div class="row">
-                    <nav class="navbar navbar-default accuconf-menu" role="navigation">
-                        <div class="navbar-header">
-                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
-                                <span class="sr-only">Toggle navigation</span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                            </button>
-                            <span>
-                                <a class="navbar-brand" href="/"> ACCU Conference </a>
-                            </span>
-                        </div>
-                        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
-                            <div class="nav navbar-nav" id="navigation-links">
-                                {{nav.top_nav.render()}}
-                            </div>
-                        </div>
-                    </nav>
-                </div> <!-- End div.row for nav -->
-                <div class="hidden-xs">
-                    <div class="row">
-                        <div class="container-fluid">
-                            {{accuconf.sponsors()}}
-                        </div>
-                    </div>
-                </div>
-                <!-- End of Menubar -->
-            </div> <!-- End of div.col-sm-3  col-md-3 col-lg-3 -->
-            <!-- For single column rendering - In mobiles and tablets -->
-            <div class="visible-xs-block">
-              <div class="container-fluid">
-                {{accuconf.cocbits()}}
-                <!-- a href=" http://www.cvent.com/d/dvqxq2"><img class="img-responsive" src="/assets/images/register_2017_2.jpg" alt="Register Now icon" align="right" width="200"></a -->
-                  <div class="accuconf-menu">
-                      <a type="button" class="accuconf-toggle-link btn" data-toggle="collapse" href="#keydates">
-                          <span class="accuconf-toggle glyphicon glyphicon-menu-hamburger"> Dates and Location </span>
-                      </a>
-                      <div class="collapse" id="keydates">
-                          {{accuconf.dates()}}
-                          <hr/>
-                          {{accuconf.location()}}
-                      </div>
-                  </div>
-              </div>
-            </div>
-            <!-- End For single column rendering  -->
-            <!-- Main Content -->
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <div id="content" role="main">
-                    <div class="body-content">
-                        <!--Body content-->
-                        <div class="row">
-                            {% block content %}{% endblock %}
-                        </div>
-                        <!--End of body content-->
-                        <footer id="footer">
-                            Contents &copy; {{year}} <a href="mailto:conference@accu.org">ACCU</a>
-                            –
-                            Hosting donated by <a href="http://www.bytemark.co.uk/r/accu" rel="nofollow">Bytemark</a>.
-                            <br>
-                            Powered by <a href="https://www.python.org" rel="nofollow">Python</a>,
-                            <a href="http://flask.pocoo.org/" rel="nofollow">Flask</a> and
-                            <a href="https://www.sqlalchemy.org/" rel="nofollow">SQLAlchemy</a>
-                            –
-                            Created using <a href="https://www.jetbrains.com/pycharm/" rel="nofollow">PyCharm</a> from
-                            <a href="https://www.jetbrains.com/" rel="nofollow">JetBrains</a>
-                        </footer>
-                    </div>
-                </div>
-            </div> <!--  End of col-sm-6 -->
-            <!-- End of main content -->
-            <div class="col-sm-3 col-md-3 col-lg-3">
-              <div class="hidden-xs">
-                {{accuconf.cocbits()}}
-                    <!-- div class="row">
-                      <div class="panel panel-default">
-                        <div class="panel-body">
-                          <a href=" http://www.cvent.com/d/dvqxq2"><img class="img-responsive" src="assets/images/register_2017_2.jpg" alt="Register Now icon" align="right"></a>
-                        </div>
-                      </div>
-                    </div -->
-                    <div class="row">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Dates</h3>
-                            </div>
-                            <div class="panel-body">
-                              {{accuconf.dates()}}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Location</h3>
-                            </div>
-                            <div class="panel-body">
-                              {{accuconf.location()}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    {{accuconf.committee()}}
-                </div>
-                <div class="row">
-                    {{accuconf.organiser()}}
-                </div>
-                <div class="row visible-xs">
-                    {{accuconf.sponsors()}}
-                </div>
-          </div>
-        </div> <!--  End of div.row -->
-    </body>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="copyright" content="2016, 2017  Balachandran Sivakumar, Russel Winder, Felix Petriconi">
+<head>
+	{% block head %}
+	<link href="https://conference.accu.org/assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" type="text/css" href="https://conference.accu.org/assets/css/custom.css">
+	<link rel="icon" type="image/png" href="https://conference.accu.org/assets/images/accu2018_32x32.png">
+	<script src="https://conference.accu.org/assets/js/all-nocdn.js" type="text/javascript"></script>
+	<link rel="stylesheet" type="text/css" href="/static/css/accuconf.css">
+	<script src="/static/js/accuconf_cfp.js" type="text/javascript"></script>
+	<title> ACCU {{page.year}} – {{page.pagetitle}} </title>
+	{% endblock %}
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+<!--  Banner -->
+<div class="container-fluid banner">
+	<a href="/"><img class="img-responsive" src="https://conference.accu.org/assets/images/accu2018_369x124.png"
+	                 align="left" alt="ACCU 2018 Logo"/></a>
+	<a href="http://www.accu.org"><img class="img-responsive"
+	                                   src="https://conference.accu.org/assets/images/accu_logo.png" align="right"
+	                                   alt="ACCU Logo"/></a>
+</div>
+<!-- Banner logo -->
+<div class="row">
+	<!-- Menubar -->
+	<div class="col-sm-3 col-md-3 col-lg-3 ">
+		<div class="row">
+			<nav class="navbar navbar-default accuconf-menu" role="navigation">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+					        data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<span>
+						<a class="navbar-brand" href="/"> ACCU Conference </a>
+					</span>
+				</div>
+				<div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+					<div class="nav navbar-nav" id="navigation-links">
+						{{nav.top_nav.render()}}
+					</div>
+				</div>
+			</nav>
+		</div> <!-- End div.row for nav -->
+		<div class="hidden-xs">
+			<div class="row">
+				<div class="container-fluid">
+					{{accuconf.sponsors()}}
+				</div>
+			</div>
+		</div>
+		<!-- End of Menubar -->
+	</div> <!-- End of div.col-sm-3  col-md-3 col-lg-3 -->
+	<!-- For single column rendering - In mobiles and tablets -->
+	<div class="visible-xs-block">
+		<div class="container-fluid">
+			{{accuconf.cocbits()}}
+			<!-- a href=" http://www.cvent.com/d/dvqxq2"><img class="img-responsive" src="/assets/images/register_2017_2.jpg" alt="Register Now icon" align="right" width="200"></a -->
+			<div class="accuconf-menu">
+				<a type="button" class="accuconf-toggle-link btn" data-toggle="collapse" href="#keydates">
+					<span class="accuconf-toggle glyphicon glyphicon-menu-hamburger"> Dates and Location </span>
+				</a>
+				<div class="collapse" id="keydates">
+					{{accuconf.dates()}}
+					<hr/>
+					{{accuconf.location()}}
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End For single column rendering  -->
+	<!-- Main Content -->
+	<div class="col-sm-6 col-md-6 col-lg-6">
+		<div id="content" role="main">
+			<div class="body-content">
+				<!--Body content-->
+				<div class="row">
+					{% block content %}{% endblock %}
+				</div>
+				<!--End of body content-->
+				<footer id="footer">
+					Contents &copy; {{year}} <a href="mailto:conference@accu.org">ACCU</a>
+					–
+					Hosting donated by <a href="http://www.bytemark.co.uk/r/accu" rel="nofollow">Bytemark</a>.
+					<br>
+					Powered by <a href="https://www.python.org" rel="nofollow">Python</a>,
+					<a href="http://flask.pocoo.org/" rel="nofollow">Flask</a> and
+					<a href="https://www.sqlalchemy.org/" rel="nofollow">SQLAlchemy</a>
+					–
+					Created using <a href="https://www.jetbrains.com/pycharm/" rel="nofollow">PyCharm</a> from
+					<a href="https://www.jetbrains.com/" rel="nofollow">JetBrains</a>
+				</footer>
+			</div>
+		</div>
+	</div> <!--  End of col-sm-6 -->
+	<!-- End of main content -->
+	<div class="col-sm-3 col-md-3 col-lg-3">
+		<div class="hidden-xs">
+			{{accuconf.cocbits()}}
+			<!-- div class="row">
+			  <div class="panel panel-default">
+				<div class="panel-body">
+				  <a href=" http://www.cvent.com/d/dvqxq2"><img class="img-responsive" src="assets/images/register_2017_2.jpg" alt="Register Now icon" align="right"></a>
+				</div>
+			  </div>
+			</div -->
+			<div class="row">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Dates</h3>
+					</div>
+					<div class="panel-body">
+						{{accuconf.dates()}}
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Location</h3>
+					</div>
+					<div class="panel-body">
+						{{accuconf.location()}}
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			{{accuconf.committee()}}
+		</div>
+		<div class="row">
+			{{accuconf.organiser()}}
+		</div>
+		<div class="row visible-xs">
+			{{accuconf.sponsors()}}
+		</div>
+	</div>
+</div> <!--  End of div.row -->
+</body>
 </html>
