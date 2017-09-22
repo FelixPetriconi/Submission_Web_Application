@@ -126,7 +126,7 @@ def set_committee_as_reviewers(committee_email_file_path):
                     print('\t ####', p, 'has more that one entry, this cannot be.')
                 else:
                     user = user[0]
-                    print('\t', user.first_name, user.last_name, '–', user.email)
+                    print('\t', user.name, '–', user.email)
                     user.role = Role.reviewer
                     db.session.commit()
     except FileNotFoundError:
@@ -146,7 +146,7 @@ def create_proposal_sheets():
         scores = tuple(score.score for score in p.scores if score.score != 0)
         table = Table([
             [Paragraph(p.title, style_sheet), p.session_type],
-            [', '.join('{} {}'.format(pp.first_name, pp.last_name) for pp in p.presenters),
+            [', '.join(pp.name for pp in p.presenters),
              ', '.join(str(score.score) for score in p.scores) + ' — {:.2f}, {}'.format(mean(scores), median(scores)) if len(scores) > 0 else ''],
         ], colWidths=(380, 180), spaceAfter=64)
         table.setStyle(TableStyle([
@@ -174,7 +174,7 @@ def create_proposals_document():
 
         def write_proposal(p):
             proposals_file.write('<<<\n\n=== {}\n\n'.format(p.title))
-            proposals_file.write(', '.join('{} {}'.format(pp.first_name, pp.last_name) for pp in p.presenters) + '\n\n')
+            proposals_file.write(', '.join(pp.name for pp in p.presenters) + '\n\n')
             proposals_file.write(cleanup_text(p.text.strip()) + '\n\n')
             scores = tuple(r.score for r in p.scores if r.score != 0)
             proposals_file.write("'''\n\n*{}{}*\n\n".format(', '.join(str(score.score) for score in p.scores), ' — {:.2f}, {}'.format(mean(scores), median(scores)) if len(scores) > 0 else ''))
@@ -377,7 +377,7 @@ def  list_of_lead_presenters():
     not_quickies = tuple(s for s in accepted + acknowledged if s.session_type != SessionType.quickie and s.session_type != SessionType.fulldayworkshop)
     for n_q in not_quickies:
         for p in tuple(p.presenter for p in n_q.presenters if p.is_lead):
-            print("{} {}, {}".format(p.first_name, p.last_name, p.email))
+            print("{}, {}".format(p.name, p.email))
 
 
 @app.cli.command()
@@ -453,7 +453,7 @@ def generate_pages():
 .. type: text
 ////
 '''.format(start_date.year))
-        for p in sorted(presenters, key=lambda x: x.first_name):
+        for p in sorted(presenters, key=lambda x: x.name):
             proposals = tuple(pp.proposal for pp in p.proposals if pp.proposal.status == ProposalState.acknowledged)
             session_links = '\n\n'.join(session_link(pr) for pr in sorted(proposals, key=lambda x: x.title))
             presenter_file.write('''
@@ -650,8 +650,8 @@ def do_emailout(trial, emailout_spec):
         for proposal, person in query.query():
             if person is not None:
                 email_address = (
-                    '{} {} <russel@winder.org.uk>'.format(person.first_name, person.last_name) if trial else
-                    '{} {} <{}>'.format(person.first_name, person.last_name, person.email)
+                    '{} <russel@winder.org.uk>'.format(person.name) if trial else
+                    '{} <{}>'.format(person.name, person.email)
                 )
             else:
                 print('####  No data of person to send email to.')
@@ -760,8 +760,7 @@ def replace_presenter_of_proposal(person):
         return
     with open(str(new_presenter_file)) as f:
         email = f.readline().strip()
-        first_name = f.readline().strip()
-        last_name = f.readline().strip()
+        name = f.readline().strip()
         country = f.readline().strip()
         state = f.readline().strip()
         bio = f.read().strip()
@@ -774,7 +773,7 @@ def replace_presenter_of_proposal(person):
         return
     proposal = proposal[0]
     f_name, l_name = tuple(p.capitalize() for p in person.split('_'))
-    old_presenter = Presenter.query.filter_by(first_name=f_name, last_name=l_name).all()
+    old_presenter = Presenter.query.filter_by(name=f_name, last_name=l_name).all()
     if len(old_presenter) == 0:
         print('No presenter found with name: {} {}'.format(f_name, l_name))
         return
