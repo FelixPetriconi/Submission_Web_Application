@@ -17,7 +17,8 @@ case $1 in
     cfp.testconference | cfp.conference )
         chmod -R go+rX accuconf*
         destination=conference@dennis.accu.org:/srv/$1.accu.org/public/htdocs/
-        rsync -av --delete  --exclude=__pycache__/ accuconf_cfp models $destination
+        rsync -av --delete  --exclude=__pycache__/ accuconf_cfp models cli.sh pip_runtime_requirements.txt pip_admin_requirements.txt $destination
+        rsync -av --delete  --exclude=__pycache__/ scripts/cli_commands.py $destination/scripts
         scp accuconf_cfp.wsgi $destination
         ;;
     api.testconference | api.conference )
