@@ -28,20 +28,12 @@ class CallForProposalsOpen(_Base):
     REVIEWING_ALLOWED = True
 
 
-class CallForProposalsOpenMaintenance(CallForProposalsOpen):
-    MAINTENANCE = True
-
-
 class ReviewingOnly(_Base):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + str(_Base.database_path)
     REVIEWING_ALLOWED = True
 
 
-class ReviewingOnlyMaintenance(CallForProposalsOpen):
-    MAINTENANCE = True
-
-
-class TestingWithDatabase(_Base):
+class LiveTestingWithDatabase(_Base):
     database_path = _Base.here.parent / 'accuconf_test.db'
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + str(database_path)
     DEBUG = True
@@ -50,7 +42,7 @@ class TestingWithDatabase(_Base):
     REVIEWING_ALLOWED = True
 
 
-class TestingWithDatabaseMaintenance(TestingWithDatabase):
+class Maintenance(_Base):
     MAINTENANCE = True
 
 
