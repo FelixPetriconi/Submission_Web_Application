@@ -114,7 +114,7 @@ def review_proposal(id):
             'summary': proposal.summary,
             'notes': proposal.notes,
             'presenters': presenters,
-            'button_label': 'Submit',
+            'button_label': 'Submit' if not score else 'Update',
             'score': score,
             'comment': comment,
             'has_previous': id > 1,
