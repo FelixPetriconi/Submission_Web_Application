@@ -36,7 +36,7 @@ def submit_data_to_register_page(driver, registrant):
     ('cpassphrase', 'dedum', 'Passphrase and confirmation passphrase not the same.'),
     ('name', 'R', 'Invalid name.'),
     ('phone', 'blurb', 'Invalid phone number.'),
-    ('postal_code', 'Fubar', 'Invalid postal code.'),
+    # ('postal_code', 'Fubar', 'Invalid postal code.'),
 ))
 def test_single_error_causing_local_failure(key, value, message, driver, registrant, monkeypatch):
     monkeypatch.setitem(registrant, key, value)

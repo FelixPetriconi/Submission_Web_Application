@@ -63,16 +63,14 @@ class Presenter(db.Model):
     email = db.Column(db.String(200), nullable=False, unique=True)
     name = db.Column(db.String(200), nullable=False)
     bio = db.Column(db.Text(), nullable=False)
-    country = db.Column(db.String(5), nullable=False)  # Use ISO 3 character codes
-    state = db.Column(db.String(40), nullable=True)
+    country = db.Column(db.String(60), nullable=False)
     proposals = association_proxy('presenter_proposals', 'proposal')
 
-    def __init__(self, email, name, bio, country, state=None):
+    def __init__(self, email, name, bio, country):
         self.email = email
         self.name = name
         self.bio = bio
         self.country = country
-        self.state = state
 
 
 class ProposalPresenter(db.Model):

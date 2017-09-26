@@ -52,10 +52,6 @@ def registrant():
         'name': 'User Name',
         'phone': '+011234567890',
         'country': 'India',
-        'state': 'TamilNadu',
-        'postal_code': '123456',
-        'town_city': 'Chennai',
-        'street_address': 'Chepauk',
     }
 
 
@@ -78,7 +74,6 @@ lengthy proposal''',
                 'name': 'User Name',
                 'bio': 'A nice member of the human race who has a good history of presentation.',
                 'country': 'India',
-                'state': 'TamilNadu'
             },
         ]
     }
@@ -99,7 +94,6 @@ lengthy proposal''',
                 'name': 'Presenter First',
                 'bio': 'A person with a good history of presentations working with someone new to presenting.',
                 'country': 'India',
-                'state': 'TamilNadu'
             },
             {
                 'email': 'p2@b.c',
@@ -107,7 +101,6 @@ lengthy proposal''',
                 'name': 'Presenter Second',
                 'bio': 'A person who is new to presentations but is doing it with a veteran ',
                 'country': 'India',
-                'state': 'TamilNadu'
             },
         ]
     }

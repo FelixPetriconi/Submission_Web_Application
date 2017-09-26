@@ -6,8 +6,7 @@ from accuconf_cfp import app, db, year, countries
 from accuconf_cfp.utils import (is_acceptable_route, is_logged_in, md,
                                 is_valid_email, is_valid_country, is_valid_name,
                                 is_valid_bio, is_valid_passphrase,
-                                is_valid_phone, is_valid_postal_code, is_valid_state,
-                                is_valid_street_address, is_valid_town_city
+                                is_valid_phone,
                                 )
 
 from models.user import User
@@ -24,7 +23,7 @@ def validate_presenters(presenters):
 
     This function should never fail since the checks should already have been made client-side.
      """
-    mandatory_keys = ['is_lead', 'email', 'name', 'bio', 'country', 'state']
+    mandatory_keys = ['is_lead', 'email', 'name', 'bio', 'country']
     leads_found = []
     for presenter in presenters:
         for key in mandatory_keys:
@@ -38,8 +37,6 @@ def validate_presenters(presenters):
             return False, '{} not a valid name'.format(presenter['name'])
         if not is_valid_bio(presenter['bio']):
             return False, '{} not a valid bio'.format(presenter['bio'])
-        if not is_valid_state(presenter['state']):
-            return False, '{} not a valid state'.format(presenter['state'])
         if not is_valid_country(presenter['country']):
             return False, '{} not a valid country'.format(presenter['country'])
         if presenter['is_lead']:
@@ -112,7 +109,6 @@ def submit():
                         presenter_data['name'],
                         presenter_data['bio'],
                         presenter_data['country'],
-                        presenter_data['state'],
                     )
                     ProposalPresenter(proposal, presenter, presenter_data['is_lead'])
                     db.session.add(presenter)
@@ -140,7 +136,6 @@ def submit():
                     'is_lead': True,
                     'bio': '',
                     'country': user.country,
-                    'state': user.state,
                 },
                 'countries': sorted(countries.keys()),
                 'submit_label': 'Submit',
@@ -232,7 +227,7 @@ def proposal_update(id):
                 for i, presenter in enumerate(proposal.presenters):
                     changeset = {}
                     presenters_data = proposal_data['presenters'][i]
-                    for item in ('email', 'name', 'bio', 'country', 'state'):
+                    for item in ('email', 'name', 'bio', 'country'):
                         if item in presenters_data and presenter.__dict__[item] != presenters_data[item]:
                             changeset[item] = presenters_data[item]
                     if changeset:
@@ -277,7 +272,6 @@ is no specific button for "leave things as they are" that is the default action.
                 'is_lead': proposal_presenter.is_lead,
                 'bio': presenter.bio,
                 'country': presenter.country,
-                'state': presenter.state,
             },
             'countries': sorted(countries.keys()),
             'submit_label': 'Update',

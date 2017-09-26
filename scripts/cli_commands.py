@@ -72,9 +72,6 @@ def db_init_add_sample_data():
         'name': 'Russel Winder',
         'phone': '+442075852200',
         'country': 'United Kingdom',
-        'postal_code': 'SW11 1EN',
-        'town_city': 'London',
-        'street_address': '41 Buckmaster Road',
     })
     russel_data = User.query.filter_by(email=russel_email).first()
     russel_data.role = Role.reviewer

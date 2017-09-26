@@ -1,39 +1,23 @@
 function isValidEmail(email) {
-  return  /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-_])+\.)+([a-zA-Z0-9])+$/.test(email)
+	return /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-_])+\.)+([a-zA-Z0-9])+$/.test(email)
 }
 
 function isValidPassphrase(password) {
-    return password.length >= 8
+	return password.length >= 8
 }
 
 function isValidName(name) {
-    return name.length > 1
+	return name.length > 1
 }
 
 function isValidPhone(phone) {
-    return /^\+?[0-9 ]+$/.test(phone)
-}
-
-function isValidStreetAddress(street_address) {
-    return true
-}
-
-function isValidTownCity(townCity) {
-    return true
-}
-
-function isValidState(state) {
-    return true
-}
-
-function isValidPostalCode(postal_code) {
-    return /^[A-Z0-9 ]+$/.test(postal_code)
+	return /^\+?[0-9 ]+$/.test(phone)
 }
 
 // There is no isValidCountry since a drop-down selection is used.
 
 function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+	return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 let puzzleResult = 0
@@ -56,62 +40,38 @@ function isPuzzleResultCorrect(value) {
 
 function isValidRegistrationData(passphraseRequired) {
 	let returnCode = true
-    if (!isValidEmail($('#email').val())) {
-        $('#email_alert').text("Email should be of the format user@example.com")
-        returnCode = false
-    } else {
-        $('#email_alert').text('')
-    }
-    const passphrase = $('#passphrase').val()
-    if (passphraseRequired && !isValidPassphrase(passphrase)) {
-    	$('#passphrase_alert').text('Passphrase is not valid.')
-        returnCode = false
-    } else {
-    	$('#passphrase_alert').text('')
-    }
-    if (passphrase !== $('#cpassphrase').val()) {
-    	$('#cpassphrase_alert').text('Passphrase and confirmation passphrase not the same.')
-        returnCode = false
-    } else {
-    	$('#cpassphrase_alert').text('')
-    }
+	if (!isValidEmail($('#email').val())) {
+		$('#email_alert').text("Email should be of the format user@example.com")
+		returnCode = false
+	} else {
+		$('#email_alert').text('')
+	}
+	const passphrase = $('#passphrase').val()
+	if (passphraseRequired && !isValidPassphrase(passphrase)) {
+		$('#passphrase_alert').text('Passphrase is not valid.')
+		returnCode = false
+	} else {
+		$('#passphrase_alert').text('')
+	}
+	if (passphrase !== $('#cpassphrase').val()) {
+		$('#cpassphrase_alert').text('Passphrase and confirmation passphrase not the same.')
+		returnCode = false
+	} else {
+		$('#cpassphrase_alert').text('')
+	}
 	if (!isValidName($('#name').val())) {
 		$('#name_alert').text('Invalid name.')
 		returnCode = false
 	} else {
-    	$('#name_alert').text('')
-    }
-    if (!isValidPhone($('#phone').val())) {
-    	$('#phone_alert').text('Invalid phone number.')
-        returnCode = false
-    } else {
-    	$('#phone_alert').text('')
-    }
-    if (!isValidStreetAddress($('#street_address').val())) {
-	    $('#street_address_alert').text('Invalid street address.')
-        returnCode = false
-    } else {
-    	$('#street_address_alert').text()
-    }
-    if (!isValidTownCity($('#town_city').val())) {
-	    $('#town_city_alert').text('Invalid town/city.')
-        returnCode = false
-    } else {
-    	$('#town_city_alert').text('')
-    }
-    if (!isValidState($('#state').val())) {
-    	$('#state_alert').text('Invalid state.')
-        returnCode = false
-    } else {
-    	$('#state_alert').text('')
-    }
-    if (!isValidPostalCode($('#postal_code').val())) {
-	    $('#postal_code_alert').text('Invalid postal code.')
-        returnCode = false
-    } else {
-    	$('#postal_code_alert').text('')
-    }
-    // Country is select from a drop down and so must be valid.
+		$('#name_alert').text('')
+	}
+	if (!isValidPhone($('#phone').val())) {
+		$('#phone_alert').text('Invalid phone number.')
+		returnCode = false
+	} else {
+		$('#phone_alert').text('')
+	}
+	// Country is select from a drop down and so must be valid.
 	$('#country_alert').text('')
 	if (passphraseRequired) {
 		if (!isPuzzleResultCorrect($('#puzzle').val())) {
@@ -130,48 +90,40 @@ function clearRegisterAlerts() {
 	$('#cpassphrase_alert').text('')
 	$('#name_alert').text('')
 	$('#phone_alert').text('')
-	$('#street_address_alert').text('')
-	$('#town_city_alert').text('')
-	$('#state_alert').text('')
-	$('#postal_code_alert').text('')
 	$('#country_alert').text('')
 	$('#puzzle_alert').text('')
 	$('#alert').text('')
-	return true;
+	return true
 }
 
 function registerUser(passphraseRequiredText) {
 	const passphraseRequired = true === passphraseRequiredText
-    if (isValidRegistrationData(passphraseRequired)) {
-        $.ajax({
-            method: 'POST',
-            url: (passphraseRequired ? '/register' : '/registration_update'),
-            data: JSON.stringify({
-                'email': $('#email').val(),
-                'passphrase': $('#passphrase').val(),
-                'name': $('#name').val(),
-                'phone': $('#phone').val(),
-                'street_address': $('#street_address').val(),
-                'town_city': $('#town_city').val(),
-                'state': $('#state').val(),
-                'postal_code': $('#postal_code').val(),
-                'country': $('#country').val(),
-            }),
-            dataType: 'json',
-            contentType: 'application/json',
-	        statusCode: {
-	        	200: (data, text, jqXHR) => {
-			        window.location.replace("/" + data)
-		        },
-		        400: (jqXHR, textStatus, errorThrown) => {
-			        alert(jqXHR.responseText)
-		        },
-	        }
-        })
-        $('#alert').text('Submitting form.')
-    } else {
-	    $('#alert').text('Problem with form, not submitting.')
-    }
+	if (isValidRegistrationData(passphraseRequired)) {
+		$.ajax({
+			method: 'POST',
+			url: (passphraseRequired ? '/register' : '/registration_update'),
+			data: JSON.stringify({
+				'email': $('#email').val(),
+				'passphrase': $('#passphrase').val(),
+				'name': $('#name').val(),
+				'phone': $('#phone').val(),
+				'country': $('#country').val(),
+			}),
+			dataType: 'json',
+			contentType: 'application/json',
+			statusCode: {
+				200: (data, text, jqXHR) => {
+					window.location.replace("/" + data)
+				},
+				400: (jqXHR, textStatus, errorThrown) => {
+					alert(jqXHR.responseText)
+				},
+			}
+		})
+		$('#alert').text('Submitting form.')
+	} else {
+		$('#alert').text('Problem with form, not submitting.')
+	}
 	return false
 }
 
@@ -195,7 +147,7 @@ function isValidLoginData() {
 function clearLoginAlerts() {
 	$('#login_alert').text('')
 	$('#passphrase_alert').text('')
-	return true;
+	return true
 }
 
 function loginUser() {
@@ -211,7 +163,7 @@ function loginUser() {
 			contentType: 'application/json',
 			statusCode: {
 				200: (data, textStatus, jqXHR) => {
-					window.location.replace("/" + data);
+					window.location.replace("/" + data)
 				},
 				400: (jqXHR, textStatus, errorThrown) => {
 					alert(jqXHR.responseText)
@@ -220,7 +172,7 @@ function loginUser() {
 		})
 		$('#alert').text('Submitting login details.')
 	} else {
-	    $('#alert').text('Problem with login form, not submitting.')
+		$('#alert').text('Problem with login form, not submitting.')
 	}
 	return false
 }
@@ -276,12 +228,6 @@ function isValidPresenter(details) {
 	} else {
 		$('#bio_alert').text('')
 	}
-	if (!isValidState(details['state'])) {
-		$('#state_alert').text('State not valid.')
-		returnCode = false
-	} else {
-		$('#state_alert').text('')
-	}
 	if (typeof details['is_lead'] !== 'boolean') {
 		$('#is_lead_alert').text('Is_Lead is not valid.')
 		returnCode = false
@@ -301,10 +247,6 @@ function isValidSessionType(sessionType) {
 
 function isValidAudience(audience) {
 	return ['beginner', 'intermediate', 'expert', 'all'].indexOf(audience) > -1
-}
-
-function isValidCategory(category) {
-	return true
 }
 
 function isValidSummary(summary) {
@@ -345,12 +287,6 @@ function isValidSubmission(title, sessionType, summary, audience, category, note
 	} else {
 		$('#audience_alert').text('')
 	}
-	if (!isValidCategory(category)) {
-		$('#category_alert').text('Category not valid.')
-		returnCode = false
-	} else {
-		$('#category_alert').text('')
-	}
 	if (!isValidNotes(notes)) {
 		$('#notes_alert').text('Notes not valid.')
 		returnCode = false
@@ -371,7 +307,9 @@ function isValidSubmission(title, sessionType, summary, audience, category, note
 			$('#presenter_alert').text('')
 		}
 	}
-	const leads_list = presenters.filter((p) => { return p['is_lead'] })
+	const leads_list = presenters.filter((p) => {
+		return p['is_lead']
+	})
 	if (leads_list.length !== 1) {
 		returnCode = false
 	}
@@ -397,7 +335,7 @@ function submitProposal(proposalId) {
 	const category = $('#category').val()
 	const notes = $('#notes').val()
 	const constraints = $('#constraints').val()
-    const presenters = []
+	const presenters = []
 	/*
 	  For some reason the jQuery approach fails to do the right thing because
 	  $(this) fails to be set. So do things with pure JavaScript (or is that ECMAScript)
@@ -411,14 +349,12 @@ function submitProposal(proposalId) {
 		const bio = document.getElementById(`bio_${i}_field`).value
 		const countryNode = document.getElementById(`country_${i}_field`)
 		const country = countryNode.options[countryNode.selectedIndex].value
-		const state =  document.getElementById(`state_${i}_field`).value
 		presenters.push({
 			'email': email,
 			'name': name,
 			'is_lead': is_lead,
 			'bio': bio,
 			'country': country,
-			'state': state,
 		})
 	}
 	if (isValidSubmission(title, sessionType, summary, audience, category, notes, constraints, presenters)) {
@@ -439,10 +375,10 @@ function submitProposal(proposalId) {
 			contentType: 'application/json',
 			statusCode: {
 				200: (data, textStatus, jqXHR) => {
-					window.location.replace('/' + data);
+					window.location.replace('/' + data)
 				},
 				400: (jqXHR, textStatus, errorThrown) => {
-					alert(jqXHR.responseText);
+					alert(jqXHR.responseText)
 				},
 			},
 		})
@@ -450,29 +386,27 @@ function submitProposal(proposalId) {
 	} else {
 		$('#alert').text('Problem with form, not submitting.')
 	}
-    return false
+	return false
 }
 
 let current_presenter_number = 0
 
 function addNewPresenter() {
-    const email = $('#add-presenter-email').val()
-    const name = $('#add-presenter-name').val()
-    const bio = $('#add-presenter-bio').val()
-    const country = $('#add-presenter-country option:selected').val()
-    const state = $('#add-presenter-states').val()
+	const email = $('#add-presenter-email').val()
+	const name = $('#add-presenter-name').val()
+	const bio = $('#add-presenter-bio').val()
+	const country = $('#add-presenter-country option:selected').val()
 	if (!isValidPresenter({
 			'email': email,
 			'name': name,
 			'is_lead': false,
 			'bio': bio,
 			'country': country,
-			'state': state,
 		})) {
-    	return false
+		return false
 	}
-    current_presenter_number++
-    $('#presenters tr:last').after(`
+	current_presenter_number++
+	$('#presenters tr:last').after(`
 <tr><td>
 	<div class="form-group">
 		<label class="control-label col-sm-2">Email</label>
@@ -509,20 +443,13 @@ function addNewPresenter() {
               </select>
 	    </div>
 	</div>
-	<div class="form-group">
-		<label class="control-label col-sm-2">State</label>
-		<div class="col-sm-4">
-		    <input class="state_field" id="state_${ current_presenter_number }_field" type="text" value="${ state }">
-            <span class="help-block" id="state_${ current_presenter_number}_alert"></span>
-		</div>
-	</div>
 </td></tr>
 `)
-    $('.modal').on('hidden.bs.modal', () => {
-	$("#add-presenter-modal").find('form')[0].reset()
-    })
-    $("#add-presenter-modal").modal('hide')
-    return false
+	$('.modal').on('hidden.bs.modal', () => {
+		$("#add-presenter-modal").find('form')[0].reset()
+	})
+	$("#add-presenter-modal").modal('hide')
+	return false
 }
 
 
@@ -548,7 +475,7 @@ function submitScoreAndComment(id) {
 					$('#alert').text(data)
 				},
 				400: (jqXHR, textStatus, errorThrown) => {
-					alert(jqXHR.responseText);
+					alert(jqXHR.responseText)
 				},
 			},
 		})
@@ -564,10 +491,10 @@ function navigatePrevious(id) {
 		url: `/previous_proposal/${id}/0`,
 		statusCode: {
 			200: (data, textStatus, jqXHR) => {
-				window.location.replace(`/review_proposal/${data}`);
+				window.location.replace(`/review_proposal/${data}`)
 			},
 			400: (jqXHR, textStatus, errorThrown) => {
-				alert(jqXHR.responseText);
+				alert(jqXHR.responseText)
 			},
 		},
 	})
@@ -579,17 +506,17 @@ function navigatePreviousUnscored(id) {
 		url: `/previous_proposal/${id}/1`,
 		statusCode: {
 			200: (data, textStatus, jqXHR) => {
-				window.location.replace(`/review_proposal/${data}`);
+				window.location.replace(`/review_proposal/${data}`)
 			},
 			400: (jqXHR, textStatus, errorThrown) => {
-				alert(jqXHR.responseText);
+				alert(jqXHR.responseText)
 			},
 		},
 	})
 }
 
 function navigateToList() {
-	window.location.replace('/review_list');
+	window.location.replace('/review_list')
 }
 
 function navigateNextUnscored(id) {
@@ -598,10 +525,10 @@ function navigateNextUnscored(id) {
 		url: `/next_proposal/${id}/1`,
 		statusCode: {
 			200: (data, textStatus, jqXHR) => {
-				window.location.replace(`/review_proposal/${data}`);
+				window.location.replace(`/review_proposal/${data}`)
 			},
 			400: (jqXHR, textStatus, errorThrown) => {
-				alert(jqXHR.responseText);
+				alert(jqXHR.responseText)
 			},
 		},
 	})
@@ -613,55 +540,21 @@ function navigateNext(id) {
 		url: `/next_proposal/${id}/0`,
 		statusCode: {
 			200: (data, textStatus, jqXHR) => {
-				window.location.replace(`/review_proposal/${data}`);
+				window.location.replace(`/review_proposal/${data}`)
 			},
 			400: (jqXHR, textStatus, errorThrown) => {
-				alert(jqXHR.responseText);
+				alert(jqXHR.responseText)
 			},
 		},
 	})
 }
 
-/*
-function uploadReview(button) {
-    const button = button.value;
-    const score = $("#score").val();
-    const comment = $("#comment").val();
-    const reviewData = {
-        "button" : button,
-        "score" : score,
-        "comment" : comment
-    };
-    $.ajax({
-        method: "POST",
-        url: "/proposals/upload_review",
-        data: JSON.stringify(reviewData),
-        contentType: "application/json",
-        success: function(data) {
-            if (data.success) {
-                window.location = data.redirect;
-            } else {
-                $('#alert').text(data.message);
-            }
-        }
-    });
-
-    return true;
-}
-*/
-
-
-
 // Apparently this is needed for Node execution and thus the tests.
 if (typeof exports !== 'undefined') {
-    exports.isValidEmail = isValidEmail
-    exports.isValidPassphrase = isValidPassphrase
-    exports.isValidName = isValidName
-    exports.isValidPhone = isValidPhone
-    exports.isValidStreetAddress = isValidStreetAddress
-    exports.isValidTownCity = isValidTownCity
-    exports.isValidState = isValidState
-    exports.isValidPostalCode = isValidPostalCode
+	exports.isValidEmail = isValidEmail
+	exports.isValidPassphrase = isValidPassphrase
+	exports.isValidName = isValidName
+	exports.isValidPhone = isValidPhone
 	exports.setPuzzle = setPuzzle
 	exports.isPuzzleResultCorrect = isPuzzleResultCorrect
 	exports.isValidBio = isValidBio

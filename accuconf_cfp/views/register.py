@@ -24,7 +24,7 @@ def validate_registration_data(registration_data):
     """
     if not registration_data:
         return False, 'No JSON data returned.'
-    mandatory_keys = ['email', 'name', 'street_address', 'town_city', 'state', 'postal_code', 'country', 'phone']
+    mandatory_keys = ['email', 'name', 'phone', 'country']  # 'street_address', 'town_city', 'state', 'postal_code', 'country', 'phone']
     missing_keys = [key for key in mandatory_keys if key not in registration_data]
     if missing_keys:
         return False, 'Missing keys in registration data: {}'.format(missing_keys)
@@ -139,10 +139,6 @@ is no specific button for "leave things as they are" that is the default action.
         'email': user.email,
         'name': user.name,
         'phone': user.phone,
-        'street_address': user.street_address,
-        'town_city': user.town_city,
-        'state': user.state,
-        'postal_code': user.postal_code,
         'country': user.country,
         'submit_button': 'Save',
         'passphrase_required': 'false',

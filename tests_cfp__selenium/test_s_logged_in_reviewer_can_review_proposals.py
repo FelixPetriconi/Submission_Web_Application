@@ -26,10 +26,6 @@ def reviewer():
         'name': 'Reviewer Name',
         'phone': '+011234567890',
         'country': 'India',
-        'state': 'TamilNadu',
-        'postal_code': '123456',
-        'town_city': 'Chennai',
-        'street_address': 'Chepauk',
     }
 
 

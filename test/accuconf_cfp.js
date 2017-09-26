@@ -58,33 +58,6 @@ describe('phone number validation works correctly', () => {
     })
 })
 
-describe('street address validation works correctly', () => {
-    it('a known street address works', () => {
-        assert(accuconf.isValidStreetAddress('41 Buckmaster Road'))
-    })
-})
-
-describe('town city validation works correctly', () => {
-    it('a known town city works', () => {
-        assert(accuconf.isValidStreetAddress('London'))
-    })
-})
-
-describe('state validation works correctly', () => {
-    it('a known state works', () => {
-        assert(accuconf.isValidState('Surrey'))
-    })
-})
-
-describe('postal code validation works correctly', () => {
-    it('a known UK postal code works', () => {
-        assert(accuconf.isValidPostalCode('SW11 1EN'))
-    })
-    it('a known Indian pincode works', () => {
-        assert(accuconf.isValidPostalCode('12345'))
-    })
-})
-
 describe('puzzle setting and result consistency check.', () => {
     it('when it is correct it works', () => {
         const values = accuconf.setPuzzle()

@@ -26,9 +26,6 @@ from models.user import User
         'passphrase': 'Some pass phrase or other.',
         'name': 'User Name',
         'country': 'Some Country',
-        'postal_code': 'Postcode',
-        'town_city': 'Town or City',
-        'street_address': 'Street Address',
     }))
 def test_putting_user_data_into_database(user_data, database):
     """Ensure that we can put a user with no proposals or other data into the database.

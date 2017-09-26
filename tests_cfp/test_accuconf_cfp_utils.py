@@ -94,30 +94,6 @@ def test_unknown_country_is_not_valid_country():
     assert not utils.is_valid_country('Middle Earth')
 
 
-@pytest.mark.parametrize('state', (
-    'Surrey',
-    'Middlesex',
-))
-def test_is_state_a_valid_state(state):
-    assert utils.is_valid_state(state)
-
-
-@pytest.mark.parametrize('postal_code', (
-    'SW11 1EN',
-    '12345',
-))
-def test_is_valid_postal_code(postal_code):
-    assert utils.is_valid_postal_code(postal_code)
-
-
-@pytest.mark.parametrize('street_address', (
-    '41 Buckmaster Road',
-    '1 Pall Mall',
-))
-def test_is_valid_street_address(street_address):
-    assert utils.is_valid_street_address(street_address)
-
-
 @pytest.mark.parametrize(('a', 'b', 'r'), (
     ({'a': 1}, {'b': 2}, {'a': 1, 'b': 2}),
 ))
