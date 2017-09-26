@@ -9,7 +9,7 @@ import configure
 from models.user import User
 from models.proposal import Proposal, Presenter, ProposalPresenter
 from models.score import Score, Comment
-from models.proposal_types import SessionType, ProposalState, SessionCategory, SessionAudience
+from models.proposal_types import SessionType, ProposalState, SessionAudience
 
 from fixtures import registrant
 
@@ -31,7 +31,6 @@ proposal_data = {
     'summary': 'A session about creating C++ programs with proper process.',
     'notes': 'Some notes to the committee',
     'audience': SessionAudience.intermediate,
-    'category': 'agile',
 }
 
 
@@ -63,7 +62,7 @@ def test_putting_proposal_in_database(database):
         'summary': proposal.summary,
         'notes': proposal.notes,
         'audience': proposal.audience,
-        'category': proposal.category} == proposal_data
+    } == proposal_data
     assert proposal.status == ProposalState.submitted
     assert len(proposal.presenters) == 1
     proposal_presenter = proposal.presenters[0]

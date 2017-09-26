@@ -11,7 +11,7 @@ from accuconf_cfp.utils import (is_acceptable_route, is_logged_in, md,
 
 from models.user import User
 from models.proposal import Presenter, Proposal, ProposalPresenter
-from models.proposal_types import SessionAudience, SessionCategory, SessionType
+from models.proposal_types import SessionAudience, SessionType
 
 base_page = {
     'year': year,
@@ -99,7 +99,6 @@ def submit():
                     proposal_data.get('notes').strip() if proposal_data.get('notes') else '',
                     proposal_data.get('constraints').strip() if proposal_data.get('constraints') else '',
                     SessionAudience(proposal_data.get('audience').strip()) if proposal_data.get('audience') else SessionAudience.all,
-                    proposal_data.get('category').strip() if proposal_data.get('category') else '',
                 )
                 db.session.add(proposal)
                 presenters_data = proposal_data.get('presenters')
@@ -127,7 +126,6 @@ def submit():
                 'session_type': SessionType.session.value,
                 'summary': '',
                 'audience': SessionAudience.all.value,
-                'category': '',
                 'notes': '',
                 'constraints': '',
                 'presenter': {
@@ -211,7 +209,7 @@ def proposal_update(id):
                 # TODO is the the right algorithm or even strategy?
                 proposal = Proposal.query.filter_by(id=id).first()
                 changeset = {}
-                for item in ('title', 'summary', 'session_type', 'audience', 'notes', 'constraints', 'category'):
+                for item in ('title', 'summary', 'session_type', 'audience', 'notes', 'constraints'):
                     if item in proposal_data:
                         if item == 'session_type':
                             datum = SessionType(proposal_data[item])
@@ -263,7 +261,6 @@ is no specific button for "leave things as they are" that is the default action.
             'session_type': proposal.session_type.value,
             'summary': proposal.summary,
             'audience': proposal.audience.value,
-            'category': proposal.category,
             'notes': proposal.notes,
             'constraints': proposal.constraints,
             'presenter': {

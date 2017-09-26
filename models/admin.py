@@ -11,7 +11,7 @@ from flask_admin.form.fields import Select2Field
 #
 # TODO Hassle the maintainers to fix this and then remove the workarounds.
 
-from utils.proposals import SessionType, ProposalState, SessionCategory, SessionAudience
+from utils.proposals import SessionType, ProposalState, SessionAudience
 from utils.schedule import ConferenceDay, SessionSlot, QuickieSlot, Track, Room
 
 
@@ -54,7 +54,7 @@ class ProposalsAdmin(ModelView):
     form_columns = (
         'title',
         'x_audience',
-        'x_category',
+        'category',
         'x_status',
         'x_day',
         'x_session',
@@ -67,7 +67,6 @@ class ProposalsAdmin(ModelView):
     form_extra_fields = {
         'x_session_type': _create_enum_selector(SessionType, SessionType.session),
         'x_audience': _create_enum_selector(SessionAudience, SessionAudience.all),
-        'x_category': _create_enum_selector(SessionCategory, SessionCategory.not_sure),
         'x_status': _create_enum_selector(ProposalState, ProposalState.submitted),
         'x_day': _create_enum_selector(ConferenceDay, ConferenceDay.day_1),
         'x_session': _create_enum_selector(SessionSlot, SessionSlot.session_1),

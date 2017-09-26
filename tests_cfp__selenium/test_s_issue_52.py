@@ -40,7 +40,6 @@ def submit_proposal(driver, proposal):
         Select(driver.find_element_by_id('audience')).select_by_value(proposal['audience'])
     except KeyError:
         pass
-    # driver.find_element_by_id('category').send_keys(proposal['category'])
     try:
         driver.find_element_by_id('notes').send_keys(proposal['notes'])
     except KeyError:

@@ -191,7 +191,6 @@ def test_logged_in_user_can_submit_a_single_presenter_proposal(client, registran
     assert proposal.title == proposal_single_presenter['title']
     assert proposal.session_type == SessionType.quickie
     assert proposal.audience == SessionAudience.expert
-    assert proposal.category == proposal_single_presenter['category']
     assert proposal.notes == proposal_single_presenter['notes']
     assert proposal.constraints == proposal_single_presenter['constraints']
     assert len(proposal.presenters) == 1
@@ -333,7 +332,6 @@ def test_logged_in_user_can_update_a_previously_submitted_single_presenter_propo
     assert proposal.title == alternate_title
     assert proposal.session_type == SessionType.quickie
     assert proposal.audience == SessionAudience.expert
-    assert proposal.category == proposal_single_presenter['category']
     assert proposal.notes == proposal_single_presenter['notes']
     assert proposal.constraints == proposal_single_presenter['constraints']
     assert len(proposal.presenters) == 1

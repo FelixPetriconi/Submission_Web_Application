@@ -53,7 +53,6 @@ def test_can_submit_a_single_presenter_proposal(driver, registrant, proposal_sin
     Select(driver.find_element_by_id('session_type')).select_by_value(proposal_single_presenter['session_type'])
     driver.find_element_by_id('summary').send_keys(proposal_single_presenter['summary'])
     Select(driver.find_element_by_id('audience')).select_by_value(proposal_single_presenter['audience'])
-    # driver.find_element_by_id('category').send_keys(proposal_single_presenter['category'])
     driver.find_element_by_id('notes').send_keys(proposal_single_presenter['notes'])
     driver.find_element_by_id('constraints').send_keys(proposal_single_presenter['constraints'])
     presenter = proposal_single_presenter['presenters'][0]
@@ -152,7 +151,6 @@ def test_can_amend_the_first_submitted_proposal(driver, registrant, proposal_sin
     assert proposal_single_presenter['audience'] == Select(driver.find_element_by_id('audience')).first_selected_option.get_attribute('value')
     assert proposal_single_presenter['notes'] == driver.find_element_by_id('notes').text
     assert proposal_single_presenter['constraints'] == driver.find_element_by_id('constraints').text
-    # assert proposal_single_presenter['category'] == driver.find_element_by_id('category').get_attribute('value')
     new_title = 'This is a new title for a proposal'
     title_element.clear()
     title_element.send_keys(new_title)
@@ -182,7 +180,6 @@ def XXX_test_can_amend_the_second_submitted_proposal(driver, registrant, proposa
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Update a proposal'))
     assert proposal_multiple_presenters_single_lead['session_type'] == Select(driver.find_element_by_id('session_type')).first_selected_option.get_attribute('value')
     assert SessionAudience.all.value == Select(driver.find_element_by_id('audience')).first_selected_option.get_attribute('value')
-    # assert proposal_multiple_presenters_single_lead['category'] == driver.find_element_by_id('category').text
     assert proposal_multiple_presenters_single_lead['summary'] == driver.find_element_by_id('summary').text
     title_element = driver.find_element_by_id('title')
     assert proposal_multiple_presenters_single_lead['title'] == title_element.get_attribute('value')

@@ -5,7 +5,7 @@ from sqlalchemy.ext.associationproxy import association_proxy
 #  The accuconf name is created as an alias for the application package at run time.
 from accuconf import db
 
-from models.proposal_types import SessionType, SessionCategory, ProposalState, SessionAudience
+from models.proposal_types import SessionType, ProposalState, SessionAudience
 from models.schedule_types import ConferenceDay, SessionSlot, QuickieSlot, Track, Room
 
 
@@ -20,7 +20,6 @@ class Proposal(db.Model):
     constraints = db.Column(db.Text, nullable=True)
     presenters = association_proxy('proposal_presenters', 'presenter')
     audience = db.Column(db.Enum(SessionAudience), nullable=False)
-    # category = db.Column(db.Enum(SessionCategory), nullable=False)
     category = db.Column(db.String(100), nullable=True)
     scores = db.relationship('Score', back_populates='proposal')
     comments = db.relationship('Comment', back_populates='proposal')

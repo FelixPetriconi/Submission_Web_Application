@@ -64,7 +64,6 @@ def proposal_single_presenter():
 dummy data. Also this is not a very
 lengthy proposal''',
         'audience': SessionAudience.expert.value,
-        'category': 'Stuff',
         'notes': 'Please accept this proposal.',
         'constraints': 'None',
         'presenters': [

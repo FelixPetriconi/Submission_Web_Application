@@ -31,13 +31,6 @@ class ProposalState(Enum):
     withdrawn = 'withdrawn'
 
 
-class SessionCategory(Enum):
-    cpp = 'cpp'
-    agile = 'agile'
-    tools = 'tools'
-    not_sure = 'not_sure'
-
-
 class SessionAudience(Enum):
     beginner = 'beginner'
     intermediate = 'intermediate'

@@ -815,9 +815,6 @@ def expunge_user(email_address):
             if proposal.comments is not None:
                 for comment in proposal.comments:
                     db.session.delete(comment)
-            if proposal.categories is not None:
-                for category in proposal.categories:
-                    db.session.delete(category)
             db.session.delete(proposal)
     db.session.delete(user)
     db.session.commit()

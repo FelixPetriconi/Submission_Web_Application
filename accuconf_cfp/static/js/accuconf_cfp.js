@@ -261,7 +261,7 @@ function isValidConstraints(constraint) {
 	return true
 }
 
-function isValidSubmission(title, sessionType, summary, audience, category, notes, constraints, presenters) {
+function isValidSubmission(title, sessionType, summary, audience, notes, constraints, presenters) {
 	let returnCode = true
 	if (!isValidTitle(title)) {
 		$('#title_alert').text('Title not valid.')
@@ -332,7 +332,6 @@ function submitProposal(proposalId) {
 	const sessionType = $('#session_type').val()
 	const summary = $('#summary').val()
 	const audience = $('#audience').val()
-	const category = $('#category').val()
 	const notes = $('#notes').val()
 	const constraints = $('#constraints').val()
 	const presenters = []
@@ -357,7 +356,7 @@ function submitProposal(proposalId) {
 			'country': country,
 		})
 	}
-	if (isValidSubmission(title, sessionType, summary, audience, category, notes, constraints, presenters)) {
+	if (isValidSubmission(title, sessionType, summary, audience, notes, constraints, presenters)) {
 		$.ajax({
 			method: 'POST',
 			url: (proposalId ? `/proposal_update/${proposalId}` : '/submit'),
@@ -366,7 +365,6 @@ function submitProposal(proposalId) {
 				'session_type': sessionType,
 				'summary': summary,
 				'audience': audience,
-				'category': category,
 				'notes': notes,
 				'constraints': constraints,
 				'presenters': presenters,
