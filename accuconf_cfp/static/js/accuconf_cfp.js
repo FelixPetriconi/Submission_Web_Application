@@ -452,12 +452,12 @@ function addNewPresenter() {
 
 
 function submitScoreAndComment(id) {
+	$('#alert').text('')
+	$('#score_alert').text('')
+	$('#comment_alert').text('')
 	const score = $('#score').val()
 	const comment = $('#comment').val()
-	console.info(id)
 	if (score) {
-		$('#score_alert').text('')
-		$('#comment_alert').text('')
 		$('#alert').text('Submitting login details.')
 		$.ajax({
 			method: 'POST',
@@ -471,6 +471,7 @@ function submitScoreAndComment(id) {
 			statusCode: {
 				200: (data, textStatus, jqXHR) => {
 					$('#alert').text(data)
+					$('#submit').text('Update')
 				},
 				400: (jqXHR, textStatus, errorThrown) => {
 					alert(jqXHR.responseText)

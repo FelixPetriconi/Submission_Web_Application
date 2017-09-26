@@ -72,9 +72,19 @@ def review_proposal(id):
                 response = jsonify('Proposal cannot be found. This cannot happen.')
                 response.status_code = 400
                 return response
-            db.session.add(Score(proposal, reviewer, review_data['score']))
+            # TODO Is this the right way of doing this?
+            score = Score.query.filter_by(proposal=proposal, scorer=reviewer).all()
+            if score:
+                assert len(score) == 1
+                score[0].score = review_data['score']
+            else:
+                db.session.add(Score(proposal, reviewer, review_data['score']))
             if review_data['comment']:
-                db.session.add(Comment(proposal, reviewer, review_data['comment']))
+                comment = Comment.query.filter_by(proposal=proposal, commenter=reviewer).all()
+                if comment:
+                    comment[0].comment = review_data['comment']
+                else:
+                    db.session.add(Comment(proposal, reviewer, review_data['comment']))
             db.session.commit()
             return jsonify('Review stored.')
         user = User.query.filter_by(email=session['email']).first()
@@ -101,6 +111,7 @@ def review_proposal(id):
         comment = ''
         if already_reviewed(proposal, user):
             scores = [s for s in user.scores if s.proposal == proposal]
+            print('XXXX', [s.score for s in scores])
             assert len(scores) == 1
             score = scores[0].score
             comments = [c for c in user.comments if c.proposal == proposal]

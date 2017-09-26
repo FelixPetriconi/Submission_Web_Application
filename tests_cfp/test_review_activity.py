@@ -190,3 +190,15 @@ def test_logged_in_reviewer_can_submit_score_for_not_own_entries(client, registr
                            includes=('Review stored.',),
                            excludes=(),
                            )
+
+
+def test_logged_in_reviewer_can_update_a_review(client, registrant, monkeypatch):
+    test_logged_in_reviewer_can_submit_score_for_not_own_entries(client, registrant, monkeypatch)
+    post_and_check_content(client, '/review_proposal/1', json.dumps({'score': 6, 'comment': 'Not really very good.'}), 'application/json',
+                           includes=('Review stored.',),
+                           excludes=(),
+                           )
+    get_and_check_content(client, '/review_proposal/1',
+                          includes=(' – Proposal to Review',),
+                          excludes=(),
+                          )

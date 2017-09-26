@@ -96,9 +96,6 @@ def test_logged_in_reviewer_can_review_submitted_proposal(driver, registrant, pr
     logout_user(driver, reviewer)
 
 
-# NB There is now a proposer, a submission and a reviewer in the database.
-
-
 def test_logged_in_reviewer_can_move_to_next_proposal(driver, registrant, proposal_multiple_presenters_single_lead, reviewer):
     register_user(driver, registrant)
     submit_a_proposal(driver, registrant, proposal_multiple_presenters_single_lead)
@@ -155,3 +152,38 @@ def test_logged_in_reviewer_cannot_move_to_previous_unscored_proposal_if_they_ha
     # assert 'Requested proposal does not exist.' == alert.text
     # alert.accept()
     assert base_url + 'review_proposal/2' == driver.current_url
+
+
+def test_amending_a_score_doesnt_create_a_second_score_object(driver):
+    driver.get(base_url + 'review_proposal/1')
+    wait = WebDriverWait(driver, driver_wait_time)
+    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal to Review'))
+    new_score = '8'
+    new_comment = 'A different comment.'
+    score_node = driver.find_element_by_id('score')
+    score_node.clear()
+    score_node.send_keys(new_score)
+    comment_node = driver.find_element_by_id('comment')
+    comment_node.clear()
+    comment_node.send_keys(new_comment)
+    submit_button = wait.until(ecs.element_to_be_clickable((By.ID, 'submit')))
+    assert 'Update' == submit_button.text
+    assert 'submitScoreAndComment(1)' == submit_button.get_attribute('onclick')
+    submit_button.click()
+    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal to Review'))
+    assert 'Review stored.' == driver.find_element_by_id('alert').text
+    assert new_score == driver.find_element_by_id('score').get_attribute('value')
+    assert new_comment == driver.find_element_by_id('comment').get_attribute('value')
+    next_button = wait.until(ecs.element_to_be_clickable((By.ID, 'review-next')))
+    assert 'Next' == next_button.text
+    assert 'navigateNext(1)' == next_button.get_attribute('onclick')
+    next_button.click()
+    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal to Review'))
+    previous_button = wait.until(ecs.element_to_be_clickable((By.ID, 'review-previous')))
+    assert 'Previous' == previous_button.text
+    assert 'navigatePrevious(2)' == previous_button.get_attribute('onclick')
+    previous_button.click()
+    wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal to Review'))
+    assert base_url + 'review_proposal/1' == driver.current_url
+    assert new_score == driver.find_element_by_id('score').get_attribute('value')
+    assert new_comment == driver.find_element_by_id('comment').text
