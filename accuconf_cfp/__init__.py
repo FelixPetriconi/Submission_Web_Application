@@ -35,9 +35,8 @@ db = SQLAlchemy(app)
 #  fragile) hack.
 sys.modules['accuconf'] = sys.modules['accuconf_cfp']
 
-# A dictionary mapping known country names as displayed in forms to their official
-# three letter form.
-countries = {country.name: country.alpha_3 for country in pycountry.countries}
+# A set  of all the countries currently known.
+countries = {country.name for country in pycountry.countries}
 
 # This include require app to be already defined in this module.
 from accuconf_cfp.utils import is_logged_in

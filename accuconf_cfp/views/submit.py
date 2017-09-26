@@ -137,7 +137,7 @@ def submit():
                     'bio': '',
                     'country': user.country,
                 },
-                'countries': sorted(countries.keys()),
+                'countries': sorted(countries),
                 'submit_label': 'Submit',
             }))
         return render_template('general.html', page=md(base_page, {
@@ -273,7 +273,7 @@ is no specific button for "leave things as they are" that is the default action.
                 'bio': presenter.bio,
                 'country': presenter.country,
             },
-            'countries': sorted(countries.keys()),
+            'countries': sorted(countries),
             'submit_label': 'Update',
             'proposal_id': id,
         }))

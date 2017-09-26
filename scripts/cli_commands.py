@@ -2,7 +2,6 @@
 This module provides all the additional CLI commands.
 """
 
-import json
 import os
 import re
 import shutil
@@ -29,7 +28,7 @@ import click
 file_directory = Path(__file__).parent
 sys.path.insert(0, str(file_directory.parent))
 
-from accuconf_cfp import app, db
+from accuconf_cfp import app, db, countries
 from accuconf_cfp.utils import hash_passphrase
 
 from models.user import User
@@ -142,7 +141,7 @@ def create_proposal_sheets():
     for p in Proposal.query.all():
         scores = tuple(score.score for score in p.scores if score.score != 0)
         table = Table([
-            [Paragraph(p.title, style_sheet), p.session_type],
+            [Paragraph(p.title, style_sheet), p.session_type.value],
             [', '.join(pp.name for pp in p.presenters),
              ', '.join(str(score.score) for score in p.scores) + ' — {:.2f}, {}'.format(mean(scores), median(scores)) if len(scores) > 0 else ''],
         ], colWidths=(380, 180), spaceAfter=64)
@@ -172,7 +171,7 @@ def create_proposals_document():
         def write_proposal(p):
             proposals_file.write('<<<\n\n=== {}\n\n'.format(p.title))
             proposals_file.write(', '.join(pp.name for pp in p.presenters) + '\n\n')
-            proposals_file.write(cleanup_text(p.text.strip()) + '\n\n')
+            proposals_file.write(cleanup_text(p.summary.strip()) + '\n\n')
             scores = tuple(r.score for r in p.scores if r.score != 0)
             proposals_file.write("'''\n\n*{}{}*\n\n".format(', '.join(str(score.score) for score in p.scores), ' — {:.2f}, {}'.format(mean(scores), median(scores)) if len(scores) > 0 else ''))
             for comment in p.comments:
@@ -216,32 +215,16 @@ def check_database_consistency():
     schema contains the string constraints to ensure there is never a
     failure of the enum types.
     """
-    #  May throw json.JSONDecodeError
-    with open((file_directory.parent / 'accuconf' / 'static' / 'assets' / 'data' / 'countries.json').as_posix()) as countries_file:
-        countries_data = json.load(countries_file)
-    country_codes = tuple(c['alpha3'] for c in countries_data)
-
-    def state_codes(country_code):
-        country_data = tuple(c for c in countries_data if c['alpha3'] == country_code)
-        assert len(country_data) == 1
-        return tuple(r['code'] for r in country_data[0]['regions'])
-
     for u in User.query.all():
         if u.role not in Role:
             print('####  User {}, has role {}.'.format(u.email, u.role))
-        if u.country not in country_codes:
+        if u.country not in countries:
             print('####  User {}, has country {}.'.format(u.email, u.country))
-        else:
-            if u.state not in state_codes(u.country):
-                print('####  User {}, has state {}.'.format(u.email, u.state))
-
     for p in Proposal.query.all():
         if p.session_type not in SessionType:
             print('####  Proposal {} has sessiontype {}'.format(p.title, p.session_type))
         if p.audience not in SessionAudience:
             print('#### Proposal {} has audience {}'.format(p.title, p.audience))
-        if p.category not in SessionCategory:
-            print('#### Proposal {} has category {}'.format(p.title, p.category))
         if p.status not in ProposalState:
             print('#### Proposal {} has status {}'.format(p.title, p.status))
         if p.day is not None and p.day not in ConferenceDay:
@@ -254,13 +237,9 @@ def check_database_consistency():
             print('#### Proposal {} has track {}'.format(p.title, p.track))
         if p.room is not None and p.room not in Room:
             print('#### Proposal {} has room {}'.format(p.title, p.room))
-
     for p in Presenter.query.all():
-        if p.country not in country_codes:
+        if p.country not in countries:
             print('####  Presenter {}, has country {}.'.format(p.email, p.country))
-        else:
-            if p.state not in state_codes(p.country):
-                print('####  Presenter {}, has state {}.'.format(p.email, p.state))
 
 
 @app.cli.command()
