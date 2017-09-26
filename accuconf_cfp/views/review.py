@@ -88,7 +88,12 @@ def review_proposal(id):
                 'pagetitle': 'Review Proposal Failed',
                 'data': 'Logged in user is not a registered reviewer.',
             }))
-        # TODO What to do if id < 1 or > the proposal count?
+        number_of_proposals = Proposal.query.count()
+        if not (1 <= id <= number_of_proposals):
+            return render_template('general.html', page=md(base_page, {
+                'pagetitle': 'Review Proposal Failed',
+                'data': 'Requested proposal does not exist.',
+            }))
         proposal = Proposal.query.filter_by(id=id).first()
         presenters = [{'name': p.name, 'bio': p.bio} for p in proposal.presenters]
         # TODO do not display if the reviewer is the proposer or one of the presenters.
@@ -112,8 +117,10 @@ def review_proposal(id):
             'button_label': 'Submit',
             'score': score,
             'comment': comment,
+            'has_previous': id > 1,
+            'has_next': id < number_of_proposals,
         }))
-    return render_template('review_proposal.html', page=md(base_page, {
+    return render_template('general.html', page=md(base_page, {
         'pagetitle': 'Review Proposal Failed',
         'data': 'You must be registered, logged in, and a reviewer to review a proposal',
     }))

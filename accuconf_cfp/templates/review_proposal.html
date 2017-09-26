@@ -41,42 +41,38 @@
 			<div class="form-group">
 				<label for="score" class="control-label col-sm-3">Score</label>
 				<div class="col-sm-8">
-					<input type="number" min="0" max="10" name="score" id="score" value="{{page.score}}"
-					       placeholder="0–10">
+					<input type="number" min="0" max="10" name="score" id="score" value="{{page.score}}" placeholder="0–10">
 					<span class="help-block" id="score_alert"></span>
 				</div>
 			</div>
 			<div class="form-group">
 				<label for="comment" class="control-label col-sm-3">Comment</label>
 				<div class="col-sm-8">
-					<textarea rows="6" cols="60" name="comment" id="comment"
-					          placeholder="Comment">{{page.comment}}</textarea>
+					<textarea rows="6" cols="60" name="comment" id="comment" placeholder="Comment">{{page.comment}}</textarea>
 					<span class="help-block" id="comment_alert"></span>
 				</div>
 			</div>
 			<div class="form-group">
-				<button type="button" name="submit" id="submit" class="btn btn-primary"
-				        onclick="submitScoreAndComment({{page.proposal_id}})">{{page.button_label}}
-				</button>
+				<button type="button" name="submit" id="submit" class="btn btn-primary" onclick="submitScoreAndComment({{page.proposal_id}})">{{page.button_label}}</button>
 				<button type="reset" class="btn btn-default">Reset</button>
 			</div>
 		</form>
 		<div class="review-navigation">
-			<button type="button" name="review-previous" id="review-previous" class="btn btn-primary"
-			        onclick="navigatePrevious({{page.proposal_id}})">Previous
-			</button>
-			<button type="button" name="review-previous-unscored" id="review-previous-unscored" class="btn btn-primary"
-			        onclick="navigatePreviousUnscored({{page.proposal_id}})">Previous Unscored
-			</button>
-			<button type="button" name="back-to-list" id="back-to-list" class="btn btn-primary"
-			        onclick="navigateToList()">Back To List
-			</button>
-			<button type="button" name="review-next-unscored" id="review-next-unscored" class="btn btn-primary"
-			        onclick="navigateNextUnscored({{page.proposal_id}})">Next Unscored
-			</button>
-			<button type="button" name="review-next" id="review-next" class="btn btn-primary"
-			        onclick="navigateNext({{page.proposal_id}})">Next
-			</button>
+			{% if page.has_previous %}
+			<button type="button" name="review-previous" id="review-previous" class="btn btn-primary" onclick="navigatePrevious({{page.proposal_id}})">Previous</button>
+			<button type="button" name="review-previous-unscored" id="review-previous-unscored" class="btn btn-primary" onclick="navigatePreviousUnscored({{page.proposal_id}})">Previous Unscored</button>
+			{% else %}
+			<button type="button" name="review-previous" id="review-previous" class="btn btn-basic">Previous</button>
+			<button type="button" name="review-previous-unscored" id="review-previous-unscored" class="btn btn-basic">Previous Unscored</button>
+			{% endif %}
+			<button type="button" name="back-to-list" id="back-to-list" class="btn btn-primary" onclick="navigateToList()">Back To List</button>
+			{% if page.has_next %}
+			<button type="button" name="review-next-unscored" id="review-next-unscored" class="btn btn-primary" onclick="navigateNextUnscored({{page.proposal_id}})">Next Unscored</button>
+			<button type="button" name="review-next" id="review-next" class="btn btn-primary" onclick="navigateNext({{page.proposal_id}})">Next</button>
+			{% else %}
+			<button type="button" name="review-next-unscored" id="review-next-unscored" class="btn btn-basic">Next Unscored</button>
+			<button type="button" name="review-next" id="review-next" class="btn btn-basic">Next</button>
+			{% endif %}
 		</div>
 	</div>
 </div>
