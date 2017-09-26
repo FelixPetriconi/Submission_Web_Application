@@ -34,7 +34,7 @@ from accuconf_cfp.utils import hash_passphrase
 from models.user import User
 from models.proposal import Proposal, Presenter, ProposalPresenter
 from models.score import Score, Comment
-from models.proposal_types import SessionType, ProposalState, SessionCategory, SessionAudience
+from models.proposal_types import SessionType, ProposalState, SessionAudience
 from models.schedule_types import ConferenceDay, SessionSlot, QuickieSlot, Track, Room
 from models.role_types import Role
 
