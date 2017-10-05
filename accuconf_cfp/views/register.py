@@ -122,6 +122,7 @@ def registration_update():
             return response
         if registration_data['passphrase']:
             registration_data['passphrase'] = utils.hash_passphrase(registration_data['passphrase'])
+        # TODO This nulls passphrase if user hasn't re-entered it.
         User.query.filter_by(email=registration_data['email']).update(registration_data)
         db.session.commit()
         session['just_updated_register'] = True
