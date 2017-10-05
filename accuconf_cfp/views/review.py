@@ -152,22 +152,21 @@ def previous_proposal(id, unreviewed):
             }))
         if not unreviewed:
             if Proposal.query.filter_by(id=(id - 1)).first():
+                # TODO mustn't  return if the user is the presenter or proposer
                 return jsonify(id - 1)
-            else:
-                response = jsonify("Requested proposal does not exist.")
-                response.status_code = 400
-                return response
-        else:
-            reviewer = User.query.filter_by(email=session['email']).first()
-            for i in range(id - 1, 0, -1):
-                proposal = Proposal.query.filter_by(id=i).first()
-                if not proposal:
-                    break
-                if not already_reviewed(proposal, reviewer):
-                    return jsonify(i)
             response = jsonify("Requested proposal does not exist.")
             response.status_code = 400
             return response
+        for i in range(id - 1, 0, -1):
+            proposal = Proposal.query.filter_by(id=i).first()
+            if not proposal:
+                break
+            if not already_reviewed(proposal, user):
+                # TODO mustn't  return if the user is the presenter or proposer
+                return jsonify(i)
+        response = jsonify("Requested proposal does not exist.")
+        response.status_code = 400
+        return response
     return render_template('general.html', page=md(base_page, {
         'pagetitle': 'Proposal Navigation Failed',
         'data': 'You must be registered, logged in, and a reviewer to review a proposal',
@@ -189,24 +188,23 @@ def next_proposal(id, unreviewed):
             }))
         if not unreviewed:
             if Proposal.query.filter_by(id=(id + 1)).first():
+                # TODO mustn't  return if the user is the presenter or proposer
                 return jsonify(id + 1)
-            else:
-                response = jsonify("Requested proposal does not exist.")
-                response.status_code = 400
-                return response
-        else:
-            reviewer = User.query.filter_by(email=session['email']).first()
-            i = id + 1
-            while True:
-                proposal = Proposal.query.filter_by(id=i).first()
-                if not proposal:
-                    break
-                if not already_reviewed(proposal, reviewer):
-                    return jsonify(i)
-                i += 1
             response = jsonify("Requested proposal does not exist.")
             response.status_code = 400
             return response
+        i = id + 1
+        while True:
+            proposal = Proposal.query.filter_by(id=i).first()
+            if not proposal:
+                break
+            if not already_reviewed(proposal, user):
+                # TODO mustn't  return if the user is the presenter or proposer
+                return jsonify(i)
+            i += 1
+        response = jsonify("Requested proposal does not exist.")
+        response.status_code = 400
+        return response
     return render_template('general.html', page=md(base_page, {
         'pagetitle': 'Proposal Navigation Failed',
         'data': 'You must be registered, logged in, and a reviewer to review a proposal',
