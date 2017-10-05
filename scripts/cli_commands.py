@@ -706,6 +706,25 @@ def edit(selector, values):
 
 
 @app.cli.command()
+@click.argument('email')
+@click.argument('passphrase')
+def replace_passphrase_of_user(email, passphrase):
+    """Replace the passphrase of the user.
+
+    :param email: email of the user of whom to replace the passphrase
+    :param passphrase: the plain text passphrase to use as the replacement
+    """
+    user = User.query.filter_by(email=email).all()
+    if len(user) != 1:
+        click.echo(click.style('Something wrong with email', fg='red'))
+    else:
+        user = user[0]
+        click.echo(click.style('Replacing  passphrase "{}" with "{}"'.format(user.passphrase, passphrase), fg='green'))
+        user.passphrase = hash_passphrase(passphrase)
+        db.session.commit()
+
+
+@app.cli.command()
 @click.argument('person')
 def replace_presenter_of_proposal(person):
     """Replace the, or one of the, presenters associated with a proposal.
