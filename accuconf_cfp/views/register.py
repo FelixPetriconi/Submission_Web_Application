@@ -121,9 +121,12 @@ def registration_update():
             response.status_code = 400
             return response
         if registration_data['passphrase']:
-            registration_data['passphrase'] = utils.hash_passphrase(registration_data['passphrase'])
-        # TODO This nulls passphrase if user hasn't re-entered it.
-        User.query.filter_by(email=registration_data['email']).update(registration_data)
+            user.passphrase = utils.hash_passphrase(registration_data['passphrase'])
+        for field in registration_data.keys():
+            if field == 'passphrase':
+                continue
+            if field in user.__dict__ and user.__dict__[field] != registration_data[field]:
+                user.__dict__[field] = registration_data[field]
         db.session.commit()
         session['just_updated_register'] = True
         return jsonify('registration_update_success')
