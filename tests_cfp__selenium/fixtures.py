@@ -48,6 +48,6 @@ def driver():
     options.add_argument('headless')
     wd = Chrome(chrome_options=options, desired_capabilities=capabilities)
     yield wd
-    # print('Browser', wd.get_log('browser'))
+    print('Browser', wd.get_log('browser'))
     # print('Driver', wd.get_log('driver'))
     wd.quit()
