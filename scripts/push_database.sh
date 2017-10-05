@@ -15,13 +15,11 @@ case $destination in
 esac
 source_file=$(pwd)/accuconf.db
 destination_directory=conference@dennis.accu.org:/srv/$destination_directory/public/htdocs/
-echo "
+echo -n "
 About to push:  $source_file
-
 to:  $destination_directory
 
-is this OK?
-"
+is this OK? "
 read answer
 echo ""
 if [ x$answer = xyes ]; then
