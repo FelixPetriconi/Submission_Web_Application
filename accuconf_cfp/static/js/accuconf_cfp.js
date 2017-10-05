@@ -41,7 +41,7 @@ function isPuzzleResultCorrect(value) {
 function isValidRegistrationData(passphraseRequired) {
 	let returnCode = true
 	if (!isValidEmail($('#email').val())) {
-		$('#email_alert').text("Email should be of the format user@example.com")
+		$('#email_alert').text('Email should be of the format user@example.com')
 		returnCode = false
 	} else {
 		$('#email_alert').text('')
