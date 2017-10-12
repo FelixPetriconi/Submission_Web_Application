@@ -117,6 +117,7 @@ function registerUser(passphraseRequiredText) {
 				},
 				400: (jqXHR, textStatus, errorThrown) => {
 					alert(jqXHR.responseText)
+					$('#alert').text('')
 				},
 			}
 		})
@@ -147,6 +148,7 @@ function isValidLoginData() {
 function clearLoginAlerts() {
 	$('#login_alert').text('')
 	$('#passphrase_alert').text('')
+	$('#alert').text('')
 	return true
 }
 
@@ -167,6 +169,7 @@ function loginUser() {
 				},
 				400: (jqXHR, textStatus, errorThrown) => {
 					alert(jqXHR.responseText)
+					$('#alert').text('')
 				},
 			},
 		})
@@ -324,6 +327,7 @@ function clearSubmitAlerts() {
 	$('#notes_alert').text('')
 	$('#constraints_alert').text('')
 	$('#presenters_alert').text('')
+	$('#alert').text('')
 	return true
 }
 
@@ -377,6 +381,7 @@ function submitProposal(proposalId) {
 				},
 				400: (jqXHR, textStatus, errorThrown) => {
 					alert(jqXHR.responseText)
+					$('#alert').text('')
 				},
 			},
 		})
@@ -475,6 +480,7 @@ function submitScoreAndComment(id) {
 				},
 				400: (jqXHR, textStatus, errorThrown) => {
 					alert(jqXHR.responseText)
+					$('#alert').text('')
 				},
 			},
 		})
@@ -494,6 +500,7 @@ function navigatePrevious(id) {
 			},
 			400: (jqXHR, textStatus, errorThrown) => {
 				alert(jqXHR.responseText)
+				$('#alert').text('')
 			},
 		},
 	})
@@ -509,6 +516,7 @@ function navigatePreviousUnscored(id) {
 			},
 			400: (jqXHR, textStatus, errorThrown) => {
 				alert(jqXHR.responseText)
+				$('#alert').text('')
 			},
 		},
 	})
@@ -528,6 +536,7 @@ function navigateNextUnscored(id) {
 			},
 			400: (jqXHR, textStatus, errorThrown) => {
 				alert(jqXHR.responseText)
+				$('#alert').text('')
 			},
 		},
 	})
@@ -543,6 +552,7 @@ function navigateNext(id) {
 			},
 			400: (jqXHR, textStatus, errorThrown) => {
 				alert(jqXHR.responseText)
+				$('#alert').text('')
 			},
 		},
 	})
