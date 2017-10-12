@@ -222,6 +222,7 @@ def proposal_update(id):
                 if changeset:
                     Proposal.query.filter_by(id=id).update(changeset)
                 assert len(proposal.presenters) == len(proposal_data['presenters'])
+                # TODO What about changing of lead?
                 for i, presenter in enumerate(proposal.presenters):
                     changeset = {}
                     presenters_data = proposal_data['presenters'][i]

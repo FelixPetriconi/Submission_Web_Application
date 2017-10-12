@@ -120,12 +120,11 @@ def registration_update():
             response = jsonify(message)
             response.status_code = 400
             return response
-        if registration_data['passphrase']:
-            user.passphrase = utils.hash_passphrase(registration_data['passphrase'])
         for field in registration_data.keys():
             if field == 'passphrase':
-                continue
-            if field in user.__dict__ and user.__dict__[field] != registration_data[field]:
+                if registration_data['passphrase']:
+                    user.passphrase = utils.hash_passphrase(registration_data['passphrase'])
+            elif field in user.__dict__ and user.__dict__[field] != registration_data[field]:
                 user.__dict__[field] = registration_data[field]
         db.session.commit()
         session['just_updated_register'] = True
