@@ -619,8 +619,6 @@ def do_emailout(trial, emailout_spec):
     assert sys.path == old_path
     with open(str(file_paths[1])) as subject_file:
         subject = subject_file.read().strip()
-    with open(str(Path(os.environ['HOME']) / '.accuconf' / 'passphrase')) as passphrase_file:
-        passphrase = passphrase_file.read().strip()
 
     def run_emailout():
         for proposal, person in query.query():
@@ -654,7 +652,8 @@ def do_emailout(trial, emailout_spec):
             server.ehlo()
             server.starttls()
             server.ehlo()
-            server.login('conference', passphrase)
+            with open(str(Path(os.environ['HOME']) / '.accuconf' / 'passphrase')) as passphrase_file:
+                server.login('conference', passphrase_file.read().strip())
             run_emailout()
 
 
