@@ -7,6 +7,7 @@ from accuconf_cfp.utils import (is_acceptable_route, is_logged_in, md,
                                 is_valid_email, is_valid_country, is_valid_name,
                                 is_valid_bio, is_valid_passphrase,
                                 is_valid_phone,
+                                send_email_to,
                                 )
 
 from models.user import User
@@ -206,7 +207,6 @@ def proposal_update(id):
                     response = jsonify(message)
                     response.status_code = 400
                     return response
-                # TODO is the the right algorithm or even strategy?
                 proposal = Proposal.query.filter_by(id=id).first()
                 changeset = {}
                 for item in ('title', 'summary', 'session_type', 'audience', 'notes', 'constraints'):
@@ -231,6 +231,20 @@ def proposal_update(id):
                     if changeset:
                         Presenter.query.filter_by(email=proposal.presenters[i].email).update(changeset)
                 db.session.commit()
+                if proposal.scores:
+                    for score in proposal.scores:
+                        send_email_to(
+                            score.scorer.email,
+                            score.scorer.name,
+                            'ACCUConf Proposal {} has been updated'.format(proposal.title),
+                            '''
+An email to let you know that the ACCUConf proposal:
+
+{}
+
+has been updated by the submitter and you have already scored that proposal.
+'''.format(proposal.title)
+                        )
                 session['just_updated'] = True
                 return jsonify('proposal_update_success')
             return render_template('general.html', page=md(base_page, {
