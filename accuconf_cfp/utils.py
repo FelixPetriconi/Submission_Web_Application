@@ -5,7 +5,13 @@ are in separate modules hence pulling these functions out into a separate module
 """
 
 import hashlib
+import os
 import re
+
+from email.mime.text import MIMEText
+from email.utils import formatdate
+from pathlib import Path
+from smtplib import SMTP
 
 from flask import redirect, session
 
@@ -79,3 +85,33 @@ def md(a, b):
     rv = a.copy()
     rv.update(b)
     return rv
+
+
+def send_email_to(email_address, name, subject, text, trial=True):
+    """Send an email to someone for some reason using the ACCU mail server via
+     the conference@accu.org email account."""
+
+    def send_email():
+        message = MIMEText(text, _charset='utf-8')
+        message['From'] = 'ACCUConf <conference@accu.org>'
+        if trial:
+            message['To'] = 'Russel Winder <russel@winder.org.uk>'
+        else:
+            message['To'] = name + '<' + email_address + '>'
+            message['Cc'] = 'ACCUConf <conference@accu.org>'
+        message['Subject'] = subject
+        message['Date'] = formatdate()  # RFC 2822 format.
+        server.send_message(message)
+
+    if trial:
+        with SMTP('smtp.winder.org.uk') as server:
+            send_email()
+    else:
+        with SMTP('mail.accu.org') as server:
+            server.ehlo()
+            server.starttls()
+            server.ehlo()
+            with open(str(Path(os.environ['HOME']) / '.accuconf' / 'passphrase')) as passphrase_file:
+                server.login('conference', passphrase_file.read().strip())
+            send_email()
+
