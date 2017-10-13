@@ -383,3 +383,15 @@ def test_logged_in_user_can_update_a_previously_submitted_multiple_presenter_pro
     else:
         assert presenters[0].email == original_presenters[1]['email']
         assert presenters[1].email == original_presenters[0]['email']
+
+
+def test_logged_in_user_can_submit_two_proposal_with_the_sam_presenter(client, registrant, proposal_single_presenter, monkeypatch):
+    test_logged_in_user_can_submit_a_single_presenter_proposal(client, registrant, proposal_single_presenter, monkeypatch)
+    post_and_check_content(client, '/submit', json.dumps(proposal_single_presenter), 'application/json',
+                           includes=('submit_success',),
+                           excludes=(login_menu_item, register_menu_item),
+                           )
+    get_and_check_content(client, '/submit_success',
+                          includes=('Submission Successful', 'Thank you, you have successfully submitted'),
+                          excludes=(login_menu_item, register_menu_item),
+                          )
