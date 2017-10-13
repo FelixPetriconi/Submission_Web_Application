@@ -104,11 +104,16 @@ def submit():
                 db.session.add(proposal)
                 presenters_data = proposal_data.get('presenters')
                 for presenter_data in presenters_data:
-                    presenter = Presenter(
-                        presenter_data['email'],
-                        presenter_data['name'],
-                        presenter_data['bio'],
-                        presenter_data['country'],
+                    presenter = Presenter.query.filter_by(email=presenter_data['email']).all()
+                    if presenter:
+                        assert len(presenter) == 1
+                        presenter = presenter[0]
+                    else:
+                        presenter = Presenter(
+                            presenter_data['email'],
+                            presenter_data['name'],
+                            presenter_data['bio'],
+                            presenter_data['country'],
                     )
                     ProposalPresenter(proposal, presenter, presenter_data['is_lead'])
                     db.session.add(presenter)
