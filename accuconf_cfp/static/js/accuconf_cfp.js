@@ -211,31 +211,31 @@ function isValidBio(bio) {
 	return bio.length > 40
 }
 
-function isValidPresenter(details) {
+function isValidPresenter(details, index) {
 	let returnCode = true
 	if (!isValidEmail(details['email'])) {
-		$('#email_field_alert').text('Email not valid.')
+		$(`#email_${index}_alert`).text('Email not valid.')
 		returnCode = false
 	} else {
-		$('#email_field_alert').text('')
+		$(`#email_${index}_alert`).text('')
 	}
 	if (!isValidName(details['name'])) {
-		$('#name_alert').text('Name not valid.')
+		$(`#name_${index}_alert`).text('Name not valid.')
 		returnCode = false
 	} else {
-		$('#name_alert').text('')
+		$(`#name_${index}_alert`).text('')
 	}
 	if (!isValidBio(details['bio'])) {
-		$('#bio_alert').text('Bio not valid.')
+		$(`#bio_${index}_alert`).text('Bio not valid.')
 		returnCode = false
 	} else {
-		$('#bio_alert').text('')
+		$(`#bio_${index}_alert`).text('')
 	}
 	if (typeof details['is_lead'] !== 'boolean') {
-		$('#is_lead_alert').text('Is_Lead is not valid.')
+		$(`#is_lead_${index}_alert`).text('Is_Lead is not valid.')
 		returnCode = false
 	} else {
-		$('#is_lead_alert').text('')
+		$(`#is_lead_${index}_alert`).text('')
 	}
 	return returnCode
 }
@@ -303,7 +303,7 @@ function isValidSubmission(title, sessionType, summary, audience, notes, constra
 		$('#constraints_alert').text('')
 	}
 	for (const i in presenters) {
-		if (!isValidPresenter(presenters[i])) {
+		if (!isValidPresenter(presenters[i], i)) {
 			$('#presenter_alert').text('Presenter not valid.')
 			returnCode = false
 		} else {
