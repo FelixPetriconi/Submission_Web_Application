@@ -208,7 +208,7 @@ function checkDuplicateEmail() {
 */
 
 function isValidBio(bio) {
-	return bio.length > 40
+	return bio.length >= 50
 }
 
 function isValidPresenter(details, index) {
