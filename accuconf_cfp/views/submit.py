@@ -126,6 +126,13 @@ def submit():
             }))
         user = User.query.filter_by(email=session['email']).first()
         if user:
+            presenter = Presenter.query.filter_by(email=user.email).all()
+            if presenter:
+                assert len(presenter) == 1
+                presenter = presenter[0]
+                (p_email, p_name, p_bio, p_country) = (presenter.email, presenter.name, presenter.bio, presenter.country)
+            else:
+                (p_email, p_name, p_bio, p_country) = (user.email, user.name, '', user.country)
             return render_template('submit.html', page=md(base_page, {
                 'pagetitle': 'Submit a proposal',
                 'title': '',
@@ -135,11 +142,11 @@ def submit():
                 'notes': '',
                 'constraints': '',
                 'presenter': {
-                    'email': user.email,
-                    'name': user.name,
+                    'email': p_email,
+                    'name': p_name,
                     'is_lead': True,
-                    'bio': '',
-                    'country': user.country,
+                    'bio': p_bio,
+                    'country': p_country,
                 },
                 'countries': sorted(countries),
                 'submit_label': 'Submit',
