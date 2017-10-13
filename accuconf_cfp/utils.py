@@ -87,7 +87,7 @@ def md(a, b):
     return rv
 
 
-def send_email_to(email_address, name, subject, text, trial=True):
+def send_email_to(email_address, name, subject, text, trial=False):
     """Send an email to someone for some reason using the ACCU mail server via
      the conference@accu.org email account."""
 
