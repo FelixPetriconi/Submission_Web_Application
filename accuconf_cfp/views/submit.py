@@ -108,15 +108,21 @@ def submit():
                     if presenter:
                         assert len(presenter) == 1
                         presenter = presenter[0]
+                        if presenter.name != presenter_data['name']:
+                            presenter.name = presenter_data['name']
+                        if presenter.bio != presenter_data['bio']:
+                            presenter.bio = presenter_data['bio']
+                        if presenter.country != presenter_data['country']:
+                            presenter.country = presenter_data['country']
                     else:
                         presenter = Presenter(
                             presenter_data['email'],
                             presenter_data['name'],
                             presenter_data['bio'],
                             presenter_data['country'],
-                    )
+                        )
+                        db.session.add(presenter)
                     ProposalPresenter(proposal, presenter, presenter_data['is_lead'])
-                    db.session.add(presenter)
                 db.session.commit()
                 session['just_submitted'] = True
                 return jsonify('submit_success')
