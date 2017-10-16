@@ -6,7 +6,3 @@ flask-admin
 
 click
 reportlab
-
-# Needed for database migrations.
-
-flask-migrate
