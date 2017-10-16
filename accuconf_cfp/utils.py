@@ -64,8 +64,8 @@ def is_valid_name(name):
 
 
 def is_valid_bio(bio):
-    """Bios must be at least 40 characters."""
-    return len(bio) > 40
+    """Bios must be at least 50 characters."""
+    return len(bio) > 50
 
 
 def is_valid_phone(phone):
