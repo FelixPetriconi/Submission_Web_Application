@@ -80,6 +80,8 @@ def is_valid_country(country):
 
 #  This code has to work on Python 3.4, so cannot use the lovely Python 3.5 and later stuff.
 #  Must have the ability to merge two dictionaries, but no 3.5 stuff so this for 3.4.
+#
+# TODO Update to use 3.5 or later and remove the need for this.
 def md(a, b):
     """Merge two dictionaries into a distinct third one."""
     rv = a.copy()
