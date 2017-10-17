@@ -26,7 +26,7 @@ def server():
     if 'TRAVIS' in os.environ and os.environ['TRAVIS']:
         time.sleep(4)
     else:
-        time.sleep(0.5)
+        time.sleep(0.75)
     process.poll()
     assert process.returncode is None, 'Server start return code {}'.format(process.returncode)
     yield
