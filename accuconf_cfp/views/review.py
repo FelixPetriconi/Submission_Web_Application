@@ -6,6 +6,7 @@ from accuconf_cfp import app, db, year
 from accuconf_cfp.utils import is_acceptable_route, is_logged_in, md
 
 from models.proposal import Proposal
+from models.proposal_types import sessiontype_descriptions
 from models.role_types import Role
 from models.score import Comment, Score
 from models.user import User
@@ -53,6 +54,24 @@ def review_list():
     }))
 
 
+def _reviewer_is_in_proposal(reviewer, proposal):
+    if reviewer.email == proposal.proposer.email:
+        return True
+    for p in proposal.presenters:
+        if reviewer.email == p.email:
+            return True
+    return False
+
+
+def _reviewer_is_in_proposal_index(reviewer, i):
+    proposal = Proposal.query.filter_by(id=i).all()
+    if not proposal:
+        return False
+    assert len(proposal) == 1
+    proposal = proposal[0]
+    return _reviewer_is_in_proposal(reviewer, proposal)
+
+
 @app.route('/review_proposal/<int:id>', methods=['GET', 'POST'])
 def review_proposal(id):
     check = is_acceptable_route()
@@ -60,9 +79,9 @@ def review_proposal(id):
         return check[1]
     assert check[1] is None
     if is_logged_in():
+        reviewer = User.query.filter_by(email=session['email']).first()
         if request.method == 'POST':
             review_data = request.json
-            reviewer = User.query.filter_by(email=session['email']).first()
             if not reviewer:
                 response = jsonify('Logged in person is not a reviewer. This cannot happen.')
                 response.status_code = 400
@@ -87,13 +106,12 @@ def review_proposal(id):
                     db.session.add(Comment(proposal, reviewer, review_data['comment']))
             db.session.commit()
             return jsonify('Review stored.')
-        user = User.query.filter_by(email=session['email']).first()
-        if not user:
+        if not reviewer:
             return render_template('/general.html', page=md(base_page, {
                 'pagetitle': 'Review Proposal Failed',
                 'data': 'Logged in user is not a registered user. This cannot happen.',
             }))
-        if user.role != Role.reviewer:
+        if reviewer.role != Role.reviewer:
             return render_template('/general.html', page=md(base_page, {
                 'pagetitle': 'Review Proposal Failed',
                 'data': 'Logged in user is not a registered reviewer.',
@@ -106,30 +124,44 @@ def review_proposal(id):
             }))
         proposal = Proposal.query.filter_by(id=id).first()
         presenters = [{'name': p.name, 'bio': p.bio} for p in proposal.presenters]
-        # TODO do not display if the reviewer is the proposer or one of the presenters.
         score = ''
         comment = ''
-        if already_reviewed(proposal, user):
-            scores = [s for s in user.scores if s.proposal == proposal]
-            print('XXXX', [s.score for s in scores])
+        if already_reviewed(proposal, reviewer):
+            scores = [s for s in reviewer.scores if s.proposal == proposal]
             assert len(scores) == 1
             score = scores[0].score
-            comments = [c for c in user.comments if c.proposal == proposal]
+            comments = [c for c in reviewer.comments if c.proposal == proposal]
             if comments:
                 comment = comments[0].comment
+        has_next = id < number_of_proposals
+        if has_next:
+            for i in range(id + 1, number_of_proposals + 1):
+                if not _reviewer_is_in_proposal_index(reviewer, i):
+                    break
+            else:
+                has_next = False
+        has_previous = id > 1
+        if has_previous:
+            for i in range(id - 1, 0, -1):
+                if not _reviewer_is_in_proposal_index(reviewer, i):
+                    break
+            else:
+                has_previous = False
         return render_template('/review_proposal.html', page=md(base_page, {
             'pagetitle': 'Proposal to Review',
             'data': 'There is no specific "do nothing" button, to not do anything simply navigate away from this page.',
             'proposal_id': id,
             'title': proposal.title,
             'summary': proposal.summary,
+            'session_type': sessiontype_descriptions[proposal.session_type],
+            'audience': proposal.audience.value,
             'notes': proposal.notes,
             'presenters': presenters,
             'button_label': 'Submit' if not score else 'Update',
             'score': score,
             'comment': comment,
-            'has_previous': id > 1,
-            'has_next': id < number_of_proposals,
+            'has_previous': has_previous,
+            'has_next': has_next,
         }))
     return render_template('general.html', page=md(base_page, {
         'pagetitle': 'Review Proposal Failed',
@@ -162,8 +194,8 @@ def previous_proposal(id, unreviewed):
             if not proposal:
                 break
             if not already_reviewed(proposal, user):
-                # TODO mustn't  return if the user is the presenter or proposer
-                return jsonify(i)
+                if not _reviewer_is_in_proposal(user, proposal):
+                    return jsonify(i)
         response = jsonify("Requested proposal does not exist.")
         response.status_code = 400
         return response
@@ -187,9 +219,10 @@ def next_proposal(id, unreviewed):
                 'data': 'Logged in user is not a registered reviewer.',
             }))
         if not unreviewed:
-            if Proposal.query.filter_by(id=(id + 1)).first():
-                # TODO mustn't  return if the user is the presenter or proposer
-                return jsonify(id + 1)
+            number_of_proposals= Proposal.query.count()
+            for i in range(id + 1, number_of_proposals + 1):
+                if not _reviewer_is_in_proposal_index(user, i):
+                    return jsonify(i)
             response = jsonify("Requested proposal does not exist.")
             response.status_code = 400
             return response
@@ -199,8 +232,8 @@ def next_proposal(id, unreviewed):
             if not proposal:
                 break
             if not already_reviewed(proposal, user):
-                # TODO mustn't  return if the user is the presenter or proposer
-                return jsonify(i)
+                if not _reviewer_is_in_proposal(user, proposal):
+                    return jsonify(i)
             i += 1
         response = jsonify("Requested proposal does not exist.")
         response.status_code = 400
