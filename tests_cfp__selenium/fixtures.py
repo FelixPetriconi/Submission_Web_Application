@@ -24,7 +24,7 @@ def server():
     process = subprocess.Popen(('python3', '{}'.format(pathlib.PurePath(__file__).parent / 'start_server.py')))
     # Need a short while for the server to settle, 0.5 works locally but Travis-CI needs longer.
     if 'TRAVIS' in os.environ and os.environ['TRAVIS']:
-        time.sleep(4)
+        time.sleep(5)
     else:
         time.sleep(0.75)
     process.poll()
