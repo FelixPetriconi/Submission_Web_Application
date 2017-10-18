@@ -183,9 +183,9 @@ def previous_proposal(id, unreviewed):
                 'data': 'Logged in user is not a registered reviewer.',
             }))
         if not unreviewed:
-            if Proposal.query.filter_by(id=(id - 1)).first():
-                # TODO mustn't  return if the user is the presenter or proposer
-                return jsonify(id - 1)
+            for i in range(id - 1, 0, -1):
+                if not _reviewer_is_in_proposal_index(user, i):
+                    return jsonify(i)
             response = jsonify("Requested proposal does not exist.")
             response.status_code = 400
             return response
@@ -219,7 +219,7 @@ def next_proposal(id, unreviewed):
                 'data': 'Logged in user is not a registered reviewer.',
             }))
         if not unreviewed:
-            number_of_proposals= Proposal.query.count()
+            number_of_proposals = Proposal.query.count()
             for i in range(id + 1, number_of_proposals + 1):
                 if not _reviewer_is_in_proposal_index(user, i):
                     return jsonify(i)
