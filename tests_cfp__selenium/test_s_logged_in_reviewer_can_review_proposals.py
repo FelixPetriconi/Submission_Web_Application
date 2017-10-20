@@ -1,3 +1,5 @@
+import time
+
 import pytest
 
 from selenium.webdriver.common.by import By
@@ -107,6 +109,8 @@ def test_logged_in_reviewer_can_move_to_next_proposal(driver, registrant, propos
     assert 'Next' == next_button.text
     assert 'navigateNext(1)' == next_button.get_attribute('onclick')
     next_button.click()
+    # Travis-CI requires an extra wait here for some reason.
+    time.sleep(1)
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal to Review'))
     assert base_url + 'review_proposal/2' == driver.current_url
 
@@ -119,6 +123,8 @@ def test_logged_in_reviewer_can_move_to_next_unscored_proposal(driver):
     assert 'Next Unscored' == next_button.text
     assert 'navigateNextUnscored(1)' == next_button.get_attribute('onclick')
     next_button.click()
+    # Travis-CI requires an extra wait here for some reason.
+    time.sleep(1)
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal to Review'))
     assert base_url + 'review_proposal/2' == driver.current_url
 
@@ -131,6 +137,8 @@ def test_logged_in_reviewer_can_move_to_previous_proposal(driver):
     assert 'Previous' == previous_button.text
     assert 'navigatePrevious(2)' == previous_button.get_attribute('onclick')
     previous_button.click()
+    # Travis-CI requires an extra wait here for some reason.
+    time.sleep(1)
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal to Review'))
     assert base_url + 'review_proposal/1' == driver.current_url
     # This is a scored proposal so make sure the scores are present.
@@ -178,6 +186,8 @@ def test_amending_a_score_doesnt_create_a_second_score_object(driver):
     assert 'Next' == next_button.text
     assert 'navigateNext(1)' == next_button.get_attribute('onclick')
     next_button.click()
+    # Travis-CI requires an extra wait here for some reason.
+    time.sleep(2)
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal to Review'))
     previous_button = wait.until(ecs.element_to_be_clickable((By.ID, 'review-previous')))
     assert 'Previous' == previous_button.text
