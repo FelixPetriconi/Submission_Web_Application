@@ -109,7 +109,7 @@ def test_logged_in_reviewer_can_move_to_next_proposal(driver, registrant, propos
     assert 'Next' == next_button.text
     assert 'navigateNext(1)' == next_button.get_attribute('onclick')
     next_button.click()
-    #TODO Travis-CI experiment
+    # TODO Travis-CI experiment
     time.sleep(5)
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal to Review'))
     assert base_url + 'review_proposal/2' == driver.current_url
@@ -123,7 +123,7 @@ def test_logged_in_reviewer_can_move_to_next_unscored_proposal(driver):
     assert 'Next Unscored' == next_button.text
     assert 'navigateNextUnscored(1)' == next_button.get_attribute('onclick')
     next_button.click()
-    #TODO Travis-CI experiment
+    # TODO Travis-CI experiment
     time.sleep(5)
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal to Review'))
     assert base_url + 'review_proposal/2' == driver.current_url
@@ -137,7 +137,7 @@ def test_logged_in_reviewer_can_move_to_previous_proposal(driver):
     assert 'Previous' == previous_button.text
     assert 'navigatePrevious(2)' == previous_button.get_attribute('onclick')
     previous_button.click()
-    #TODO Travis-CI experiment
+    # TODO Travis-CI experiment
     time.sleep(5)
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal to Review'))
     assert base_url + 'review_proposal/1' == driver.current_url
