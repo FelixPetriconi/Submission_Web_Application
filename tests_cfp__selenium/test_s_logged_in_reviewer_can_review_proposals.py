@@ -186,6 +186,8 @@ def test_amending_a_score_doesnt_create_a_second_score_object(driver):
     assert 'Next' == next_button.text
     assert 'navigateNext(1)' == next_button.get_attribute('onclick')
     next_button.click()
+    # Travis-CI requires an extra wait here for some reason.
+    time.sleep(1)
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal to Review'))
     previous_button = wait.until(ecs.element_to_be_clickable((By.ID, 'review-previous')))
     assert 'Previous' == previous_button.text
