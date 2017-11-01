@@ -26,17 +26,17 @@ The ACCU {} Call for Proposals is open for business.
 <p>
 This Web application is just for submitting proposals, the
 <a href="https://conference.accu.org">main website</a>
- is where to go to get information about the conference. 
+ is where to go to get information about the conference.
 </p>
 <p>
 There are two blog posts that might be particularly interesting for submitters:
 </p>
 <ul>
 <li>
-<a href="https://conference.accu.org/posts/2017/201710150748_proposalsforaccu2018.html">Proposals for ACCU 2018</a>
+<a href="https://conference.accu.org/news/2017/201710150748_proposalsforaccu2018.html">Proposals for ACCU 2018</a>
 </li>
 <li>
-<a href="https://conference.accu.org/posts/2017/201710150836_whatsaccuabout.html">What's ACCU About</a> 
+<a href="https://conference.accu.org/news/2017/201710150836_whatsaccuabout.html">What's ACCU About</a>
 </li>
 </ul>
 </i>
