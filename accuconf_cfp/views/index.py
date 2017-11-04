@@ -39,6 +39,14 @@ There are two blog posts that might be particularly interesting for submitters:
 <a href="https://conference.accu.org/news/2017/201710150836_whatsaccuabout.html">What's ACCU About</a>
 </li>
 </ul>
+<p>
+NB The text in the summary text box of the submission form will be treated as
+AsciiDoc source, so please feel free to use AsciiDoc markup in the text entry
+box. For accepted proposals this text is rendered and will appear on the
+website and in the booklet. The notes to the committee text box is also treated
+as AsciiDoc text but is not published except to the conference committee. Other
+text entries are plain text. All text is assumed to be UTF-8 encoded Unicode.
+</p>
 </i>
 <p>
 Using the menu items on the left, you can register, if you are not already registered,
