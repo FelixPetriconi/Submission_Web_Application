@@ -130,6 +130,14 @@ def set_committee_as_reviewers(committee_email_file_path):
 
 
 @app.cli.command()
+def list_keynotes():
+    """List the keynotes in the database."""
+    keynotes = Proposal.query.filter_by(session_type=SessionType.keynote).all()
+    for k in keynotes:
+        print(tuple(p.name for p in k.presenters))
+
+
+@app.cli.command()
 def create_proposal_sheets():
     """Create the bits of papers for constructing an initial schedule."""
     file_path = str(file_directory.parent / 'proposal_sheets.pdf')
