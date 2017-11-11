@@ -726,7 +726,7 @@ def replace_passphrase_of_user(email, passphrase):
         click.echo(click.style('Something wrong with email', fg='red'))
     else:
         user = user[0]
-        click.echo(click.style('Replacing  passphrase "{}" with "{}"'.format(user.passphrase, passphrase), fg='green'))
+        click.echo(click.style('Replacing  previous passphrase with "{}"'.format(passphrase), fg='green'))
         user.passphrase = hash_passphrase(passphrase)
         db.session.commit()
 
