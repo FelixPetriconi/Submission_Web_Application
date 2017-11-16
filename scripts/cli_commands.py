@@ -141,17 +141,17 @@ def list_keynotes():
 def create_proposal_sheets():
     """Create the bits of papers for constructing an initial schedule."""
     file_path = str(file_directory.parent / 'proposal_sheets.pdf')
-    style_sheet = getSampleStyleSheet()['BodyText']
-    style_sheet.fontSize = 18
-    style_sheet.leading = 22
+    style_sheet = getSampleStyleSheet()
+    title_style_sheet = style_sheet['Heading1']
+    constraints_style_sheet = style_sheet['Italic']
     document = SimpleDocTemplate(file_path, pagesize=A4, rightMargin=30, leftMargin=30, topMargin=10, bottomMargin=30)
     elements = []
     for p in Proposal.query.all():
         scores = tuple(score.score for score in p.scores if score.score != 0)
         table = Table([
-            [Paragraph(p.title, style_sheet), p.session_type.value],
-            [', '.join(pp.name for pp in p.presenters),
-             ', '.join(str(score.score) for score in p.scores) + ' — {:.2f}, {}'.format(mean(scores), median(scores)) if len(scores) > 0 else ''],
+            [Paragraph(p.title, title_style_sheet), p.session_type.value],
+            [', '.join(pp.name for pp in p.presenters), p.audience.value],
+            [Paragraph(p.constraints, constraints_style_sheet), ', '.join(str(score.score) for score in p.scores) + ' — {:.2f}, {}'.format(mean(scores), median(scores)) if len(scores) > 0 else ''],
         ], colWidths=(380, 180), spaceAfter=64)
         table.setStyle(TableStyle([
             ('FONTSIZE', (0, 0), (-1, -1), 12),
@@ -180,33 +180,39 @@ def create_proposals_document():
             proposals_file.write('<<<\n\n=== {}\n\n'.format(p.title))
             proposals_file.write(', '.join(pp.name for pp in p.presenters) + '\n\n')
             proposals_file.write(cleanup_text(p.summary.strip()) + '\n\n')
+            notes = p.notes.strip()
+            if notes:
+                proposals_file.write("'''\n\n*Notes to the Committee*\n\n" + cleanup_text(notes) + '\n\n')
+            constraints = p.constraints.strip()
+            if constraints:
+                proposals_file.write("'''\n\n*Constraints*" + cleanup_text(constraints) + '\n\n')
             scores = tuple(r.score for r in p.scores if r.score != 0)
             proposals_file.write("'''\n\n*{}{}*\n\n".format(', '.join(str(score.score) for score in p.scores), ' — {:.2f}, {}'.format(mean(scores), median(scores)) if len(scores) > 0 else ''))
             for comment in p.comments:
                 c = comment.comment.strip()
                 if c:
-                    proposals_file.write("'''\n\n_{}_\n\n".format(comment.comment.strip()))
+                    proposals_file.write("'''\n\n{}\n\n".format(c))
             nonlocal proposals_processed
             proposals_processed += 1
 
         proposals_file.write('== Full Day Workshops\n\n')
-        for p in Proposal.query.filter_by(session_type='fulldayworkshop'):
+        for p in Proposal.query.filter_by(session_type=SessionType.fulldayworkshop.value).all():
             write_proposal(p)
 
         proposals_file.write('<<<\n\n== 90 minute presentations\n\n')
-        for p in Proposal.query.filter_by(session_type='session'):
+        for p in Proposal.query.filter_by(session_type=SessionType.session.value).all():
             write_proposal(p)
 
         proposals_file.write('<<<\n\n== 90 minute workshops\n\n')
-        for p in Proposal.query.filter_by(session_type='miniworkshop'):
+        for p in Proposal.query.filter_by(session_type=SessionType.miniworkshop.value).all():
             write_proposal(p)
 
         proposals_file.write('<<<\n\n== 180 minute workshops\n\n')
-        for p in Proposal.query.filter_by(session_type='workshop'):
+        for p in Proposal.query.filter_by(session_type=SessionType.workshop.value).all():
             write_proposal(p)
 
         proposals_file.write('<<<\n\n== 15 minute presentations\n\n')
-        for p in Proposal.query.filter_by(session_type='quickie'):
+        for p in Proposal.query.filter_by(session_type=SessionType.quickie.value).all():
             write_proposal(p)
 
     if total_proposals != proposals_processed:
