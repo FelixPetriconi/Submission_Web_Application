@@ -35,7 +35,7 @@ def validate_login_data(login_data):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    check = is_acceptable_route()
+    check = is_acceptable_route(True)
     if not check[0]:
         return check[1]
     assert check[1] is None
@@ -62,7 +62,7 @@ def login():
 
 @app.route('/login_success')
 def login_success():
-    check = is_acceptable_route()
+    check = is_acceptable_route(True)
     if not check[0]:
         return check[1]
     assert check[1] is None
@@ -94,7 +94,7 @@ Once you have submitted one or more proposals, they can be amended via the
 
 @app.route('/logout')
 def logout():
-    check = is_acceptable_route()
+    check = is_acceptable_route(True)
     if not check[0]:
         return check[1]
     assert check[1] is None

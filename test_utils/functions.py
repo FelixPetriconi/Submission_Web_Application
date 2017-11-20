@@ -4,7 +4,8 @@ Various bits of code used in various testing places.
 The symbol accuconf must be defined prior to loading of this module.
 """
 
-from accuconf import db
+from accuconf_cfp import db
+from accuconf_cfp.utils import hash_passphrase
 
 from models.user import User
 from models.proposal import Proposal, Presenter, ProposalPresenter
@@ -44,6 +45,7 @@ def post_and_check_content(client, url, data, content_type=None, code=200, inclu
 def add_new_user(user_details):
     """Given a dictionary of user details create a user in the data base."""
     user = User(**user_details)
+    user.passphrase = hash_passphrase(user.passphrase)
     db.session.add(user)
     db.session.commit()
 

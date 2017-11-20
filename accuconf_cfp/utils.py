@@ -17,13 +17,15 @@ from flask import redirect, session
 
 from accuconf_cfp import app, countries
 
+from models.user import User
+from models.role_types import Role
 
 def hash_passphrase(text):
     """Function for 'encrypting' a passphrase before putting it into the database."""
     return hashlib.sha512(text.encode('utf-8')).hexdigest()
 
 
-def is_acceptable_route():
+def is_acceptable_route(is_always_allowed=False):
     """Check the state of the application and return a pair.
 
     The first item of the pair is a Boolean stating whether the route is acceptable.
@@ -34,7 +36,12 @@ def is_acceptable_route():
         return False, redirect('/')
     if not app.config['CALL_OPEN']:
         if app.config['REVIEWING_ALLOWED']:
-            return True, None
+            if is_always_allowed:
+                return True, None
+            if is_logged_in():
+                user = User.query.filter_by(email=session['email']).first()
+                if user.role == Role.reviewer:
+                    return True, None
         return False, redirect('/')
     return True, None
 

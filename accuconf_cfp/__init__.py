@@ -53,7 +53,7 @@ def top_nav():
         return Navbar('')
     logged_in = is_logged_in()
     entries = []
-    if not logged_in and request.path != '/register':
+    if app.config['CALL_OPEN'] and not logged_in and request.path != '/register':
         entries.append(View('Register', 'register'))
     if not logged_in and request.path != '/login':
         entries.append(View('Login', 'login'))
