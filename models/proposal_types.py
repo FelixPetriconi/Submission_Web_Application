@@ -17,7 +17,7 @@ sessiontype_descriptions = {
     SessionType.session: 'A 90 minute presentation session with questions.',
     SessionType.miniworkshop: 'A 90 minute workshop with active attender participation.',
     SessionType.workshop: 'A 180 minute workshop with active attender participation.',
-    SessionType.quickie: 'A 15 minute presentation.',
+    SessionType.quickie: 'A 20 minute presentation.',
     SessionType.keynote: 'A 60 minute keynote presentation.',
 }
 

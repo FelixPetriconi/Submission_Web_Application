@@ -211,7 +211,7 @@ def create_proposals_document():
         for p in Proposal.query.filter_by(session_type=SessionType.workshop.value).all():
             write_proposal(p)
 
-        proposals_file.write('<<<\n\n== 15 minute presentations\n\n')
+        proposals_file.write('<<<\n\n== 20 minute presentations\n\n')
         for p in Proposal.query.filter_by(session_type=SessionType.quickie.value).all():
             write_proposal(p)
 
