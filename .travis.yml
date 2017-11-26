@@ -2,7 +2,7 @@ dist: trusty
 sudo: true
 language: python
 python:
-  - "3.4"
+  - "3.5"
   - "3.6"
 before_install:
   - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
