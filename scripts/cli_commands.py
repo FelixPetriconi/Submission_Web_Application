@@ -130,6 +130,25 @@ def set_committee_as_reviewers(committee_email_file_path):
 
 
 @app.cli.command()
+def list_review_counts():
+    """List the proposals with review counts to enable reviewers to see where to focus."""
+    proposals = Proposal.query.all()
+    proposals_by_score = {}
+    for proposal in proposals:
+        count = len(proposal.scores)
+        if count in proposals_by_score:
+            proposals_by_score[count].append(proposal.title)
+        else:
+            proposals_by_score[count] = [proposal.title]
+    max_count = max(proposals_by_score.keys())
+    for count in range(max_count + 1):
+        if count in proposals_by_score:
+            print("\n========  {}  ====".format(count))
+            for title in proposals_by_score[count]:
+                print("\t{}".format(title.strip()))
+
+
+@app.cli.command()
 def list_keynotes():
     """List the keynotes in the database."""
     keynotes = Proposal.query.filter_by(session_type=SessionType.keynote).all()
