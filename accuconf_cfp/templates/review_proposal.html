@@ -18,6 +18,13 @@
 		<h3 class="proposal-title">
 			{{page.title}}
 		</h3>
+		<br/>
+		<p class="proposal-session-type">
+			Session type: {{page.session_type}}
+		</p>
+		<p class="proposal-audience">
+			Audience: {{page.audience}}
+		</p>
 		<p class="proposal-summary">
 			{{page.summary}}
 		</p>
@@ -29,12 +36,6 @@
 			{{presenter.bio}}
 		</p>
 		{% endfor %}
-		<p class="proposal-session-type">
-			Session type: {{page.session_type}}
-		</p>
-		<p class="proposal-audience">
-			Audience: {{page.audience}}
-		</p>
 		{% if page.notes %}
 		<h5 class="proposal-notes-title">
 			Notes for the Committee
