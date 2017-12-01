@@ -241,6 +241,23 @@ def create_proposals_document():
 
 
 @app.cli.command()
+def type_counts():
+    """Print out the counts of the types."""
+    proposals = Proposal.query.all()
+    fulldayworkshop_count = len([p for p in proposals if p.session_type == SessionType.fulldayworkshop])
+    workshop_count = len([p for p in proposals if p.session_type == SessionType.workshop])
+    miniworkshop_count = len([p for p in proposals if p.session_type == SessionType.miniworkshop])
+    session_count = len([p for p in proposals if p.session_type == SessionType.session])
+    quickie_count = len([p for p in proposals if p.session_type == SessionType.quickie])
+    print("proposals:", len(proposals))
+    print("fulldayworkshops:", fulldayworkshop_count)
+    print("workshops:", workshop_count)
+    print("miniworkshops:", miniworkshop_count)
+    print("sessions:", session_count)
+    print("quickies:", quickie_count)
+
+
+@app.cli.command()
 def check_database_consistency():
     """Make sure that all columns in all tables have the right sort of value.
 
