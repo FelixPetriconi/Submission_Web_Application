@@ -258,6 +258,14 @@ def type_counts():
 
 
 @app.cli.command()
+def reviewers_scores_counts():
+    """Print out a list of reviewers and the  counts of scores they made."""
+    reviewers = User.query.filter_by(role=Role.reviewer).all()
+    for reviewer in reviewers:
+        print(reviewer.name, ": ", len(reviewer.scores))
+
+
+@app.cli.command()
 def check_database_consistency():
     """Make sure that all columns in all tables have the right sort of value.
 
