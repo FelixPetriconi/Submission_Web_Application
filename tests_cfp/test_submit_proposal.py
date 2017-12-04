@@ -32,10 +32,7 @@ from test_utils.fixtures import (client,
 from test_utils.functions import get_and_check_content, post_and_check_content
 
 
-def test_submit_not_available_when_not_open(client, monkeypatch):
-    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
-    monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+def test_submit_not_available_when_not_open(client):
     get_and_check_content(client, '/submit',
                           code=302,
                           includes=('Redirect', '<a href="/">'),
@@ -43,20 +40,14 @@ def test_submit_not_available_when_not_open(client, monkeypatch):
                           )
 
 
-def test_submit_success_not_available_when_not_open(client, monkeypatch):
-    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
-    monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+def test_submit_success_not_available_when_not_open(client):
     get_and_check_content(client, '/submit_success',
                           code=302,
                           includes=('Redirecting', '<a href="/">'),
                           )
 
 
-def test_my_proposals_not_available_when_not_open(client, monkeypatch):
-    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
-    monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+def test_my_proposals_not_available_when_not_open(client):
     get_and_check_content(client, '/my_proposals',
                           code=302,
                           includes=('Redirect', '<a href="/">'),
@@ -64,10 +55,7 @@ def test_my_proposals_not_available_when_not_open(client, monkeypatch):
                           )
 
 
-def test_proposals_update_not_available_when_not_open(client, monkeypatch):
-    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
-    monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+def test_proposals_update_not_available_when_not_open(client):
     get_and_check_content(client, '/proposal_update/0',
                           code=302,
                           includes=('Redirect', '<a href="/">'),
@@ -75,10 +63,7 @@ def test_proposals_update_not_available_when_not_open(client, monkeypatch):
                           )
 
 
-def test_proposal_update_success_not_available_when_not_open(client, monkeypatch):
-    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
-    monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+def test_proposal_update_success_not_available_when_not_open(client):
     get_and_check_content(client, '/proposal_update_success',
                           code=302,
                           includes=('Redirecting', '<a href="/">'),
@@ -135,7 +120,6 @@ def test_validate_proposal_data_fails_with_invalid_data(proposal):
 
 def test_ensure_registration_and_login(client, registrant, monkeypatch):
     monkeypatch.setitem(app.config, 'CALL_OPEN', True)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
     user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 0
     post_and_check_content(client, '/register', json.dumps(registrant), 'application/json',
@@ -157,7 +141,6 @@ def test_ensure_registration_and_login(client, registrant, monkeypatch):
 
 def test_not_logged_in_user_cannot_get_submission_page(client, monkeypatch):
     monkeypatch.setitem(app.config, 'CALL_OPEN', True)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
     get_and_check_content(client, '/submit',
                           includes=('Submit', 'You must be registered and logged in to submit a proposal.', login_menu_item, register_menu_item),
                           )

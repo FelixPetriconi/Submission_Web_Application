@@ -21,10 +21,7 @@ from test_utils.fixtures import client
 from test_utils.functions import get_and_check_content, post_and_check_content
 
 
-def test_attempt_to_get_registration_page_outside_open_period_causes_redirect(client, monkeypatch):
-    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
-    monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+def test_attempt_to_get_registration_page_outside_open_period_causes_redirect(client):
     get_and_check_content(client, '/register',
                           code=302,
                           includes=('Redirect', '<a href="/">'),
@@ -33,7 +30,6 @@ def test_attempt_to_get_registration_page_outside_open_period_causes_redirect(cl
 
 def test_registration_page_has_some_countries(client, monkeypatch):
     monkeypatch.setitem(app.config, 'CALL_OPEN', True)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
     get_and_check_content(client, '/register',
                           includes=('Register', 'United Kingdom'),
                           excludes=(register_menu_item, 'GBR'),
@@ -42,7 +38,6 @@ def test_registration_page_has_some_countries(client, monkeypatch):
 
 def test_attempted_form_submit_not_json_fails(client, registrant, monkeypatch):
     monkeypatch.setitem(app.config, 'CALL_OPEN', True)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
     user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 0
     post_and_check_content(client, '/register', registrant,
@@ -55,7 +50,6 @@ def test_attempted_form_submit_not_json_fails(client, registrant, monkeypatch):
 
 def test_successful_user_registration(client, registrant, monkeypatch):
     monkeypatch.setitem(app.config, 'CALL_OPEN', True)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
     user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 0
     post_and_check_content(client, '/register', json.dumps(registrant), 'application/json',
@@ -82,7 +76,6 @@ def test_attempted_duplicate_user_registration_fails(client, registrant, monkeyp
 
 def test_no_passphrase(client, registrant, monkeypatch):
     monkeypatch.setitem(app.config, 'CALL_OPEN', True)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
     registrant['passphrase'] = ''
     post_and_check_content(client, '/register', json.dumps(registrant), 'application/json',
                            code=400,
@@ -92,7 +85,6 @@ def test_no_passphrase(client, registrant, monkeypatch):
 
 def test_invalid_email(client, registrant, monkeypatch):
     monkeypatch.setitem(app.config, 'CALL_OPEN', True)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
     registrant['email'] = 'thing.flob.adob'
     post_and_check_content(client, '/register', json.dumps(registrant), 'application/json',
                            code=400,
@@ -100,20 +92,14 @@ def test_invalid_email(client, registrant, monkeypatch):
                            )
 
 
-def test_attempt_get_register_success_out_of_open_causes_redirect(client, monkeypatch):
-    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
-    monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+def test_attempt_get_register_success_out_of_open_causes_redirect(client):
     get_and_check_content(client, '/register_success',
                           code=302,
                           includes=('Redirecting', '<a href="/">'),
                           )
 
 
-def test_attempt_get_registration_update_success_out_of_open_causes_redirect(client, monkeypatch):
-    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
-    monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+def test_attempt_get_registration_update_success_out_of_open_causes_redirect(client):
     get_and_check_content(client, '/registration_update_success',
                           code=302,
                           includes=('Redirecting', '<a href="/">'),

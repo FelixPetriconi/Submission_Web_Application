@@ -33,8 +33,16 @@ def client():
     Whatever the location of the database for the current configuration,
     override it for the tests.
     """
-    app.config['TESTING'] = True
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['DEBUG'] = False
+    app.config['TESTING'] = True
+    app.config['SECRET_KEY'] = "TheObviouslyOpenSecret"
+    app.config['MAINTENANCE'] = False
+    app.config['CALL_OPEN'] = False
+    app.config['REVIEWING_ALLOWED'] = False
+    app.config['ADMINISTERING'] = False
+    app.config['API_ACCESS'] = False
     with app.app_context():
         db.drop_all()
         db.create_all()

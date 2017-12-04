@@ -17,10 +17,7 @@ from test_utils.fixtures import client
 from test_utils.functions import get_and_check_content, post_and_check_content
 
 
-def test_attempt_to_get_login_page_outside_open_period_causes_redirect(client, monkeypatch):
-    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
-    monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+def test_attempt_to_get_login_page_outside_open_period_causes_redirect(client):
     get_and_check_content(client, '/login',
                           code=302,
                           includes=('Redirect', '<a href="/">'),
@@ -29,7 +26,6 @@ def test_attempt_to_get_login_page_outside_open_period_causes_redirect(client, m
 
 def test_user_can_register(client, registrant, monkeypatch):
     monkeypatch.setitem(app.config, 'CALL_OPEN', True)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
     user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 0
     post_and_check_content(client, '/register', json.dumps(registrant), 'application/json',
@@ -128,10 +124,7 @@ def test_update_user_name(client, registrant, monkeypatch):
                            )
 
 
-def test_logout_not_in_open_state_cases_redirect(client, monkeypatch):
-    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
-    monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+def test_logout_not_in_open_state_cases_redirect(client):
     get_and_check_content(client, '/logout',
                           code=302,
                           includes=('Redirecting', '<a href="/">'),
@@ -140,7 +133,6 @@ def test_logout_not_in_open_state_cases_redirect(client, monkeypatch):
 
 def test_logout_without_login_is_noop(client, monkeypatch):
     monkeypatch.setitem(app.config, 'CALL_OPEN', True)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
     get_and_check_content(client, '/logout',
                           code=302,
                           includes=('Redirecting', '<a href="/">'),
@@ -171,10 +163,7 @@ def test_logged_in_user_cannot_logout_with_json_post(client, registrant, monkeyp
                            )
 
 
-def test_attempt_get_login_success_out_of_open_causes_redirect(client, monkeypatch):
-    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
-    monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+def test_attempt_get_login_success_out_of_open_causes_redirect(client):
     get_and_check_content(client, '/login_success',
                           code=302,
                           includes=('Redirecting', '<a href="/">'),

@@ -55,10 +55,7 @@ def test_already_reviewed(registrant, proposal_single_presenter, proposal_multip
     assert already_reviewed(proposals[1], reviewer)
 
 
-def test_attempt_to_get_review_list_page_outside_open_period_causes_redirect(client, monkeypatch):
-    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
-    monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', False)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
+def test_attempt_to_get_review_list_page_outside_open_period_causes_redirect(client):
     get_and_check_content(client, '/review_list',
                           code=302,
                           includes=('Redirect', '<a href="/">'),
@@ -66,9 +63,7 @@ def test_attempt_to_get_review_list_page_outside_open_period_causes_redirect(cli
 
 
 def test_new_registerations_not_allowed(client, monkeypatch):
-    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
     monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', True)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
     get_and_check_content(client, '/register',
                           code=302,
                           includes=('Redirect', '<a href="/">'),
@@ -76,9 +71,7 @@ def test_new_registerations_not_allowed(client, monkeypatch):
 
 
 def test_user_not_a_reviewer_already_registered_can_login(client, registrant, monkeypatch):
-    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
     monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', True)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
     add_new_user(registrant)
     post_and_check_content(client, '/login',
                            json.dumps({'email': registrant['email'], 'passphrase': registrant['passphrase']}), 'application/json',
@@ -108,9 +101,7 @@ def test_user_not_a_reviewer_can_register_and_login_but_not_see_review_proposal_
 
 
 def test_registered_reviewer_can_login(client, registrant, monkeypatch):
-    monkeypatch.setitem(app.config, 'CALL_OPEN', False)
     monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', True)
-    monkeypatch.setitem(app.config, 'MAINTENANCE', False)
     user = User.query.filter_by(email=registrant['email']).all()
     assert len(user) == 0
     add_new_user(registrant)
