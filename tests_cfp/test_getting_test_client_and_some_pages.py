@@ -209,19 +209,19 @@ def test_review_list_page_call_open(client, monkeypatch):
 def test_review_list_page_call_closed_reviewing_allowed(client, monkeypatch):
     monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', True)
     monkeypatch.setitem(app.config, 'MAINTENANCE', False)
-    get_and_check_content(client, '/review_list', 302, ('Redirecting', 'href="/"'))
+    get_and_check_content(client, '/review_list', 200, (' – Review List Failed', login_menu_item, register_menu_item), ())
 
 
 def test_review_proposal_page_call_open(client, monkeypatch):
     monkeypatch.setitem(app.config, 'CALL OPEN', True)
     monkeypatch.setitem(app.config, 'MAINTENANCE', False)
-    get_and_check_content(client, '/review_proposal/1', 302, ('Redirecting', 'href="/"'))
+    get_and_check_content(client, '/review_list', 200, (' – Review List Failed', login_menu_item, register_menu_item), ())
 
 
 def test_review_proposal_page_call_closed_reviewing_allowed(client, monkeypatch):
     monkeypatch.setitem(app.config, 'REVIEWING_ALLOWED', True)
     monkeypatch.setitem(app.config, 'MAINTENANCE', False)
-    get_and_check_content(client, '/review_proposal/1', 302, ('Redirecting', 'href="/"'))
+    get_and_check_content(client, '/review_list', 200, (' – Review List Failed', login_menu_item, register_menu_item), ())
 
 
 def test_top_page_maintenance(client, monkeypatch):

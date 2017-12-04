@@ -5,12 +5,10 @@ are in separate modules hence pulling these functions out into a separate module
 """
 
 import hashlib
-import os
 import re
 
 from email.mime.text import MIMEText
 from email.utils import formatdate
-from pathlib import Path
 from smtplib import SMTP
 
 from flask import redirect, session
