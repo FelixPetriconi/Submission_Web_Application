@@ -157,6 +157,48 @@ def list_keynotes():
 
 
 @app.cli.command()
+def insert_keynotes_from_files():
+    """Insert new keynote records from files in the keynote_directory directory."""
+    # The directory contains one directory per keynote with person's name as the name.
+    # The directory contains three files: details.txt, bio.adoc, and blurb.adoc.
+    # The file details.txt contains key: value pairs one on each line, with title, email and country.
+    keynotes_directory = Path('keynote_data')
+    if keynotes_directory.exists():
+        keynote_presenter_directories = os.listdir(keynotes_directory.as_posix())
+        if len(keynote_presenter_directories) != 4:
+            click.echo(click.style('There are not four keynotes', fg='red'))
+        else:
+            user = User.query.filter_by(email='russel@winder.org.uk').all()
+            assert len(user) == 1
+            user = user[0]
+            for directory in keynote_presenter_directories:
+                with open(keynotes_directory / directory / 'bio.adoc') as f:
+                    bio = f.read().strip()
+                with open(keynotes_directory / directory / 'blurb.adoc') as f:
+                    blurb = f.read().strip()
+                assert bio
+                assert blurb
+                details = {}
+                with open(keynotes_directory / directory / 'details.txt') as f:
+                    for line in f.read().strip().splitlines():
+                        key, value = [x.strip() for x in line.split(':')]
+                        assert key
+                        assert value
+                        details[key] = value
+                assert 'title' in details
+                assert 'email' in details
+                assert 'country' in details
+                proposal = Proposal(user, details['title'], SessionType.keynote, blurb, status=ProposalState.acknowledged)
+                presenter = Presenter(details['email'], directory.replace('_', ' '), bio, details['country'])
+                proposal_presenter = ProposalPresenter(proposal, presenter, True)
+                db.session.add(proposal)
+                db.session.add(presenter)
+                db.session.add(proposal_presenter)
+                db.session.commit()
+    else:
+        click.echo(click.style('Cannot find the keynotes_data directory', fg='red'))
+
+@app.cli.command()
 def create_proposal_sheets():
     """Create the bits of papers for constructing an initial schedule."""
     file_path = str(file_directory.parent / 'proposal_sheets.pdf')
