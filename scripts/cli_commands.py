@@ -386,7 +386,7 @@ def ensure_consistency_of_schedule():
             if s not in accepted:
                 print('\t' + s.title)
     for s in scheduled:
-        lead_count = len(tuple(p for p in s.presenters if p.is_lead))
+        lead_count = len(tuple(p for p in s.proposal_presenters if p.is_lead))
         if lead_count > 1:
             print('####  {} has multiple leads.'.format(s.title))
         elif lead_count == 0:
@@ -422,7 +422,7 @@ def ensure_consistency_of_schedule():
                     s = sessions_now[0]
                     if s.quickie_slot is not None:
                         print('####  Session listed as quickies scheduled as a session: {}, {}, {}, {}.'.format(s.title, day, session, room))
-    presenter_counter = Counter(p for s in sessions if s.session_type != SessionType.quickie and s.session_type != SessionType.fulldayworkshop for p in s.presenters if p.is_lead)
+    presenter_counter = Counter(p.presenter for s in sessions if s.session_type != SessionType.quickie and s.session_type != SessionType.fulldayworkshop for p in s.proposal_presenters if p.is_lead)
     for p in presenter_counter:
         if presenter_counter[p] > 1:
             print('####  {} has more than one 90 minute session.'.format(p.email))
@@ -460,15 +460,17 @@ def  list_of_lead_presenters():
 def generate_pages():
     """Generate the schedule, presenters, and sessions Asciidoc files for placing into the static part of the website."""
     accepted = Proposal.query.filter_by(status=ProposalState.accepted).all()
-    assert len(accepted) == 0, 'There are unacknowledged accepted proposals.'
-    acknowledged = Proposal.query.filter_by(status=ProposalState.acknowledged).all()
-    presenters = set(p.presenter for s in acknowledged for p in s.presenters)
+    if len(accepted) != 0:
+        print('#### There are unacknowledged accepted proposals.')
+    _acknowledged = Proposal.query.filter_by(status=ProposalState.acknowledged).all()
+    proposals = accepted + _acknowledged
+    presenters = set(p for s in proposals for p in s.presenters)
     for p in presenters:
         if p.bio.strip() == '':
             print('####  Presenter {}, has empty bio.'.format(p.email))
-    workshops = set(item for item in acknowledged if item.day == ConferenceDay.workshops)
+    workshops = set(item for item in proposals if item.day == ConferenceDay.workshops)
     assert all(item.session_type == SessionType.fulldayworkshop for item in workshops)
-    sessions = set(item for item in acknowledged if item.day != ConferenceDay.workshops)
+    sessions = set(item for item in proposals if item.day != ConferenceDay.workshops)
     day_names = ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')
     room_names = ('Bristol 1', 'Bristol 2', 'Bristol 3', 'Empire', 'SS Great Britain')
 
@@ -489,6 +491,7 @@ def generate_pages():
                 .replace('!', '')
                 .replace('{', '')
                 .replace('}', '')
+                .replace('"', '')
         )
 
     def cppmark(text):
@@ -496,8 +499,8 @@ def generate_pages():
 
     def presenter_link(presenter):
         return 'link:presenters.html#{}[{}]'.format(
-            valid_link(presenter.first_name + '_' + presenter.last_name),
-            presenter.first_name + ' ' + presenter.last_name)
+            valid_link(presenter.name),
+            presenter.name)
 
     def session_link(proposal):
         return 'link:sessions.html#{}[{}]'.format(valid_link(proposal.title), proposal.title)
@@ -510,8 +513,8 @@ def generate_pages():
 .. type: text
 ////
 '''.format(start_date.year))
-        for p in sorted(acknowledged, key=lambda x: x.title):
-            presenter_links = ', '.join(presenter_link(pr) for pr in (pp.presenter for pp in sorted(p.presenters, key=lambda x: x.is_lead)))
+        for p in sorted(proposals, key=lambda x: x.title):
+            presenter_links = ', '.join(presenter_link(pr) for pr in (pp.presenter for pp in sorted(p.proposal_presenters, key=lambda x: x.is_lead)))
             session_file.write('''
 [[{}]]
 == {}
@@ -519,7 +522,7 @@ def generate_pages():
 
 {}
 
-'''.format(valid_link(p.title), cppmark(p.title), presenter_links, cppmark(p.text)))
+'''.format(valid_link(p.title), cppmark(p.title), presenter_links, cppmark(p.summary)))
 
     with open('presenters.adoc', 'w') as presenter_file:
         presenter_file.write('''
@@ -530,7 +533,7 @@ def generate_pages():
 ////
 '''.format(start_date.year))
         for p in sorted(presenters, key=lambda x: x.name):
-            proposals = tuple(pp.proposal for pp in p.proposals if pp.proposal.status == ProposalState.acknowledged)
+            proposals = tuple(pp for pp in p.proposals if pp.status == ProposalState.acknowledged or pp.status == ProposalState.accepted)
             session_links = '\n\n'.join(session_link(pr) for pr in sorted(proposals, key=lambda x: x.title))
             presenter_file.write('''
 [[{}]]
@@ -540,7 +543,7 @@ def generate_pages():
 
 {}
 
-'''.format(valid_link(p.first_name + '_' + p.last_name), cppmark(p.first_name + ' ' + p.last_name), session_links, cppmark(p.bio)))
+'''.format(valid_link(p.name), cppmark(p.name), session_links, cppmark(p.bio)))
 
     with open('schedule.adoc', 'w') as schedule_file:
         schedule_file.write('''
@@ -581,7 +584,7 @@ _The schedule is subject to change without notice until {}._
 
         def session_and_presenters(proposal):
             #  TODO  Put the lead presenter first in the tuple.
-            return (session_link(proposal), '', *tuple(presenter_link(p.presenter) for p in proposal.presenters))
+            return (session_link(proposal), '', *tuple(presenter_link(p) for p in proposal.presenters))
 
         def schedule_write(text):
             schedule_file.write(text.replace('C++', '{cpp}'))
@@ -649,13 +652,13 @@ _The schedule is subject to change without notice until {}._
                     row(first_column('16:00'), *get_sessions(id, SessionSlot.session_3)),
                     row(first_column('17:30'), all_columns_entry(cols, 'Break')),
                     (
-                        row(first_column('18:00'), all_columns_entry(cols, 'Lightning Talks (1 hour)')) if i == 1 or i == 2 else
+                        row(first_column('18:00'), all_columns_entry(cols, 'Lightning Talks (1 hour)')) if i == 1 or i == 3 else
                         row(first_column('17:35'), all_columns_entry(cols, 'Lightning Talks (40 mins)'))
                     ),
                     (
                         row(first_column('19:00'), all_columns_entry(cols, 'Welcome Reception')) if i == 1 else
-                        row(first_column('19:00'), all_columns_entry(cols, 'Bloomberg ACCUChess17 (at Zerodegrees via coaches)')) if i == 2 else
-                        row(first_column('19:30'), all_columns_entry(cols, 'Conference Supper (19:30 for drinks, 20:00 service)')) if i == 3 else
+                        row(first_column('19:30'), all_columns_entry(cols, 'Conference Supper (19:30 for drinks, 20:00 service)')) if i == 2 else
+                        row(first_column('19:00'), all_columns_entry(cols, 'Bloomberg Event')) if i == 3 else
                         ''
                     ),
                 )
@@ -692,7 +695,7 @@ _The schedule is subject to change without notice until {}._
 def deploy_new_schedule_files():
     """Copy the three generated Asciidoc pages for the schedule, sessions,
     and presenters to their place in the static stories area."""
-    destination = Path('..') / 'static_nikola_part' / 'stories' / str(start_date.year)
+    destination = Path('..') / 'Website' / 'pages' / str(start_date.year)
     for name in ('sessions.adoc', 'presenters.adoc', 'schedule.adoc'):
         shutil.copyfile(name, str(destination / name))
 
