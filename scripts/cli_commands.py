@@ -452,8 +452,9 @@ def  list_of_lead_presenters():
     acknowledged = Proposal.query.filter_by(status=ProposalState.acknowledged).all()
     not_quickies = tuple(s for s in accepted + acknowledged if s.session_type != SessionType.quickie and s.session_type != SessionType.fulldayworkshop)
     for n_q in not_quickies:
-        for p in tuple(p.presenter for p in n_q.presenters if p.is_lead):
-            print("{}, {}".format(p.name, p.email))
+        for p in tuple(p for p in n_q.proposal_presenters if p.is_lead):
+            pp = p.presenter
+            print("{}, {}, {}".format(pp.name, pp.email, pp.country))
 
 
 @app.cli.command()
