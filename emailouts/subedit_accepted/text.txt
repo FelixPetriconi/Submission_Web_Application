@@ -1,0 +1,35 @@
+{},
+
+Thank you for proposing the accepted and scheduled {}:
+
+{}
+
+at ACCU 2018.
+
+This email is to allow an opportunity to subedt the session title, the
+session blurb, and the presenter(s) names(s) and bio(s).
+
+The title above is UTF-8 encoded text, Let us know if there should be any
+small amendments.
+
+Presenter names are also UTF-8 encoded text, let us know if there any
+spelling errors or any other infelicities with the names.
+
+The session blurb, and each of the presenter bios is UTF-8 encoded AsciiDoc
+source. The version we currently have is reproduced below. Please let us
+have any small changes and/or proposals for new markup.
+
+This material will appear on the ACCU 2018 website, and be used to create
+the paper documents at the conference.
+
+For those running full day workshops or workshop sessions, please ensure any
+information to potential attenders about what they must bring with them, and
+what software needs to be pre-loaded appears after the session blurb.
+
+££££££££ Blurb
+
+{}
+
+££££££££ Presenters
+
+{}
