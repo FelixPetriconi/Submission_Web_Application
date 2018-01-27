@@ -493,6 +493,9 @@ def generate_pages():
                 .replace('{', '')
                 .replace('}', '')
                 .replace('"', '')
+                .replace('–', '')
+                .replace('—', '')
+                .replace('&', 'and')
         )
 
     def cppmark(text):
@@ -625,7 +628,8 @@ _The schedule is subject to change without notice until {}._
                 raise ValueError('Got {} sessions for {}, {}, {}.'.format(len(ss), day, session, room))
             else:
                 assert all(p.quickie_slot is not None for p in ss)
-                the_quickies = tuple(t for q in ss for t in session_and_presenters(q) + ('', ''))
+                the_quickies = sorted(ss, key=lambda q: q.quickie_slot.value)
+                the_quickies = tuple(t for q in the_quickies for t in session_and_presenters(q) + ('', ''))
                 return single_column_entry(*the_quickies)
 
         def get_sessions(day, session):
