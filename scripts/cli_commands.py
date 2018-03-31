@@ -402,7 +402,7 @@ def ensure_consistency_of_schedule():
                 elif presenter_counter[p] == 0:
                     print('####  Session {}, {} appears to have no presenters.'.format(day, session))
             for room in Room:
-                if room == Room.bristol_suite:
+                if room == Room.bristol_suite or room == Room.wallace:  # TODO Fix Me
                     continue
                 sessions_now = tuple(s for s in sessions if s.day == day and s.session == session and s.room == room)
                 if len(sessions_now) == 0:
@@ -599,15 +599,15 @@ _The schedule is subject to change without notice until {}._
                 heading(day_names[start_date.weekday()] + ' ' + start_date.isoformat()) +
                 table(len(workshop_data) + 1,
                     row(first_column(''),
-                        single_column_entry('Bristol 3'),
                         single_column_entry('Empire'),
                         single_column_entry('SS Great Britain'),
+                        single_column_entry('Concorde'),
                         single_column_entry('Wallace')),
                     row(first_column('10:00'),
-                        single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.bristol_3)[0])),
                         single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.empire)[0])),
                         single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.great_britain)[0])),
-                        single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room is None)[0])), # TODO Fix this after schema change.
+                        single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room is None)[0])),  # Concorde  # TODO Fix Me
+                        single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.wallace)[0])),
                     )
                 )
             )
@@ -641,8 +641,9 @@ _The schedule is subject to change without notice until {}._
                 find_entry(day, session, Room.great_britain),
             )
 
-        def create_conference_day(i, id):
-            d = start_date + timedelta(days=i)
+        def create_conference_day_one():
+            d = start_date + timedelta(days=1)
+            id = ConferenceDay.day_1
             cols = len(room_names)
             schedule_write(
                 heading(day_names[d.weekday()] + ' ' + d.isoformat()) +
@@ -652,25 +653,66 @@ _The schedule is subject to change without notice until {}._
                     row(first_column('10:30'), all_columns_entry(cols ,'Break')),
                     row(first_column('11:00'), *get_sessions(id, SessionSlot.session_1)),
                     row(first_column('12:30'), all_columns_entry(cols, 'Lunch')),
+                    row(first_column('13:00'), all_columns_entry(cols, 'WIBU Workshop, Conservatory/ACCU Lounge')),
+                    row(first_column('13:45'), all_columns_entry(cols, 'Lunch')),
                     row(first_column('14:00'), *get_sessions(id, SessionSlot.session_2)),
                     row(first_column('15:30'), all_columns_entry(cols, 'Break')),
                     row(first_column('16:00'), *get_sessions(id, SessionSlot.session_3)),
                     row(first_column('17:30'), all_columns_entry(cols, 'Break')),
-                    (
-                        row(first_column('18:00'), all_columns_entry(cols, 'Lightning Talks (1 hour)')) if i == 1 or i == 3 else
-                        row(first_column('17:35'), all_columns_entry(cols, 'Lightning Talks (40 mins)'))
-                    ),
-                    (
-                        row(first_column('19:00'), all_columns_entry(cols, 'Welcome Reception')) if i == 1 else
-                        row(first_column('19:30'), all_columns_entry(cols, 'Conference Supper (19:30 for drinks, 20:00 service)')) if i == 2 else
-                        row(first_column('19:00'), all_columns_entry(cols, 'Bloomberg Event')) if i == 3 else
-                        ''
-                    ),
+                    row(first_column('18:00'), all_columns_entry(cols, 'Lightning Talks (1 hour)')),
+                    row(first_column('19:00'), all_columns_entry(cols, 'Welcome Reception'))
                 )
             )
 
-        def create_conference_last_day(i, id):
-            d = start_date + timedelta(days=i)
+        def create_conference_day_two():
+            d = start_date + timedelta(days=2)
+            id = ConferenceDay.day_2
+            cols = len(room_names)
+            schedule_write(
+                heading(day_names[d.weekday()] + ' ' + d.isoformat()) +
+                table(cols + 1,
+                    row(first_column(''), *banner(room_names)),
+                    row(first_column('09:30'), all_columns_block(cols, single_column_entry(*session_and_presenters(get_keynote(id))))),
+                    row(first_column('10:30'), all_columns_entry(cols ,'Break')),
+                    row(first_column('11:00'), *get_sessions(id, SessionSlot.session_1)),
+                    row(first_column('12:30'), all_columns_entry(cols, 'Lunch')),
+                    row(first_column('13:00'), all_columns_entry(cols, 'Code Club Workshop, Conservatory/ACCU Lounge')),
+                    row(first_column('13:45'), all_columns_entry(cols, 'Lunch')),
+                    row(first_column('14:00'), *get_sessions(id, SessionSlot.session_2)),
+                    row(first_column('15:30'), all_columns_entry(cols, 'Break')),
+                    row(first_column('16:00'), *get_sessions(id, SessionSlot.session_3)),
+                    row(first_column('17:30'), all_columns_entry(cols, 'Break')),
+                    row(first_column('17:35'), all_columns_entry(cols, 'Lightning Talks (30 minutes)')),
+                    row(first_column('19:30'), all_columns_entry(cols, 'Conference Dinner (19:30 for drinks, 20:00 service)'))
+                )
+            )
+
+        def create_conference_day_three():
+            d = start_date + timedelta(days=3)
+            id = ConferenceDay.day_3
+            cols = len(room_names)
+            schedule_write(
+                heading(day_names[d.weekday()] + ' ' + d.isoformat()) +
+                table(cols + 1,
+                    row(first_column(''), *banner(room_names)),
+                    row(first_column('09:30'), all_columns_block(cols, single_column_entry(*session_and_presenters(get_keynote(id))))),
+                    row(first_column('10:30'), all_columns_entry(cols ,'Break')),
+                    row(first_column('11:00'), *get_sessions(id, SessionSlot.session_1)),
+                    row(first_column('12:30'), all_columns_entry(cols, 'Lunch')),
+                    row(first_column('13:00'), all_columns_entry(cols, 'ACCU – The View From The Conference, Conservatory/ACCU Lounge')),
+                    row(first_column('13:45'), all_columns_entry(cols, 'Lunch')),
+                    row(first_column('14:00'), *get_sessions(id, SessionSlot.session_2)),
+                    row(first_column('15:30'), all_columns_entry(cols, 'Break')),
+                    row(first_column('16:00'), *get_sessions(id, SessionSlot.session_3)),
+                    row(first_column('17:30'), all_columns_entry(cols, 'Break')),
+                    row(first_column('18:00'), all_columns_entry(cols, 'Lightning Talks (1 hour)')),
+                    row(first_column('19:00'), all_columns_entry(cols, 'Bloomberg Event'))
+                )
+            )
+
+        def create_conference_day_four():
+            d = start_date + timedelta(days=4)
+            id = ConferenceDay.day_4
             cols = len(room_names)
             schedule_write(
                 heading(day_names[d.weekday()] + ' ' + d.isoformat()) +
@@ -681,7 +723,7 @@ _The schedule is subject to change without notice until {}._
                     row(first_column('11:30'), *get_sessions(id, SessionSlot.session_2)),
                     row(first_column('13:00'), all_columns_entry(cols, 'Lunch')),
                     row(first_column('13:30'), all_columns_entry(cols, 'ACCU AGM')),
-                    row(first_column(''), all_columns_entry(cols, '')),
+                    row(first_column('14:15'), all_columns_entry(cols, 'Lunch')),
                     row(first_column('14:30'), *get_sessions(id, SessionSlot.session_3)),
                     row(first_column('16:00'), all_columns_entry(cols, 'Break')),
                     row(first_column('16:30'), all_columns_block(cols, single_column_entry(*session_and_presenters(get_keynote(id))))),
@@ -690,10 +732,10 @@ _The schedule is subject to change without notice until {}._
             )
 
         create_workshops_day()
-        create_conference_day(1, ConferenceDay.day_1)
-        create_conference_day(2, ConferenceDay.day_2)
-        create_conference_day(3, ConferenceDay.day_3)
-        create_conference_last_day(4, ConferenceDay.day_4)
+        create_conference_day_one()
+        create_conference_day_two()
+        create_conference_day_three()
+        create_conference_day_four()
 
 
 @app.cli.command()
