@@ -53,7 +53,8 @@ class AdministeringDatabase(_Base):
 
 
 class APIAccessOpen(_Base):
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + str(database_path)
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + str(_Base.database_path)
     API_ACCESS = True
+
 
 Config = ApplicationOff

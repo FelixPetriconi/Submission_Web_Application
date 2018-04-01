@@ -43,3 +43,5 @@ geckodriver.log
 /cov_html_accuconf_api/
 /cov_html_accuconf_cfp/
 /cov_html_accuconf_cfp__selenium/
+
+.pytest_cache/

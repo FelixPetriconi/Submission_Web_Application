@@ -22,7 +22,7 @@ def test_api_not_open_index(client, monkeypatch):
 
 
 def test_api_not_open_presentations(client, monkeypatch):
-    get_and_check_content(client, '/presentations', 302, ('Redirect', '<a href="/">',))
+    get_and_check_content(client, '/sessions', 302, ('Redirect', '<a href="/">',))
 
 
 def test_api_not_open_presenters(client, monkeypatch):
