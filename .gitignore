@@ -6,7 +6,7 @@ __pycache__/
 *.py[cod]
 
 # The SQLite databases
-/accuconf*.db
+/accuconf*.db*
 
 # Committee member emails
 /scripts/committee_email.txt
@@ -24,6 +24,7 @@ __pycache__/
 
 # The configuration files, they are per server local files
 accuconf_config*.py
+accuconf_api_config*.py
 
 # PyCharm project directory
 /.idea/

@@ -53,9 +53,7 @@ class AdministeringDatabase(_Base):
 
 
 class APIAccessOpen(_Base):
-    database_path = _Base.here.parent / 'accuconf_api.db'
-    SQLALCHEMY_DATABASE_URI = "sqlite:///" + str(database_path)
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + str(database_path)
     API_ACCESS = True
-
 
 Config = ApplicationOff

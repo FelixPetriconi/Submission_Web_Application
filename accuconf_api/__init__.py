@@ -7,7 +7,7 @@ from flask_nav.elements import Navbar
 from flask_sqlalchemy import SQLAlchemy
 
 try:
-    from accuconf_config import Config
+    from accuconf_api_config import Config
 except ImportError:
     from models.configuration import Config
 
@@ -31,8 +31,9 @@ nav.init_app(app)
 # NB Some of these imports rely on accuconf.app and accuconf.db so they must
 # be included after the definition of those symbols.
 sys.modules['accuconf'] = sys.modules['accuconf_api']
-# Not apparently used but has to be loaded, and here is good.
+# Not apparently used but they have to be loaded, and here is good.
 from models.user import User
+from models.score import Score
 from models.proposal import Presenter, Proposal
 
 
@@ -51,60 +52,64 @@ def index():
     })
 
 
-def presentation_to_json(presentation):
+def session_to_json(session):
     result = {
-        'id': presentation.id,
-        'title': presentation.title,
-        'text': presentation.text,
-        'day': presentation.day.value,
-        'session': presentation.session.value,
-        'room': presentation.room.value,
+        'id': session.id,
+        'title': session.title,
+        'summary': session.summary,
+        'day': session.day.value,
+        'session': session.session.value,
+        'room': session.room.value,
         # 'track': presentation.track.value,
         'presenters': [
-            presenter.presenter.id
-            for presenter in presentation.presenters
+            presenter.id
+            for presenter in session.presenters
         ]
     }
-    if presentation.quickie_slot:
-        result['quickie_slot'] = presentation.quickie_slot.value
+    if session.quickie_slot:
+        result['quickie_slot'] = session.quickie_slot.value
     return result
 
 
 def presenter_to_json(presenter):
     return {
         'id': presenter.id,
-        'last_name': presenter.last_name,
-        'first_name': presenter.first_name,
+        'name': presenter.name,
         'bio': presenter.bio,
         'country': presenter.country,
-        'state': presenter.state
     }
 
 
-def scheduled_presentations():
-    return Proposal.query.filter(Proposal.day is not None, Proposal.session is not None).all()
+def scheduled_sessions():
+    # TODO Why does this query return all the proposals not just the scheduled ones?
+    # return Proposal.query.filter(Proposal.day is not None, Proposal.session is not None).all()
+    return [
+        proposal
+        for proposal in Proposal.query.all()
+        if proposal.day is not None  and proposal.session is not None
+    ]
 
 
-@app.route("/presentations", methods=['GET'])
+@app.route("/sessions", methods=['GET'])
 @cross_origin()
-def scheduled_presentations_view():
+def sessions_view():
     if not app.config['API_ACCESS']:
         return redirect('/')
     prop_info = [
-        presentation_to_json(prop)
-        for prop in scheduled_presentations()
+        session_to_json(prop)
+        for prop in scheduled_sessions()
     ]
     return jsonify(prop_info)
 
 
 @app.route("/presenters", methods=["GET"])
 @cross_origin()
-def schedule_presenters_view():
+def presenters_view():
     if not app.config['API_ACCESS']:
         return redirect('/')
     scheduled_presenter_ids = {
-        presenter.presenter.id
-        for prop in scheduled_presentations()
+        presenter.id
+        for prop in scheduled_sessions()
         for presenter in prop.presenters
     }
     json = [
