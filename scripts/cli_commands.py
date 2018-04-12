@@ -654,12 +654,12 @@ _The schedule is subject to change without notice until {}._
                     row(first_column('11:00'), *get_sessions(id, SessionSlot.session_1)),
                     row(first_column('12:30'), all_columns_entry(cols, 'Lunch')),
                     row(first_column('13:00'), all_columns_entry(cols, 'WIBU Workshop, Conservatory/ACCU Lounge')),
-                    row(first_column('13:45'), all_columns_entry(cols, 'Lunch')),
+                    row(first_column('13:45'), all_columns_entry(cols, '')),
                     row(first_column('14:00'), *get_sessions(id, SessionSlot.session_2)),
                     row(first_column('15:30'), all_columns_entry(cols, 'Break')),
                     row(first_column('16:00'), *get_sessions(id, SessionSlot.session_3)),
                     row(first_column('17:30'), all_columns_entry(cols, 'Break')),
-                    row(first_column('18:00'), all_columns_entry(cols, 'Lightning Talks (1 hour)')),
+                    row(first_column('18:00'), all_columns_entry(cols, 'Lightning Talks (1 hour, Bristol Suite)')),
                     row(first_column('19:00'), all_columns_entry(cols, 'Welcome Reception'))
                 )
             )
@@ -677,12 +677,12 @@ _The schedule is subject to change without notice until {}._
                     row(first_column('11:00'), *get_sessions(id, SessionSlot.session_1)),
                     row(first_column('12:30'), all_columns_entry(cols, 'Lunch')),
                     row(first_column('13:00'), all_columns_entry(cols, 'Code Club Workshop, Conservatory/ACCU Lounge')),
-                    row(first_column('13:45'), all_columns_entry(cols, 'Lunch')),
+                    row(first_column('13:45'), all_columns_entry(cols, '')),
                     row(first_column('14:00'), *get_sessions(id, SessionSlot.session_2)),
                     row(first_column('15:30'), all_columns_entry(cols, 'Break')),
                     row(first_column('16:00'), *get_sessions(id, SessionSlot.session_3)),
                     row(first_column('17:30'), all_columns_entry(cols, 'Break')),
-                    row(first_column('17:35'), all_columns_entry(cols, 'Lightning Talks (30 minutes)')),
+                    row(first_column('18:00'), all_columns_entry(cols, 'Lightning Talks (1 hour, Empire)')),
                     row(first_column('19:30'), all_columns_entry(cols, 'Conference Dinner (19:30 for drinks, 20:00 service)'))
                 )
             )
@@ -700,12 +700,12 @@ _The schedule is subject to change without notice until {}._
                     row(first_column('11:00'), *get_sessions(id, SessionSlot.session_1)),
                     row(first_column('12:30'), all_columns_entry(cols, 'Lunch')),
                     row(first_column('13:00'), all_columns_entry(cols, 'ACCU – The View From The Conference, Conservatory/ACCU Lounge')),
-                    row(first_column('13:45'), all_columns_entry(cols, 'Lunch')),
+                    row(first_column('13:45'), all_columns_entry(cols, '')),
                     row(first_column('14:00'), *get_sessions(id, SessionSlot.session_2)),
                     row(first_column('15:30'), all_columns_entry(cols, 'Break')),
                     row(first_column('16:00'), *get_sessions(id, SessionSlot.session_3)),
                     row(first_column('17:30'), all_columns_entry(cols, 'Break')),
-                    row(first_column('18:00'), all_columns_entry(cols, 'Lightning Talks (1 hour)')),
+                    row(first_column('18:00'), all_columns_entry(cols, 'Lightning Talks (1 hour, Bristol Suite)')),
                     row(first_column('19:00'), all_columns_entry(cols, 'Bloomberg Event'))
                 )
             )
@@ -723,7 +723,7 @@ _The schedule is subject to change without notice until {}._
                     row(first_column('11:30'), *get_sessions(id, SessionSlot.session_2)),
                     row(first_column('13:00'), all_columns_entry(cols, 'Lunch')),
                     row(first_column('13:30'), all_columns_entry(cols, 'ACCU AGM')),
-                    row(first_column('14:15'), all_columns_entry(cols, 'Lunch')),
+                    row(first_column('14:15'), all_columns_entry(cols, '')),
                     row(first_column('14:30'), *get_sessions(id, SessionSlot.session_3)),
                     row(first_column('16:00'), all_columns_entry(cols, 'Break')),
                     row(first_column('16:30'), all_columns_block(cols, single_column_entry(*session_and_presenters(get_keynote(id))))),
