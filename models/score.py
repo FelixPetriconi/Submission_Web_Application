@@ -18,12 +18,26 @@ class Score(db.Model):
         self.score = score
 
 
-class Comment(db.Model):
+class CommentForProposer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     proposal_id = db.Column(db.Integer, db.ForeignKey('proposal.id'))
     commenter_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    proposal = db.relationship('Proposal', back_populates='comments')
-    commenter = db.relationship('User', back_populates='comments')
+    proposal = db.relationship('Proposal', back_populates='comments_for_proposer')
+    commenter = db.relationship('User', back_populates='comments_for_proposer')
+    comment = db.Column(db.Text)
+
+    def __init__(self, proposal, commenter, comment):
+        self.proposal = proposal
+        self.commenter = commenter
+        self.comment = comment
+
+
+class CommentForCommittee(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    proposal_id = db.Column(db.Integer, db.ForeignKey('proposal.id'))
+    commenter_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    proposal = db.relationship('Proposal', back_populates='comments_for_committee')
+    commenter = db.relationship('User', back_populates='comments_for_committee')
     comment = db.Column(db.Text)
 
     def __init__(self, proposal, commenter, comment):

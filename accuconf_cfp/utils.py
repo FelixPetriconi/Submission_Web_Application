@@ -18,6 +18,7 @@ from accuconf_cfp import app, countries
 from models.user import User
 from models.role_types import Role
 
+
 def hash_passphrase(text):
     """Function for 'encrypting' a passphrase before putting it into the database."""
     return hashlib.sha512(text.encode('utf-8')).hexdigest()

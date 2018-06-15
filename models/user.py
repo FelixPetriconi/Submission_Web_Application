@@ -16,7 +16,8 @@ class User(db.Model):
     phone = db.Column(db.String(18), nullable=True)  # ITU E.165 limits numbers to 15 digits
     proposals = db.relationship('Proposal', back_populates='proposer')
     scores = db.relationship('Score', back_populates='scorer')
-    comments = db.relationship('Comment', back_populates='commenter')
+    comments_for_proposer = db.relationship('CommentForProposer', back_populates='commenter')
+    comments_for_committee = db.relationship('CommentForCommittee', back_populates='commenter')
 
     def __init__(self, email, passphrase, name, country, phone=None, role=Role.user):
         self.email = email

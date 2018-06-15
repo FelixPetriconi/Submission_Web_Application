@@ -8,7 +8,7 @@ from accuconf_cfp.utils import is_acceptable_route, is_logged_in, md
 from models.proposal import Proposal
 from models.proposal_types import sessiontype_descriptions
 from models.role_types import Role
-from models.score import Comment, Score
+from models.score import CommentForProposer, CommentForCommittee, Score
 from models.user import User
 
 base_page = {
@@ -98,12 +98,18 @@ def review_proposal(id):
                 score[0].score = review_data['score']
             else:
                 db.session.add(Score(proposal, reviewer, review_data['score']))
-            if review_data['comment']:
-                comment = Comment.query.filter_by(proposal=proposal, commenter=reviewer).all()
+            if review_data['comment_for_proposer']:
+                comment = CommentForProposer.query.filter_by(proposal=proposal, commenter=reviewer).all()
                 if comment:
-                    comment[0].comment = review_data['comment']
+                    comment[0].comment = review_data['comment_for_proposer']
                 else:
-                    db.session.add(Comment(proposal, reviewer, review_data['comment']))
+                    db.session.add(CommentForProposer(proposal, reviewer, review_data['comment_for_proposer']))
+            if review_data['comment_for_committee']:
+                comment = CommentForCommittee.query.filter_by(proposal=proposal, commenter=reviewer).all()
+                if comment:
+                    comment[0].comment = review_data['comment_for_committee']
+                else:
+                    db.session.add(CommentForCommittee(proposal, reviewer, review_data['comment_for_committee']))
             db.session.commit()
             return jsonify('Review stored.')
         if not reviewer:
@@ -125,14 +131,18 @@ def review_proposal(id):
         proposal = Proposal.query.filter_by(id=id).first()
         presenters = [{'name': p.name, 'bio': p.bio} for p in proposal.presenters]
         score = ''
-        comment = ''
+        comment_for_proposer = ''
+        comment_for_committee = ''
         if already_reviewed(proposal, reviewer):
             scores = [s for s in reviewer.scores if s.proposal == proposal]
             assert len(scores) == 1
             score = scores[0].score
-            comments = [c for c in reviewer.comments if c.proposal == proposal]
-            if comments:
-                comment = comments[0].comment
+            comments_for_proposer = [c for c in reviewer.comments_for_proposer if c.proposal == proposal]
+            if comments_for_proposer:
+                comment_for_proposer = comments_for_proposer[0].comment
+            comments_for_committee = [c for c in reviewer.comments_for_committee if c.proposal == proposal]
+            if comments_for_committee:
+                comment_for_committee = comments_for_committee[0].comment
         has_next = id < number_of_proposals
         if has_next:
             for i in range(id + 1, number_of_proposals + 1):
@@ -159,7 +169,8 @@ def review_proposal(id):
             'presenters': presenters,
             'button_label': 'Submit' if not score else 'Update',
             'score': score,
-            'comment': comment,
+            'comment_for_proposer': comment_for_proposer,
+            'comment_for_committee': comment_for_committee,
             'has_previous': has_previous,
             'has_next': has_next,
         }))

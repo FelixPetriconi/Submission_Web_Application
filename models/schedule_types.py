@@ -24,11 +24,6 @@ class QuickieSlot(Enum):
     slot_4 = 'slot_4'
 
 
-class Track(Enum):
-    cpp = 'cpp'
-    other = 'other'
-
-
 class Room(Enum):
     bristol_suite = 'bristol_suite'
     bristol_1 = 'bristol_1'
@@ -37,3 +32,4 @@ class Room(Enum):
     empire = 'empire'
     great_britain = 'great_britain'
     wallace = 'wallace'
+    concorde = 'concorde'

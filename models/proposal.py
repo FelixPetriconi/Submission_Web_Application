@@ -6,7 +6,7 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from accuconf import db
 
 from models.proposal_types import SessionType, ProposalState, SessionAudience
-from models.schedule_types import ConferenceDay, SessionSlot, QuickieSlot, Track, Room
+from models.schedule_types import ConferenceDay, SessionSlot, QuickieSlot, Room
 
 
 class Proposal(db.Model):
@@ -22,23 +22,19 @@ class Proposal(db.Model):
     audience = db.Column(db.Enum(SessionAudience), nullable=False)
     category = db.Column(db.String(100), nullable=True)
     scores = db.relationship('Score', back_populates='proposal')
-    comments = db.relationship('Comment', back_populates='proposal')
+    comments_for_proposer = db.relationship('CommentForProposer', back_populates='proposal')
+    comments_for_committee = db.relationship('CommentForCommittee', back_populates='proposal')
     status = db.Column(db.Enum(ProposalState), nullable=False)
     # day, session, quickie_slot, track, room, slides_pdf, video_url are only non empty
     # when status is accepted.
     day = db.Column(db.Enum(ConferenceDay))
     session = db.Column(db.Enum(SessionSlot))
     quickie_slot = db.Column(db.Enum(QuickieSlot)) # Only not empty if session_type == quickie.
-    track = db.Column(db.Enum(Track))
     room = db.Column(db.Enum(Room))
-    # slides_pdf and video_url can only be completed after the conference.
-    slides_pdf = db.Column(db.String(100))
-    video_url = db.Column(db.String(100))
 
     def __init__(self, proposer, title, session_type, summary, notes='', constraints='',
                  audience=SessionAudience.all, category='', status=ProposalState.submitted,
-                 day=None, session=None, quickie_slot=None, track=None, room=None,
-                 slides_pdf=None, video_url=None):
+                 day=None, session=None, quickie_slot=None, room=None):
         self.proposer = proposer
         self.title = title
         self.session_type = session_type
@@ -51,10 +47,7 @@ class Proposal(db.Model):
         self.day = day
         self.session = session
         self.quickie_slot = quickie_slot
-        self.track = track
         self.room = room
-        self.slides_pdf = slides_pdf
-        self.video_url = video_url
 
 
 class Presenter(db.Model):

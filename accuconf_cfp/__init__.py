@@ -15,7 +15,7 @@ from flask_nav.elements import Navbar, View
 from flask_sqlalchemy import SQLAlchemy
 
 try:
-    from accuconf_config import Config
+    from accuconf_cfp_config import Config
 except ImportError:
     from models.configuration import Config
 

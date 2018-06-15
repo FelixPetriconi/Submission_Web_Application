@@ -8,7 +8,7 @@ import configure
 
 from models.user import User
 from models.proposal import Proposal, Presenter, ProposalPresenter
-from models.score import Score, Comment
+from models.score import Score, CommentForProposer
 from models.proposal_types import SessionType, ProposalState, SessionAudience
 
 from fixtures import registrant
@@ -83,12 +83,12 @@ def test_adding_review_and_comment_to_proposal_in_database(database):
     presenter = Presenter(**presenter_data)
     ProposalPresenter(proposal, presenter, True)
     score = Score(proposal, user, 10)
-    comment = Comment(proposal, user, 'Perfect')
+    comment_for_proposer = CommentForProposer(proposal, user, 'Perfect')
     database.session.add(user)
     database.session.add(proposal)
     database.session.add(presenter)
     database.session.add(score)
-    database.session.add(comment)
+    database.session.add(comment_for_proposer)
     database.session.commit()
     query_result = Proposal.query.filter_by(proposer=user).all()
     assert len(query_result) == 1
@@ -96,6 +96,6 @@ def test_adding_review_and_comment_to_proposal_in_database(database):
     assert proposal.scores is not None
     assert len(proposal.scores) == 1
     assert proposal.scores[0].score == 10
-    assert proposal.comments is not None
-    assert len(proposal.comments) == 1
-    assert proposal.comments[0].comment == 'Perfect'
+    assert proposal.comments_for_proposer is not None
+    assert len(proposal.comments_for_proposer) == 1
+    assert proposal.comments_for_proposer[0].comment == 'Perfect'

@@ -90,8 +90,8 @@ lengthy proposal''',
 def proposal_multiple_presenters_single_lead():
     return {
         'title': 'A multi presenter proposal',
-        'session_type': 'miniworkshop',
-        'summary': '''This is a proposal for a miniworkshop that has
+        'session_type': 'workshop',
+        'summary': '''This is a proposal for a workshop that has
 dummy data. Also this is not a very
 lengthy proposal''',
         'presenters': [

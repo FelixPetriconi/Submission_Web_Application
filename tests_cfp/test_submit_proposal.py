@@ -202,7 +202,7 @@ def test_logged_in_user_can_submit_multipresenter_single_lead_proposal(client, r
     assert len(user.proposals) == 1
     proposal = user.proposals[0]
     assert proposal is not None
-    assert proposal.session_type == SessionType.miniworkshop
+    assert proposal.session_type == SessionType.workshop
     presenters = proposal.presenters
     proposal_presenters = proposal.proposal_presenters
     assert len(presenters) == 2
@@ -352,7 +352,7 @@ def test_logged_in_user_can_update_a_previously_submitted_multiple_presenter_pro
     proposal = user.proposals[0]
     assert proposal is not None
     assert proposal.title == alternate_title
-    assert proposal.session_type == SessionType.miniworkshop
+    assert proposal.session_type == SessionType.workshop
     presenters = proposal.presenters
     proposal_presenters = proposal.proposal_presenters
     assert len(presenters) == 2

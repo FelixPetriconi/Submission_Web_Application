@@ -11,7 +11,7 @@ import time
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
-from seleniumrequests import Chrome
+from seleniumrequests import Chrome, Firefox
 
 
 @pytest.fixture(scope='module', autouse=True)
@@ -39,15 +39,22 @@ def server():
 
 @pytest.fixture(scope='module')
 def driver():
-    capabilities = DesiredCapabilities.CHROME
-    capabilities['loggingPrefs'] = {
-        'browser': 'ALL',
-        # 'driver': 'ALL',
-    }
-    options = webdriver.ChromeOptions()
-    options.add_argument('headless')
-    wd = Chrome(chrome_options=options, desired_capabilities=capabilities)
+    use_chromedriver = False
+    if use_chromedriver:
+        capabilities = DesiredCapabilities.CHROME
+        capabilities['loggingPrefs'] = {
+            'browser': 'ALL',
+            # 'driver': 'ALL',
+        }
+        options = webdriver.ChromeOptions()
+        options.add_argument('headless')
+        wd = Chrome(chrome_options=options, desired_capabilities=capabilities)
+    else:
+        options = webdriver.FirefoxOptions()
+        options.add_argument('--headless')
+        wd = Firefox(firefox_options=options)
     yield wd
-    print('Browser', wd.get_log('browser'))
-    # print('Driver', wd.get_log('driver'))
+    if use_chromedriver:
+        print('Browser', wd.get_log('browser'))
+        # print('Driver', wd.get_log('driver'))
     wd.quit()

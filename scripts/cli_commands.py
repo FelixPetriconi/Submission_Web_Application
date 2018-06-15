@@ -33,9 +33,9 @@ from accuconf_cfp.utils import hash_passphrase
 
 from models.user import User
 from models.proposal import Proposal, Presenter, ProposalPresenter
-from models.score import Score, Comment
+from models.score import Score, CommentForProposer
 from models.proposal_types import SessionType, ProposalState, SessionAudience
-from models.schedule_types import ConferenceDay, SessionSlot, QuickieSlot, Track, Room
+from models.schedule_types import ConferenceDay, SessionSlot, QuickieSlot, Room
 from models.role_types import Role
 
 from test_utils.fixtures import registrant, proposal_single_presenter, proposal_multiple_presenters_single_lead
@@ -47,6 +47,7 @@ start_date = date(2018, 4, 10)  # The day of the full-day pre-conference worksho
 @app.cli.command()
 def db_init():
     """Create an initial database."""
+    db.drop_all()
     db.create_all()
 
 
@@ -57,17 +58,18 @@ def db_init_add_sample_data():
     This is a function for creating a database for manual experimentation
     and testing of the application UI and UX.
     """
+    db.drop_all()
     db.create_all()
     user_data = registrant()
     del user_data['cpassphrase']
-    user_data['passphrase'] = hash_passphrase('yes and no')
+    user_data['passphrase'] = 'yes and no'
     add_new_user(user_data)
     add_a_proposal_as_user(user_data['email'], proposal_single_presenter())
     add_a_proposal_as_user(user_data['email'], proposal_multiple_presenters_single_lead())
     russel_email = 'russel@winder.org.uk'
     add_new_user({
         'email': russel_email,
-        'passphrase': hash_passphrase('yes and no'),
+        'passphrase': 'yes and no',
         'name': 'Russel Winder',
         'phone': '+442075852200',
         'country': 'United Kingdom',
@@ -333,8 +335,6 @@ def check_database_consistency():
             print('#### Proposal {} has session {}'.format(p.title, p.session))
         if p.quickie_slot is not None and p.quickie_slot not in QuickieSlot:
             print('#### Proposal {} has quickie_slot {}'.format(p.title, p.quickie_slot))
-        if p.track is not None and p.track not in Track:
-            print('#### Proposal {} has track {}'.format(p.title, p.track))
         if p.room is not None and p.room not in Room:
             print('#### Proposal {} has room {}'.format(p.title, p.room))
     for p in Presenter.query.all():

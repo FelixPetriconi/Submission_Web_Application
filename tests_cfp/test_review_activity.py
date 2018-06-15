@@ -173,7 +173,7 @@ def test_logged_in_reviewer_can_get_review_proposal_for_not_own_entries(client, 
 
 def test_logged_in_reviewer_can_submit_score_for_not_own_entries(client, registrant, monkeypatch):
     test_logged_in_reviewer_can_get_review_proposal_for_not_own_entries(client, registrant, monkeypatch)
-    post_and_check_content(client, '/review_proposal/1', json.dumps({'score': 7, 'comment': ''}), 'application/json',
+    post_and_check_content(client, '/review_proposal/1', json.dumps({'score': 7, 'comment_for_proposer': '', 'comment_for_committee': ''}), 'application/json',
                            includes=('Review stored.',),
                            excludes=(),
                            )
@@ -181,7 +181,7 @@ def test_logged_in_reviewer_can_submit_score_for_not_own_entries(client, registr
 
 def test_logged_in_reviewer_can_update_a_review(client, registrant, monkeypatch):
     test_logged_in_reviewer_can_submit_score_for_not_own_entries(client, registrant, monkeypatch)
-    post_and_check_content(client, '/review_proposal/1', json.dumps({'score': 6, 'comment': 'Not really very good.'}), 'application/json',
+    post_and_check_content(client, '/review_proposal/1', json.dumps({'score': 6, 'comment_for_proposer': 'Not up to our standard.', 'comment_for_committee': 'rubbish.'}), 'application/json',
                            includes=('Review stored.',),
                            excludes=(),
                            )

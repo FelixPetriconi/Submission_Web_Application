@@ -71,7 +71,8 @@ def test_logged_in_reviewer_can_get_review_list(driver, reviewer):
 
 
 typed_score = '7'
-typed_comment = 'An OK proposal but…'
+typed_comment_for_proposer = 'An OK proposal but…'
+typed_comment_for_committee = 'Crap'
 
 
 def test_logged_in_reviewer_can_review_submitted_proposal(driver, registrant, proposal_single_presenter, reviewer):
@@ -86,7 +87,8 @@ def test_logged_in_reviewer_can_review_submitted_proposal(driver, registrant, pr
     link.click()
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal to Review'))
     driver.find_element_by_id('score').send_keys(typed_score)
-    driver.find_element_by_id('comment').send_keys(typed_comment)
+    driver.find_element_by_id('comment-for-proposer').send_keys(typed_comment_for_proposer)
+    driver.find_element_by_id('comment-for-committee').send_keys(typed_comment_for_committee)
     submit_button = wait.until(ecs.element_to_be_clickable((By.ID, 'submit')))
     assert 'Submit' == submit_button.text
     assert 'submitScoreAndComment(1)' == submit_button.get_attribute('onclick')
@@ -94,7 +96,8 @@ def test_logged_in_reviewer_can_review_submitted_proposal(driver, registrant, pr
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal to Review'))
     assert 'Review stored.' == driver.find_element_by_id('alert').text
     assert typed_score == driver.find_element_by_id('score').get_attribute('value')
-    assert typed_comment == driver.find_element_by_id('comment').get_attribute('value')
+    assert typed_comment_for_proposer == driver.find_element_by_id('comment-for-proposer').get_attribute('value')
+    assert typed_comment_for_committee == driver.find_element_by_id('comment-for-committee').get_attribute('value')
     logout_user(driver, reviewer)
 
 
@@ -143,7 +146,8 @@ def test_logged_in_reviewer_can_move_to_previous_proposal(driver):
     assert base_url + 'review_proposal/1' == driver.current_url
     # This is a scored proposal so make sure the scores are present.
     assert typed_score == driver.find_element_by_id('score').get_attribute('value')
-    assert typed_comment == driver.find_element_by_id('comment').text
+    assert typed_comment_for_proposer == driver.find_element_by_id('comment-for-proposer').text
+    assert typed_comment_for_committee == driver.find_element_by_id('comment-for-committee').text
 
 
 def test_logged_in_reviewer_cannot_move_to_previous_unscored_proposal_if_they_have_reviewed_them_all(driver):
@@ -167,13 +171,17 @@ def test_amending_a_score_doesnt_create_a_second_score_object(driver):
     wait = WebDriverWait(driver, driver_wait_time)
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal to Review'))
     new_score = '8'
-    new_comment = 'A different comment.'
+    new_comment_for_proposer = 'OK_ish.'
+    new_comment_for_committee = 'Not entirely crap.'
     score_node = driver.find_element_by_id('score')
     score_node.clear()
     score_node.send_keys(new_score)
-    comment_node = driver.find_element_by_id('comment')
-    comment_node.clear()
-    comment_node.send_keys(new_comment)
+    comment_for_proposer_node = driver.find_element_by_id('comment-for-proposer')
+    comment_for_proposer_node.clear()
+    comment_for_proposer_node.send_keys(new_comment_for_proposer)
+    comment_for_committee_node = driver.find_element_by_id('comment-for-committee')
+    comment_for_committee_node.clear()
+    comment_for_committee_node.send_keys(new_comment_for_committee)
     submit_button = wait.until(ecs.element_to_be_clickable((By.ID, 'submit')))
     assert 'Update' == submit_button.text
     assert 'submitScoreAndComment(1)' == submit_button.get_attribute('onclick')
@@ -181,7 +189,8 @@ def test_amending_a_score_doesnt_create_a_second_score_object(driver):
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal to Review'))
     assert 'Review stored.' == driver.find_element_by_id('alert').text
     assert new_score == driver.find_element_by_id('score').get_attribute('value')
-    assert new_comment == driver.find_element_by_id('comment').get_attribute('value')
+    assert new_comment_for_proposer == driver.find_element_by_id('comment-for-proposer').get_attribute('value')
+    assert new_comment_for_committee == driver.find_element_by_id('comment-for-committee').get_attribute('value')
     next_button = wait.until(ecs.element_to_be_clickable((By.ID, 'review-next')))
     assert 'Next' == next_button.text
     assert 'navigateNext(1)' == next_button.get_attribute('onclick')
@@ -198,4 +207,5 @@ def test_amending_a_score_doesnt_create_a_second_score_object(driver):
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Proposal to Review'))
     assert base_url + 'review_proposal/1' == driver.current_url
     assert new_score == driver.find_element_by_id('score').get_attribute('value')
-    assert new_comment == driver.find_element_by_id('comment').text
+    assert new_comment_for_proposer == driver.find_element_by_id('comment-for-proposer').text
+    assert new_comment_for_committee == driver.find_element_by_id('comment-for-committee').text

@@ -6,8 +6,8 @@ from enum import Enum
 class SessionType(Enum):
     fulldayworkshop = 'fulldayworkshop'
     session = 'session'
-    miniworkshop = 'miniworkshop'
     workshop = 'workshop'
+    longworkshop = 'longworkshop'
     quickie = 'quickie'
     keynote = 'keynote'
 
@@ -15,8 +15,8 @@ class SessionType(Enum):
 sessiontype_descriptions = {
     SessionType.fulldayworkshop: 'A full day, pre-conference workshop.',
     SessionType.session: 'A 90 minute presentation session with questions.',
-    SessionType.miniworkshop: 'A 90 minute workshop with active attender participation.',
-    SessionType.workshop: 'A 180 minute workshop with active attender participation.',
+    SessionType.workshop: 'A 90 minute workshop with active attender participation.',
+    SessionType.longworkshop: 'A 180 minute workshop with active attender participation.',
     SessionType.quickie: 'A 20 minute presentation.',
     SessionType.keynote: 'A 60 minute keynote presentation.',
 }

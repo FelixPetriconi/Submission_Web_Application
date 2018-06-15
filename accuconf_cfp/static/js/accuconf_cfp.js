@@ -459,9 +459,11 @@ function addNewPresenter() {
 function submitScoreAndComment(id) {
 	$('#alert').text('')
 	$('#score_alert').text('')
-	$('#comment_alert').text('')
+	$('#comment_for_proposer_alert').text('')
+	$('#comment_for_committee_alert').text('')
 	const score = $('#score').val()
-	const comment = $('#comment').val()
+	const comment_for_proposer = $('#comment-for-proposer').val()
+	const comment_for_committee = $('#comment-for-committee').val()
 	if (score) {
 		$('#alert').text('Submitting login details.')
 		$.ajax({
@@ -469,7 +471,8 @@ function submitScoreAndComment(id) {
 			url: `/review_proposal/${id}`,
 			data: JSON.stringify({
 				'score': score,
-				'comment': comment,
+				'comment_for_proposer': comment_for_proposer,
+				'comment_for_committee': comment_for_committee,
 			}),
 			dataType: 'json',
 			contentType: 'application/json',

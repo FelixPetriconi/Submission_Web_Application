@@ -12,7 +12,7 @@ from flask_admin.form.fields import Select2Field
 # TODO Hassle the maintainers to fix this and then remove the workarounds.
 
 from utils.proposals import SessionType, ProposalState, SessionAudience
-from utils.schedule import ConferenceDay, SessionSlot, QuickieSlot, Track, Room
+from utils.schedule import ConferenceDay, SessionSlot, QuickieSlot, Room
 
 
 def _create_enum_selector(enum_class, default):
@@ -46,7 +46,6 @@ class ProposalsAdmin(ModelView):
         'day',
         'session',
         'quickie_slot',
-        'track',
         'room',
         'slides_pdf',
         'video_url',
@@ -59,7 +58,6 @@ class ProposalsAdmin(ModelView):
         'x_day',
         'x_session',
         'x_quickie_slot',
-        'x_track',
         'x_room',
         'slides_pdf',
         'video_url',
@@ -71,7 +69,6 @@ class ProposalsAdmin(ModelView):
         'x_day': _create_enum_selector(ConferenceDay, ConferenceDay.day_1),
         'x_session': _create_enum_selector(SessionSlot, SessionSlot.session_1),
         'x_quickie_slot': _create_enum_selector(QuickieSlot, QuickieSlot.slot_1),
-        'x_track': _create_enum_selector(Track, Track.other),
         'x_room': _create_enum_selector(Room, Room.bristol_1),
     }
 
