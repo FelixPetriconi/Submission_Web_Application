@@ -41,7 +41,7 @@ from models.role_types import Role
 from test_utils.fixtures import registrant, proposal_single_presenter, proposal_multiple_presenters_single_lead
 from test_utils.functions import add_a_proposal_as_user, add_new_user
 
-start_date = date(2018, 4, 10)  # The day of the full-day pre-conference workshops
+start_date = date(2019, 4, 9)  # The day of the full-day pre-conference workshops
 
 
 @app.cli.command()
