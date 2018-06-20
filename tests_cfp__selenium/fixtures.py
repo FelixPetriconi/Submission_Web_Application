@@ -39,7 +39,7 @@ def server():
 
 @pytest.fixture(scope='module')
 def driver():
-    use_chromedriver = False
+    use_chromedriver = True
     if use_chromedriver:
         capabilities = DesiredCapabilities.CHROME
         capabilities['loggingPrefs'] = {
