@@ -10,6 +10,14 @@
     color: red;
 }
 
+.img-float-left {
+    float: left;
+}
+
+.img-float-right {
+    float: right;
+}
+
 #footer {
     color: black;
     background-color: #eeeeee;

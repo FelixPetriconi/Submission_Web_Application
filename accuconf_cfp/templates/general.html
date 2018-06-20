@@ -1,15 +1,17 @@
+{# -*- mode: jinja2; coding: utf-8; -*- #}
+
 {% extends "base.html" %}
 {% block content %}
-<div class="row">
-	<div class="pagetitle">
-		ACCU {{page.year}} – {{page.pagetitle}}
+	<div class="row">
+		<div class="pagetitle">
+			ACCU {{page.year}} – {{page.pagetitle}}
+		</div>
 	</div>
-</div>
-<div class="row">
-	<div class="container-fluid">
-		<p class="first">
-			{{page.data}}
-		</p>
+	<div class="row">
+		<div class="container-fluid">
+			<p class="first">
+				{{page.data}}
+			</p>
+		</div>
 	</div>
-</div>
 {% endblock %}

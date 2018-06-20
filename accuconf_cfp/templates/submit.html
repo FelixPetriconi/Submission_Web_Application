@@ -1,190 +1,192 @@
+{# -*- mode: jinja2; coding: utf-8; -*- #}
+
 {% extends "base.html" %}
 {% block content %}
-<div class="row">
-	<div class="pagetitle">
-		ACCU {{page.year}} – {{page.pagetitle}}
+	<div class="row">
+		<div class="pagetitle">
+			ACCU {{page.year}} – {{page.pagetitle}}
+		</div>
 	</div>
-</div>
-<div class="row">
-	<div class="container-fluid">
-		<p class="first">
-			{{page.data}}
-		</p>
+	<div class="row">
+		<div class="container-fluid">
+			<p class="first">
+				{{page.data}}
+			</p>
+		</div>
 	</div>
-</div>
-<div class="row">
-	<div class="container-fluid">
-		<p class="alert" id="alert"></p>
+	<div class="row">
+		<div class="container-fluid">
+			<p class="alert" id="alert"></p>
+		</div>
 	</div>
-</div>
-<div class="row">
-	<div class="container-fluid">
-		<form class="form-horizontal" id="proposal_form">
-			<div class="form-group">
-				<label for="title" class="control-label col-sm-3">Title</label>
-				<div class="col-sm-8">
-					<input type="text" name="title" id="title" size="50" value="{{page.title}}" placeholder="Title (minimum 8 characters) this will be published.">
-					<span class="help-block" id="title_alert"></span>
+	<div class="row">
+		<div class="container-fluid">
+			<form class="form-horizontal" id="proposal_form">
+				<div class="form-group">
+					<label for="title" class="control-label col-sm-3">Title</label>
+					<div class="col-sm-8">
+						<input type="text" name="title" id="title" size="50" value="{{page.title}}" placeholder="Title (minimum 8 characters) this will be published.">
+						<span class="help-block" id="title_alert"></span>
+					</div>
 				</div>
-			</div>
-			<div class="form-group">
-				<label for="summary" class="control-label col-sm-3">Summary</label>
-				<div class="col-sm-8">
-					<textarea rows="20" cols="50" name="summary" id="summary" placeholder="Proposal summary (minimum 50 characters) this will be published. AsciiDoc markup can be used.">{{page.summary}}</textarea>
-					<span class="help-block" id="summary_alert"></span>
+				<div class="form-group">
+					<label for="summary" class="control-label col-sm-3">Summary</label>
+					<div class="col-sm-8">
+						<textarea rows="20" cols="50" name="summary" id="summary" placeholder="Proposal summary (minimum 50 characters) this will be published. AsciiDoc markup can be used.">{{page.summary}}</textarea>
+						<span class="help-block" id="summary_alert"></span>
+					</div>
 				</div>
-			</div>
-			<div class="form-group">
-				<label for="session_type" class="control-label col-sm-3">Session Type</label>
-				<div class="col-lg-8">
-					<select name="session_type" id="session_type">
-						<option value="quickie" {% if page.session_type == "quickie" %} selected {% endif %}>20 (15+5) minute presentation</option>
-						<option value="session" {% if page.session_type == "session" %} selected {% endif %}>90 (60+30) minute presentation</option>
-						<option value="miniworkshop" {% if page.session_type == "miniworkshop" %} selected {% endif %}>90 minute workshop</option>
-						<option value="workshop" {% if page.session_type == "workshop" %} selected {% endif %}>180 minute workshop</option>
-						<option value="fulldayworkshop" {% if page.session_type == "fulldayworkshop" %} selected {% endif %}>6 hour pre-conference workshop</option>
-					</select>
+				<div class="form-group">
+					<label for="session_type" class="control-label col-sm-3">Session Type</label>
+					<div class="col-lg-8">
+						<select name="session_type" id="session_type">
+							<option value="quickie" {% if page.session_type == "quickie" %} selected {% endif %}>20 (15+5) minute presentation</option>
+							<option value="session" {% if page.session_type == "session" %} selected {% endif %}>90 (60+30) minute presentation</option>
+							<option value="miniworkshop" {% if page.session_type == "miniworkshop" %} selected {% endif %}>90 minute workshop</option>
+							<option value="workshop" {% if page.session_type == "workshop" %} selected {% endif %}>180 minute workshop</option>
+							<option value="fulldayworkshop" {% if page.session_type == "fulldayworkshop" %} selected {% endif %}>6 hour pre-conference workshop</option>
+						</select>
+					</div>
 				</div>
-			</div>
-			<div class="form-group">
-				<label for="audience" class="control-label col-sm-3">Audience</label>
-				<div class="col-lg-8">
-					<select name="audience" id="audience">
-						<option value="beginner" {% if page.audience == "beginner" %} selected {% endif %}>Beginner</option>
-						<option value="intermediate" {% if page.audience == "intermediate" %} selected {% endif %}>Intermediate</option>
-						<option value="expert" {% if page.audience == "expert" %} selected {% endif %}>Expert</option>
-						<option value="all" {% if page.audience == "all" %} selected {% endif %}>All</option>
-					</select>
+				<div class="form-group">
+					<label for="audience" class="control-label col-sm-3">Audience</label>
+					<div class="col-lg-8">
+						<select name="audience" id="audience">
+							<option value="beginner" {% if page.audience == "beginner" %} selected {% endif %}>Beginner</option>
+							<option value="intermediate" {% if page.audience == "intermediate" %} selected {% endif %}>Intermediate</option>
+							<option value="expert" {% if page.audience == "expert" %} selected {% endif %}>Expert</option>
+							<option value="all" {% if page.audience == "all" %} selected {% endif %}>All</option>
+						</select>
+					</div>
 				</div>
-			</div>
-			<div class="form-group">
-				<label for="notes" class="control-label col-sm-3">Notes to the Committee</label>
-				<div class="col-sm-8">
-					<textarea rows="6" cols="50" name="notes" id="notes" placeholder="Notes to the committee (optional) these will not be published">{{page.notes}}</textarea>
-					<span class="help-block" id="notes_alert"></span>
+				<div class="form-group">
+					<label for="notes" class="control-label col-sm-3">Notes to the Committee</label>
+					<div class="col-sm-8">
+						<textarea rows="6" cols="50" name="notes" id="notes" placeholder="Notes to the committee (optional) these will not be published">{{page.notes}}</textarea>
+						<span class="help-block" id="notes_alert"></span>
+					</div>
 				</div>
-			</div>
-			<div class="form-group">
-				<label for="constraints" class="control-label col-sm-3">Scheduling Constraints</label>
-				<div class="col-sm-8">
-					<textarea rows="2" cols="50" name="constraints" id="constraints" placeholder="Any scheduling constraints (optional)">{{page.constraints}}</textarea>
-					<span class="help-block" id="constraints_alert"></span>
+				<div class="form-group">
+					<label for="constraints" class="control-label col-sm-3">Scheduling Constraints</label>
+					<div class="col-sm-8">
+						<textarea rows="2" cols="50" name="constraints" id="constraints" placeholder="Any scheduling constraints (optional)">{{page.constraints}}</textarea>
+						<span class="help-block" id="constraints_alert"></span>
+					</div>
 				</div>
-			</div>
-			<div class="form-group" id="copresenters">
-				<label for="presenters" class="control-group col-sm-3">Presenters/Co-Presenters</label>
-				<div class="col-lg-9">
-					<table class="presenters" id="presenters">
-						<tr class="odd">
-							<td>
+				<div class="form-group" id="copresenters">
+					<label for="presenters" class="control-group col-sm-3">Presenters/Co-Presenters</label>
+					<div class="col-lg-9">
+						<table class="presenters" id="presenters">
+							<tr class="odd">
+								<td>
+									<div class="form-group">
+										<label class="control-label col-sm-2">Email</label>
+										<div class="col-sm-4">
+											<input class="email_field" id="email_0_field" type="text" value="{{page.presenter.email}}">
+											<span class="help-block" id="email_0_alert"></span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-sm-2">Name</label>
+										<div class="col-sm-4">
+											<input class="name_field" id="name_0_field" type="text" value="{{page.presenter.name}}">
+											<span class="help-block" id="name_0_alert"></span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-sm-2">Lead</label>
+										<div class="col-sm-4">
+											<input class="is_lead_field" id="is_lead_0_field" type="checkbox" {% if page.presenter.is_lead %} checked {% endif %}>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-sm-2">Bio</label>
+										<div class="col-sm-4">
+											<textarea class="bio_field" id="bio_0_field" rows="16" cols="36" placeholder="Presenter Bio (minimum 50 characters) this will be published.">{{page.presenter.bio}}</textarea>
+											<span class="help-block" id="bio_0_alert"></span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-sm-2">Country</label>
+										<div class="col-sm-4">
+											<select class="country_field" id="country_0_field">
+												{% for x in page.countries %}
+													<option value="{{x}}" {% if x== page.presenter.country %} selected {% endif %}>{{x}}</option>
+												{% endfor %}
+											</select>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
+						<button type="button" class="btn btn-small" id="add_presenter" href="#" onclick="" data-toggle="modal" data-target="#add-presenter-modal">Add Presenter
+						</button>
+					</div>
+				</div>
+				<div class="form-group">
+					<button type="button" name="submit" id="submit" class="btn btn-primary" onclick="submitProposal({{page.proposal_id}})">{{page.submit_label}}
+					</button>
+					<button type="reset" class="btn btn-default">Reset</button>
+				</div>
+			</form>
+			<div class="modal fade" tabindex="-1" role="dialog" id="add-presenter-modal">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title">Add Presenter</h4>
+						</div>
+						<div class="modal-body">
+							<form class="form-horizontal">
 								<div class="form-group">
-									<label class="control-label col-sm-2">Email</label>
+									<label for="add-presenter-email" class="control-label col-sm-2">Email</label>
 									<div class="col-sm-4">
-										<input class="email_field" id="email_0_field" type="text" value="{{page.presenter.email}}">
-										<span class="help-block" id="email_0_alert"></span>
+										<input type="text" name="add-presenter-email" id="add-presenter-email">
+										<span class="help-block" id="add_presenter_email_alert"></span>
 									</div>
 								</div>
 								<div class="form-group">
-									<label class="control-label col-sm-2">Name</label>
+									<label for="add-presenter-name" class="control-label col-sm-2">Name</label>
 									<div class="col-sm-4">
-										<input class="name_field" id="name_0_field" type="text" value="{{page.presenter.name}}">
-										<span class="help-block" id="name_0_alert"></span>
+										<input type="text" name="add-presenter-name" id="add-presenter-name">
+										<span class="help-block" id="add_presenter_name_alert"></span>
 									</div>
 								</div>
 								<div class="form-group">
-									<label class="control-label col-sm-2">Lead</label>
+									<label for="add-presenter-bio" class="control-label col-sm-2">Bio</label>
 									<div class="col-sm-4">
-										<input class="is_lead_field" id="is_lead_0_field" type="checkbox" {% if page.presenter.is_lead %} checked {% endif %}>
+										<textarea rows="24" cols="50" name="add-presenter-bio" id="add-presenter-bio"
+												  placeholder="Presenter Bio (minimum 50 characters) this will be published"></textarea>
+												  <span class="help-block" id="add_presenter_bio_alert"></span>
 									</div>
 								</div>
 								<div class="form-group">
-									<label class="control-label col-sm-2">Bio</label>
+									<label for="add-presenter-country" class="control-label col-sm-2">Country</label>
 									<div class="col-sm-4">
-										<textarea class="bio_field" id="bio_0_field" rows="16" cols="36" placeholder="Presenter Bio (minimum 50 characters) this will be published.">{{page.presenter.bio}}</textarea>
-										<span class="help-block" id="bio_0_alert"></span>
-									</div>
-								</div>
-								<div class="form-group">
-									<label class="control-label col-sm-2">Country</label>
-									<div class="col-sm-4">
-										<select class="country_field" id="country_0_field">
+										<select name="add-presenter-country" id="add-presenter-country">
 											{% for x in page.countries %}
-											<option value="{{x}}" {% if x== page.presenter.country %} selected {% endif %}>{{x}}</option>
+												<option value="{{x}}" {% if x == "United Kingdom" %} selected {% endif %}>{{x}}</option>
 											{% endfor %}
 										</select>
 									</div>
 								</div>
-							</td>
-						</tr>
-					</table>
-					<button type="button" class="btn btn-small" id="add_presenter" href="#" onclick="" data-toggle="modal" data-target="#add-presenter-modal">Add Presenter
-					</button>
-				</div>
-			</div>
-			<div class="form-group">
-				<button type="button" name="submit" id="submit" class="btn btn-primary" onclick="submitProposal({{page.proposal_id}})">{{page.submit_label}}
-				</button>
-				<button type="reset" class="btn btn-default">Reset</button>
-			</div>
-		</form>
-		<div class="modal fade" tabindex="-1" role="dialog" id="add-presenter-modal">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						<h4 class="modal-title">Add Presenter</h4>
-					</div>
-					<div class="modal-body">
-						<form class="form-horizontal">
-							<div class="form-group">
-								<label for="add-presenter-email" class="control-label col-sm-2">Email</label>
-								<div class="col-sm-4">
-									<input type="text" name="add-presenter-email" id="add-presenter-email">
-									<span class="help-block" id="add_presenter_email_alert"></span>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="add-presenter-name" class="control-label col-sm-2">Name</label>
-								<div class="col-sm-4">
-									<input type="text" name="add-presenter-name" id="add-presenter-name">
-									<span class="help-block" id="add_presenter_name_alert"></span>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="add-presenter-bio" class="control-label col-sm-2">Bio</label>
-								<div class="col-sm-4">
-									<textarea rows="24" cols="50" name="add-presenter-bio" id="add-presenter-bio"
-									          placeholder="Presenter Bio (minimum 50 characters) this will be published"></textarea>
-									<span class="help-block" id="add_presenter_bio_alert"></span>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="add-presenter-country" class="control-label col-sm-2">Country</label>
-								<div class="col-sm-4">
-									<select name="add-presenter-country" id="add-presenter-country">
-										{% for x in page.countries %}
-										<option value="{{x}}" {% if x == "United Kingdom" %} selected {% endif %}>{{x}}</option>
-										{% endfor %}
-									</select>
-								</div>
-							</div>
-						</form>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-						<button type="button" id="add_new_presenter" class="btn btn-primary"
-						        onclick="addNewPresenter()">Add
-						</button>
-					</div>
-				</div><!-- /.modal-content -->
-			</div><!-- /.modal-dialog -->
-		</div><!-- /.modal -->
+							</form>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+							<button type="button" id="add_new_presenter" class="btn btn-primary"
+									onclick="addNewPresenter()">Add
+							</button>
+						</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+		</div>
 	</div>
-</div>
-<div class="notice">
-	<p>
-		The data collected here will only be available to people organising the conference for the purpose of
-		organising the conference.
-	</p>
-</div>
+	<div class="notice">
+		<p>
+			The data collected here will only be available to people organising the conference for the purpose of
+			organising the conference.
+		</p>
+	</div>
 {% endblock %}

@@ -19,7 +19,7 @@ try:
 except ImportError:
     from models.configuration import Config
 
-year = 2018
+year = 2019
 
 app = Flask(__name__)
 app.config.from_object(Config)

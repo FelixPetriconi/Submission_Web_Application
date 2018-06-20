@@ -1,48 +1,50 @@
+{# -*- mode: jinja2; coding: utf-8; -*- #}
+
 {% extends "base.html" %}
 {% block content %}
-<div class="row">
-	<div class="pagetitle">
-		ACCU {{page.year}} – {{page.pagetitle}}
+	<div class="row">
+		<div class="pagetitle">
+			ACCU {{page.year}} – {{page.pagetitle}}
+		</div>
 	</div>
-</div>
-<div class="row">
-	<div class="container-fluid">
-		<p class="alert" id="alert"></p>
+	<div class="row">
+		<div class="container-fluid">
+			<p class="alert" id="alert"></p>
+		</div>
 	</div>
-</div>
-<div class="row">
-	<div class="container-fluid">
-		<p class="first">
-			<i>{{page.data}}</i>
-		</p>
-		<h3 class="proposal-title">
-			{{page.title}}
-		</h3>
-		<br/>
-		<p class="proposal-session-type">
-			Session type: {{page.session_type}}
-		</p>
-		<p class="proposal-audience">
-			Audience: {{page.audience}}
-		</p>
-		<p class="proposal-summary">
-			{{page.summary}}
-		</p>
-		{% for presenter in page.presenters %}
-		<h4 class="presenter-name">
-			{{presenter.name}}
-		</h4>
-		<p class="presenter-bio">
-			{{presenter.bio}}
-		</p>
+	<div class="row">
+		<div class="container-fluid">
+			<p class="first">
+				<i>{{page.data}}</i>
+			</p>
+			<h3 class="proposal-title">
+				{{page.title}}
+			</h3>
+			<br/>
+			<p class="proposal-session-type">
+				Session type: {{page.session_type}}
+			</p>
+			<p class="proposal-audience">
+				Audience: {{page.audience}}
+			</p>
+			<p class="proposal-summary">
+				{{page.summary}}
+			</p>
+			{% for presenter in page.presenters %}
+				<h4 class="presenter-name">
+					{{presenter.name}}
+				</h4>
+			<p class="presenter-bio">
+				{{presenter.bio}}
+			</p>
 		{% endfor %}
 		{% if page.notes %}
-		<h5 class="proposal-notes-title">
-			Notes for the Committee
-		</h5>
-		<p class="proposal-notes">
-			{{page.notes}}
-		</p>
+			<h5 class="proposal-notes-title">
+				Notes for the Committee
+			</h5>
+			<p class="proposal-notes">
+				{{page.notes}}
+			</p>
 		{% endif %}
 		<form id="review_form">
 			<div class="form-group">
@@ -73,22 +75,22 @@
 		</form>
 		<div class="review-navigation">
 			{% if page.has_previous %}
-			<button type="button" name="review-previous" id="review-previous" class="btn btn-primary" onclick="navigatePrevious({{page.proposal_id}})">Previous</button>
-			<button type="button" name="review-previous-unscored" id="review-previous-unscored" class="btn btn-primary" onclick="navigatePreviousUnscored({{page.proposal_id}})">Previous Unscored</button>
+				<button type="button" name="review-previous" id="review-previous" class="btn btn-primary" onclick="navigatePrevious({{page.proposal_id}})">Previous</button>
+				<button type="button" name="review-previous-unscored" id="review-previous-unscored" class="btn btn-primary" onclick="navigatePreviousUnscored({{page.proposal_id}})">Previous Unscored</button>
 			{% else %}
-			<button type="button" name="review-previous" id="review-previous" class="btn btn-primary disabled" disabled>Previous</button>
-			<button type="button" name="review-previous-unscored" id="review-previous-unscored" class="btn btn-primary disabled" disabled>Previous Unscored</button>
+				<button type="button" name="review-previous" id="review-previous" class="btn btn-primary disabled" disabled>Previous</button>
+				<button type="button" name="review-previous-unscored" id="review-previous-unscored" class="btn btn-primary disabled" disabled>Previous Unscored</button>
 			{% endif %}
 			<button type="button" name="back-to-list" id="back-to-list" class="btn btn-primary" onclick="navigateToList()">Back To List</button>
 			{% if page.has_next %}
-			<button type="button" name="review-next-unscored" id="review-next-unscored" class="btn btn-primary" onclick="navigateNextUnscored({{page.proposal_id}})">Next Unscored</button>
-			<button type="button" name="review-next" id="review-next" class="btn btn-primary" onclick="navigateNext({{page.proposal_id}})">Next</button>
+				<button type="button" name="review-next-unscored" id="review-next-unscored" class="btn btn-primary" onclick="navigateNextUnscored({{page.proposal_id}})">Next Unscored</button>
+				<button type="button" name="review-next" id="review-next" class="btn btn-primary" onclick="navigateNext({{page.proposal_id}})">Next</button>
 			{% else %}
-			<button type="button" name="review-next-unscored" id="review-next-unscored" class="btn btn-primary disabled" disabled>Next Unscored</button>
-			<button type="button" name="review-next" id="review-next" class="btn btn-primary disabled" disabled>Next</button>
+				<button type="button" name="review-next-unscored" id="review-next-unscored" class="btn btn-primary disabled" disabled>Next Unscored</button>
+				<button type="button" name="review-next" id="review-next" class="btn btn-primary disabled" disabled>Next</button>
 			{% endif %}
 		</div>
+		</div>
 	</div>
-</div>
 <p></p>
 {% endblock %}

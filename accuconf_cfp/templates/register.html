@@ -1,102 +1,104 @@
+{# -*- mode: jinja2; coding: utf-8; -*- #}
+
 {% extends "base.html" %}
 {% block content %}
-<div class="row">
-	<div class="pagetitle">
-		ACCU {{page.year}} – {{page.pagetitle}}
+	<div class="row">
+		<div class="pagetitle">
+			ACCU {{page.year}} – {{page.pagetitle}}
+		</div>
 	</div>
-</div>
-<div class="row">
-	<div class="container-fluid">
-		<p class="first">
-			{{page.data}}
+	<div class="row">
+		<div class="container-fluid">
+			<p class="first">
+				{{page.data}}
+			</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="container-fluid">
+			<p class="alert" id="alert"></p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="container-fluid">
+			<form class="form-horizontal" id="registrationForm">
+				<div class="form-group">
+					<label for="email" class="control-label col-sm-3">Email</label>
+					<div class="col-sm-offset-1">
+						<input type="text" id="email" name="email" placeholder="Email" value="{{page.email}}"
+							   aria-describedby="email_alert">
+							   <span class="help-block" id="email_alert"></span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="passphrase" class="control-label col-sm-3">Passphrase</label>
+					<div class="col-sm-offset-1">
+						<input type="password" id="passphrase" name="passphrase" placeholder="Passphrase (>8 characters)"
+							   aria-describedby="passphrase_alert">
+							   <span class="help-block" id="passphrase_alert"></span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="cpassphrase" class="control-label col-sm-3">Retype Passphrase</label>
+					<div class="col-sm-offset-1">
+						<input type="password" id="cpassphrase" name="cpassphrase" placeholder="Retype Passphrase"
+							   aria-describedby="cpassphrase_alert">
+							   <span class="help-block" id="cpassphrase_alert"></span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="name" class="control-label col-sm-3">Name</label>
+					<div class="col-sm-offset-1">
+						<input type="text" id="name" name="name" value="{{page.name}}" placeholder="Name"
+							   aria-describedby="name_alert">
+							   <span class="help-block" id="name_alert"></span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="phone" class="control-label col-sm-3">Phone number with ISD code</label>
+					<div class="col-sm-offset-1">
+						<input type="text" id="phone" name="phone" value="{{page.phone}}" placeholder="+44 20 1234 5678"
+							   aria-describedby="phone_alert">
+							   <span class="help-block" id="phone_alert"></span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="country" class="control-label col-sm-3">Country</label>
+					<div class="col-sm-offset-1">
+						<select id="country" name="country" aria-describedby="country_alert">
+							{% for x in page.countries %}
+								<option value="{{x}}" {% if x== page.country %} selected {% endif %}>{{x}}</option>
+							{% endfor %}
+						</select>
+						<span class="help-block" id="country_alert"></span>
+					</div>
+				</div>
+				{% if page.passphrase_required != 'false' %}
+					<div class="form-group">
+						<label for="puzzle" class="control-label col-sm-3">Solve this puzzle</label>
+						<label for="puzzle" id="puzzle_label" class="puzzle" class="col-sm-3"></label>
+						<script>setPuzzleLabel()</script>
+						<div class="col-sm-offset-1">
+							<input type="text" id="puzzle" name="puzzle" placeholder="Solve" class="puzzle">
+							<span class="form-alert pull-right" id="puzzle_alert"></span>
+						</div>
+					</div>
+				{% endif %}
+				<p id="button_spacer"></p>
+				<div class="form-group">
+					<button type="button" id="submit" class="btn btn-primary"
+							onclick="registerUser({{page.passphrase_required}})"> {{page.submit_button}}
+					</button>
+					<button type="reset" class="btn btn-default" onclick="clearRegisterAlerts()">Reset</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="notice">
+		<p>
+			The data collected here will only be available to people organising the conference for the purpose of
+			organising the conference. Passphrases are stored encoded, no plain text copy is kept.
+			This means that if you forget your passphrase you will have to email conference@accu.org to get a new one.
 		</p>
 	</div>
-</div>
-<div class="row">
-	<div class="container-fluid">
-		<p class="alert" id="alert"></p>
-	</div>
-</div>
-<div class="row">
-	<div class="container-fluid">
-		<form class="form-horizontal" id="registrationForm">
-			<div class="form-group">
-				<label for="email" class="control-label col-sm-3">Email</label>
-				<div class="col-sm-offset-1">
-					<input type="text" id="email" name="email" placeholder="Email" value="{{page.email}}"
-					       aria-describedby="email_alert">
-					<span class="help-block" id="email_alert"></span>
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="passphrase" class="control-label col-sm-3">Passphrase</label>
-				<div class="col-sm-offset-1">
-					<input type="password" id="passphrase" name="passphrase" placeholder="Passphrase (>8 characters)"
-					       aria-describedby="passphrase_alert">
-					<span class="help-block" id="passphrase_alert"></span>
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="cpassphrase" class="control-label col-sm-3">Retype Passphrase</label>
-				<div class="col-sm-offset-1">
-					<input type="password" id="cpassphrase" name="cpassphrase" placeholder="Retype Passphrase"
-					       aria-describedby="cpassphrase_alert">
-					<span class="help-block" id="cpassphrase_alert"></span>
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="name" class="control-label col-sm-3">Name</label>
-				<div class="col-sm-offset-1">
-					<input type="text" id="name" name="name" value="{{page.name}}" placeholder="Name"
-					       aria-describedby="name_alert">
-					<span class="help-block" id="name_alert"></span>
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="phone" class="control-label col-sm-3">Phone number with ISD code</label>
-				<div class="col-sm-offset-1">
-					<input type="text" id="phone" name="phone" value="{{page.phone}}" placeholder="+44 20 1234 5678"
-					       aria-describedby="phone_alert">
-					<span class="help-block" id="phone_alert"></span>
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="country" class="control-label col-sm-3">Country</label>
-				<div class="col-sm-offset-1">
-					<select id="country" name="country" aria-describedby="country_alert">
-						{% for x in page.countries %}
-						<option value="{{x}}" {% if x== page.country %} selected {% endif %}>{{x}}</option>
-						{% endfor %}
-					</select>
-					<span class="help-block" id="country_alert"></span>
-				</div>
-			</div>
-			{% if page.passphrase_required != 'false' %}
-			<div class="form-group">
-				<label for="puzzle" class="control-label col-sm-3">Solve this puzzle</label>
-				<label for="puzzle" id="puzzle_label" class="puzzle" class="col-sm-3"></label>
-				<script>setPuzzleLabel()</script>
-				<div class="col-sm-offset-1">
-					<input type="text" id="puzzle" name="puzzle" placeholder="Solve" class="puzzle">
-					<span class="form-alert pull-right" id="puzzle_alert"></span>
-				</div>
-			</div>
-			{% endif %}
-			<p id="button_spacer"></p>
-			<div class="form-group">
-				<button type="button" id="submit" class="btn btn-primary"
-				        onclick="registerUser({{page.passphrase_required}})"> {{page.submit_button}}
-				</button>
-				<button type="reset" class="btn btn-default" onclick="clearRegisterAlerts()">Reset</button>
-			</div>
-		</form>
-	</div>
-</div>
-<div class="notice">
-	<p>
-		The data collected here will only be available to people organising the conference for the purpose of
-		organising the conference. Passphrases are stored encoded, no plain text copy is kept.
-		This means that if you forget your passphrase you will have to email conference@accu.org to get a new one.
-	</p>
-</div>
 {% endblock %}

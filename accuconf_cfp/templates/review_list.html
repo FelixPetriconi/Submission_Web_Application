@@ -1,33 +1,35 @@
+{# -*- mode: jinja2; coding: utf-8; -*- #}
+
 {% extends "base.html" %}
 {% block content %}
-<div class="row">
-	<div class="pagetitle">
-		ACCU {{page.year}} – {{page.pagetitle}}
+	<div class="row">
+		<div class="pagetitle">
+			ACCU {{page.year}} – {{page.pagetitle}}
+		</div>
 	</div>
-</div>
-<div class="row">
-	<div class="container-fluid">
-		<p class="first">
-			{{page.data}}
-		</p>
-		<table id="review_list_table">
-			<thead>
-			<tr>
-				<th>Title</th>
-				<th>Lead</th>
-				<th>Reviewed?</th>
-			</tr>
-			</thead>
-			<tbody>
-			{% for proposal in page.proposals %}
-			<tr>
-				<td><a href="/review_proposal/{{proposal[0]}}">{{proposal[1]}}</a></td>
-				<td><a href="/review_proposal/{{proposal[0]}}">{{proposal[2]}}</a></td>
-				<td class="reviewed-column">{% if proposal[3] %}Yes{% else %}No{% endif %}</td>
-			</tr>
-			{% endfor %}
-			</tbody>
-		</table>
+	<div class="row">
+		<div class="container-fluid">
+			<p class="first">
+				{{page.data}}
+			</p>
+			<table id="review_list_table">
+				<thead>
+					<tr>
+						<th>Title</th>
+						<th>Lead</th>
+						<th>Reviewed?</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for proposal in page.proposals %}
+						<tr>
+							<td><a href="/review_proposal/{{proposal[0]}}">{{proposal[1]}}</a></td>
+							<td><a href="/review_proposal/{{proposal[0]}}">{{proposal[2]}}</a></td>
+							<td class="reviewed-column">{% if proposal[3] %}Yes{% else %}No{% endif %}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
 	</div>
-</div>
 {% endblock %}
