@@ -23,8 +23,8 @@ __pycache__/
 /sessions.pdf
 
 # The configuration files, they are per server local files
-accuconf_config*.py
-accuconf_api_config*.py
+accuconf_cfp_config.py
+accuconf_api_config.py
 
 # PyCharm project directory
 /.idea/
