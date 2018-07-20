@@ -45,3 +45,6 @@ geckodriver.log
 /cov_html_accuconf_cfp__selenium/
 
 .pytest_cache/
+
+/node_modules/
+/package-lock.json
