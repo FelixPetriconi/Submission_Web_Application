@@ -143,8 +143,9 @@ def submit():
                 'pagetitle': 'Submit a proposal',
                 'data': Markup('''
 The Summary and Bio entries can be plain text or AsciiDoc fragments (assumed UTF-8 encoded).
-If you use AsciiDoc and want to use section heads then for the Summary start with the third level, and
-for the Bio start with the second level.
+If you use AsciiDoc and want to use section heads then for the Summary start with the third level (====), and
+for the Bio start with the second level (===). Level zero, one, and for session descriptions, two section heads
+are used in the website production system.
 <br/>
 All other text entry fields are plain text (assumed UTF-8 encoded).
 '''),
