@@ -598,18 +598,18 @@ _The schedule is subject to change without notice until {}._
             schedule_write(
                 heading(day_names[start_date.weekday()] + ' ' + start_date.isoformat()) +
                 table(len(workshop_data) + 1,
-                    row(first_column(''),
-                        single_column_entry('Empire'),
-                        single_column_entry('SS Great Britain'),
-                        single_column_entry('Concorde'),
-                        single_column_entry('Wallace')),
-                    row(first_column('10:00'),
-                        single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.empire)[0])),
-                        single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.great_britain)[0])),
-                        single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room is None)[0])),  # Concorde  # TODO Fix Me
-                        single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.wallace)[0])),
-                    )
-                )
+                      row(first_column(''),
+                          single_column_entry(Room.empire.value),
+                          single_column_entry(Room.great_britain.value),
+                          single_column_entry(Room.wallace.value),
+                          single_column_entry(Room.concorde.value)),
+                      row(first_column('10:00'),
+                          single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.empire)[0])),
+                          single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.great_britain)[0])),
+                          single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.wallace)[0])),
+                          single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.concorde)[0])),
+                          )
+                      )
             )
 
         def get_keynote(day):
