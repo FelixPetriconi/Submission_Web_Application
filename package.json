@@ -3,6 +3,7 @@
 		"test": "mocha"
 	},
 	"dependencies": {
+		"asciidoctor.js": "^1.5.7-rc.1",
 		"mocha": "^5.2.0"
 	}
 }
