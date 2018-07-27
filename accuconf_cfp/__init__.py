@@ -26,6 +26,9 @@ app.config.from_object(Config)
 app.secret_key = app.config['SECRET_KEY']
 app.logger.info(app.url_map)
 
+app.jinja_env.trim_blocks = True
+app.jinja_env.lstrip_blocks = True
+
 # Bootstrap(app)
 db = SQLAlchemy(app)
 
