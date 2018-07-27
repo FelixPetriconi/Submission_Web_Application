@@ -5,31 +5,31 @@ from enum import Enum
 
 class ConferenceDay(Enum):
     workshops = 'workshops'
-    day_1 = 'day_1'
-    day_2 = 'day_2'
-    day_3 = 'day_3'
-    day_4 = 'day_4'
+    day_1 = '1'
+    day_2 = '2'
+    day_3 = '3'
+    day_4 = '4'
 
 
 class SessionSlot(Enum):
-    session_1 = 'session_1'
-    session_2 = 'session_2'
-    session_3 = 'session_3'
+    session_1 = '1'
+    session_2 = '2'
+    session_3 = '3'
 
 
 class QuickieSlot(Enum):
-    slot_1 = 'slot_1'
-    slot_2 = 'slot_2'
-    slot_3 = 'slot_3'
-    slot_4 = 'slot_4'
+    slot_1 = '1'
+    slot_2 = '2'
+    slot_3 = '3'
+    slot_4 = '4'
 
 
 class Room(Enum):
-    bristol_suite = 'bristol_suite'
-    bristol_1 = 'bristol_1'
-    bristol_2 = 'bristol_2'
-    bristol_3 = 'bristol_3'
-    empire = 'empire'
-    great_britain = 'great_britain'
-    wallace = 'wallace'
-    concorde = 'concorde'
+    bristol_suite = 'Bristol Suite'
+    bristol_1 = 'Bristol 1'
+    bristol_2 = 'Bristol 2'
+    bristol_3 = 'Bristol 3'
+    empire = 'Empire'
+    great_britain = 'SS Great Britain'
+    wallace = 'Wallace'
+    concorde = 'Concorde'
