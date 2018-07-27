@@ -141,6 +141,7 @@ def submit():
                 (p_email, p_name, p_bio, p_country) = (user.email, user.name, '', user.country)
             return render_template('submit.html', page=md(base_page, {
                 'pagetitle': 'Submit a proposal',
+                'data': 'Some fields such as Title and Name are plain text (assumed UTF-8 encoded). The Summary and Bio fields can be plain text or AsciiDoc fragments (assumed UTF-8 encoded), if you use section heads start with the second level.',
                 'title': '',
                 'session_type': SessionType.session.value,
                 'summary': '',
