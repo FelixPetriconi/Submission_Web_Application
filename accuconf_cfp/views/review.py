@@ -38,8 +38,8 @@ def review_list():
                 'pagetitle': 'Review List Failed',
                 'data': 'Logged in user is not a registered reviewer.',
             }))
-        # TODO reviewer can review proposed proposal (done) but what about being a presenter?
-        proposals = [(p.id, p.title, lead.presenter.name, already_reviewed(p, user))
+        # TODO reviewer cannot review proposed proposals (done) but what about being a presenter?
+        proposals = [(p.id, p.title, lead.presenter.name, p.session_type.value, already_reviewed(p, user))
                      for p in Proposal.query.all() if p.proposer != user
                      for lead in p.proposal_presenters if lead.is_lead
                      ]

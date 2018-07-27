@@ -17,6 +17,7 @@
 					<tr>
 						<th>Title</th>
 						<th>Lead</th>
+						<th>Type</th>
 						<th>Reviewed?</th>
 					</tr>
 				</thead>
@@ -24,8 +25,9 @@
 					{% for proposal in page.proposals %}
 						<tr>
 							<td><a href="/review_proposal/{{proposal[0]}}">{{proposal[1]}}</a></td>
-							<td><a href="/review_proposal/{{proposal[0]}}">{{proposal[2]}}</a></td>
-							<td class="reviewed-column">{% if proposal[3] %}Yes{% else %}No{% endif %}</td>
+							<td>{{proposal[2]}}</td>
+							<td>{{proposal[3]}}</td>
+							<td class="reviewed-column">{% if proposal[4] %}Yes{% else %}No{% endif %}</td>
 						</tr>
 					{% endfor %}
 				</tbody>
