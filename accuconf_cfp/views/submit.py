@@ -95,11 +95,13 @@ def submit():
                 proposal = Proposal(
                     user,
                     proposal_data.get('title').strip(),
-                    SessionType(proposal_data.get('session_type').strip()),
                     proposal_data.get('summary').strip(),
+                    SessionType(proposal_data.get('session_type').strip()),
+                    SessionAudience(proposal_data.get('audience').strip()) if proposal_data.get('audience') else SessionAudience.all,
+                    proposal_data.get('keywords').strip() if proposal_data.get('keywords') else '',
+                    proposal_data.get('no_video') if proposal_data.get('no_video') else False,
                     proposal_data.get('notes').strip() if proposal_data.get('notes') else '',
                     proposal_data.get('constraints').strip() if proposal_data.get('constraints') else '',
-                    SessionAudience(proposal_data.get('audience').strip()) if proposal_data.get('audience') else SessionAudience.all,
                 )
                 db.session.add(proposal)
                 presenters_data = proposal_data.get('presenters')
@@ -144,15 +146,20 @@ def submit():
                 'data': Markup('''
 The Summary and Bio entries can be plain text or AsciiDoc fragments (assumed UTF-8 encoded).
 If you use AsciiDoc and want to use section heads then for the Summary start with the third level (====), and
-for the Bio start with the second level (===). Level zero, one, and for session descriptions, two section heads
+for the Bio start with the second level (===). Level zero and one (and for session descriptions, two) section heads
 are used in the website production system.
 <br/>
 All other text entry fields are plain text (assumed UTF-8 encoded).
+<br/>
+<em>All conference sessions, except workshops, will be videoed, and the video published on the ACCUConf YouTube channel,
+except in the cases the "no video" box is ticked.</em>
 '''),
                 'title': '',
                 'session_type': SessionType.session.value,
                 'summary': '',
                 'audience': SessionAudience.all.value,
+                'keywords': '',
+                'no_video': False,
                 'notes': '',
                 'constraints': '',
                 'presenter': {

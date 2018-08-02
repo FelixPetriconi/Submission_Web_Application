@@ -56,8 +56,8 @@ def add_a_proposal_as_user(user_email, proposal_data):
     proposal = Proposal(
         user,
         proposal_data['title'],
-        proposal_data['session_type'],
         proposal_data['summary'],
+        proposal_data['session_type'],
     )
     db.session.add(proposal)
     for presenter_data in proposal_data['presenters']:

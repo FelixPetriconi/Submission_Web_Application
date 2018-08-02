@@ -67,11 +67,13 @@ def registrant():
 def proposal_single_presenter():
     return {
         'title': 'A single presenter proposal',
-        'session_type': SessionType.quickie.value,
         'summary': '''This is a test proposal that will have
 dummy data. Also this is not a very
 lengthy proposal''',
+        'session_type': SessionType.quickie.value,
         'audience': SessionAudience.expert.value,
+        'keywords': 'None',
+        'no_video': False,
         'notes': 'Please accept this proposal.',
         'constraints': 'None',
         'presenters': [
@@ -90,10 +92,10 @@ lengthy proposal''',
 def proposal_multiple_presenters_single_lead():
     return {
         'title': 'A multi presenter proposal',
-        'session_type': 'workshop',
         'summary': '''This is a proposal for a workshop that has
 dummy data. Also this is not a very
 lengthy proposal''',
+        'session_type': 'workshop',
         'presenters': [
             {
                 'email': 'p1@b.c',

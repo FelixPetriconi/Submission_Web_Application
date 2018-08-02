@@ -14,16 +14,13 @@ class Proposal(db.Model):
     proposer_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     proposer = db.relationship('User', back_populates='proposals')
     title = db.Column(db.String(150), nullable=False)
-    session_type = db.Column(db.Enum(SessionType), nullable=False)
     summary = db.Column(db.Text, nullable=False)
+    session_type = db.Column(db.Enum(SessionType), nullable=False)
+    audience = db.Column(db.Enum(SessionAudience), nullable=False)
+    keywords = db.Column(db.String(100), nullable=True)
+    no_video =db.Column(db.Boolean, nullable=False)
     notes = db.Column(db.Text, nullable=True)
     constraints = db.Column(db.Text, nullable=True)
-    presenters = association_proxy('proposal_presenters', 'presenter')
-    audience = db.Column(db.Enum(SessionAudience), nullable=False)
-    category = db.Column(db.String(100), nullable=True)
-    scores = db.relationship('Score', back_populates='proposal')
-    comments_for_proposer = db.relationship('CommentForProposer', back_populates='proposal')
-    comments_for_committee = db.relationship('CommentForCommittee', back_populates='proposal')
     status = db.Column(db.Enum(ProposalState), nullable=False)
     # day, session, quickie_slot, track, room, slides_pdf, video_url are only non empty
     # when status is accepted.
@@ -31,18 +28,23 @@ class Proposal(db.Model):
     session = db.Column(db.Enum(SessionSlot))
     quickie_slot = db.Column(db.Enum(QuickieSlot)) # Only not empty if session_type == quickie.
     room = db.Column(db.Enum(Room))
+    presenters = association_proxy('proposal_presenters', 'presenter')
+    scores = db.relationship('Score', back_populates='proposal')
+    comments_for_proposer = db.relationship('CommentForProposer', back_populates='proposal')
+    comments_for_committee = db.relationship('CommentForCommittee', back_populates='proposal')
 
-    def __init__(self, proposer, title, session_type, summary, notes='', constraints='',
-                 audience=SessionAudience.all, category='', status=ProposalState.submitted,
+    def __init__(self, proposer, title, summary, session_type, audience=SessionAudience.all,
+                 keywords='', no_video=False, notes='', constraints='', status=ProposalState.submitted,
                  day=None, session=None, quickie_slot=None, room=None):
         self.proposer = proposer
         self.title = title
-        self.session_type = session_type
         self.summary = summary
-        self.notes = notes
-        self.constraints = constraints
+        self.session_type = session_type
         self.audience = audience
-        self.category = category
+        self.keywords = keywords
+        self.no_video = no_video
+        self.notes = notes
+        self.constraints= constraints
         self.status = status
         self.day = day
         self.session = session

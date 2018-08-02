@@ -244,6 +244,10 @@ function isValidTitle(title) {
 	return title.length >= 8
 }
 
+function isValidSummary(summary) {
+	return summary.length >= 50
+}
+
 function isValidSessionType(sessionType) {
 	return ['quickie', 'session', 'miniworkshop', 'workshop', 'fulldayworkshop'].indexOf(sessionType) > -1
 }
@@ -252,8 +256,8 @@ function isValidAudience(audience) {
 	return ['beginner', 'intermediate', 'expert', 'all'].indexOf(audience) > -1
 }
 
-function isValidSummary(summary) {
-	return summary.length >= 50
+function isValidKeywords(keywords) {
+	return true
 }
 
 function isValidNotes(note) {
@@ -264,7 +268,7 @@ function isValidConstraints(constraint) {
 	return true
 }
 
-function isValidSubmission(title, sessionType, summary, audience, notes, constraints, presenters) {
+function isValidSubmission(title, summary, sessionType, audience, keywords, notes, constraints, presenters) {
 	let returnCode = true
 	if (!isValidTitle(title)) {
 		$('#title_alert').text('Title not valid.')
@@ -272,23 +276,29 @@ function isValidSubmission(title, sessionType, summary, audience, notes, constra
 	} else {
 		$('#title_alert').text('')
 	}
-	if (!isValidSessionType(sessionType)) {
-		$('#session_type_alert').text('Session type not valid.')
-		returnCode = false
-	} else {
-		$('#session_type_alert').text('')
-	}
 	if (!isValidSummary(summary)) {
 		$('#summary_alert').text('Summary not valid.')
 		returnCode = false
 	} else {
 		$('#summary_alert').text('')
 	}
+	if (!isValidSessionType(sessionType)) {
+		$('#session_type_alert').text('Session type not valid.')
+		returnCode = false
+	} else {
+		$('#session_type_alert').text('')
+	}
 	if (!isValidAudience(audience)) {
 		$('#audience_alert').text('Audience not valid.')
 		returnCode = false
 	} else {
 		$('#audience_alert').text('')
+	}
+	if (!isValidKeywords(keywords)) {
+		$('#keywords_alert').text('Keywords not valid.')
+		returnCode = false
+	} else {
+		$('#keywords_alert').text('')
 	}
 	if (!isValidNotes(notes)) {
 		$('#notes_alert').text('Notes not valid.')
@@ -323,19 +333,20 @@ function isValidSubmission(title, sessionType, summary, audience, notes, constra
 function clearSubmitAlerts() {
 	$('#title_alert').text('')
 	$('#summary_alert').text('')
-	$('#session_type_alert').text('')
+	$('#keywords_alert').text('')
 	$('#notes_alert').text('')
 	$('#constraints_alert').text('')
-	$('#presenters_alert').text('')
 	$('#alert').text('')
 	return true
 }
 
 function submitProposal(proposalId) {
 	const title = $('#title').val()
-	const sessionType = $('#session_type').val()
 	const summary = $('#summary').val()
+	const sessionType = $('#session_type').val()
 	const audience = $('#audience').val()
+	const keywords = $('#keywords').val()
+	const no_video= $('#no_video').val()
 	const notes = $('#notes').val()
 	const constraints = $('#constraints').val()
 	const presenters = []
@@ -360,7 +371,7 @@ function submitProposal(proposalId) {
 			'country': country,
 		})
 	}
-	if (isValidSubmission(title, sessionType, summary, audience, notes, constraints, presenters)) {
+	if (isValidSubmission(title, summary, sessionType, audience, keywords, notes, constraints, presenters)) {
 		$.ajax({
 			method: 'POST',
 			url: (proposalId ? `/proposal_update/${proposalId}` : '/submit'),
@@ -369,6 +380,8 @@ function submitProposal(proposalId) {
 				'session_type': sessionType,
 				'summary': summary,
 				'audience': audience,
+				'keywords': keywords,
+				'no_video': no_video,
 				'notes': notes,
 				'constraints': constraints,
 				'presenters': presenters,
@@ -385,7 +398,7 @@ function submitProposal(proposalId) {
 				},
 			},
 		})
-		$('#alert').text('Submitting login details.')
+		$('#alert').text('Submitting proposal details.')
 	} else {
 		$('#alert').text('Problem with form, not submitting.')
 	}
