@@ -46,6 +46,11 @@
 							</span>
 						</div>
 						<div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+							{%  if session['email'] %}
+								<p>
+									Logged in: {{ session['email'] }}
+								</p>
+							{% endif %}
 							<div class="nav navbar-nav" id="navigation-links">
 								{{ nav.top_nav.render() }}
 							</div>
