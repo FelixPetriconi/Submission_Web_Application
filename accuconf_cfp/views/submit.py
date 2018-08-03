@@ -75,6 +75,21 @@ def validate_proposal_data(proposal_data):
     return True, 'validated'
 
 
+submit_form_preface_markup = '''
+The Summary and Bio entries can be plain text or AsciiDoc fragments (assumed UTF-8 encoded).
+If you use AsciiDoc and want to use section heads then for the Summary start with the third level (====), and
+for the Bio start with the second level (===). Level zero and one (and for session descriptions, two) section heads
+are used in the website production system.
+</p>
+<p>
+All other text entry fields are plain text (assumed UTF-8 encoded).
+</p>
+<p>
+<em>All conference sessions, except workshops, will be videoed, and the video published on the ACCUConf YouTube channel,
+except in the cases the "no video" box is ticked.</em>
+'''
+
+
 @app.route('/submit', methods=['GET', 'POST'])
 def submit():
     check = is_acceptable_route()
@@ -143,17 +158,7 @@ def submit():
                 (p_email, p_name, p_bio, p_country) = (user.email, user.name, '', user.country)
             return render_template('submit.html', page=md(base_page, {
                 'pagetitle': 'Submit a proposal',
-                'data': Markup('''
-The Summary and Bio entries can be plain text or AsciiDoc fragments (assumed UTF-8 encoded).
-If you use AsciiDoc and want to use section heads then for the Summary start with the third level (====), and
-for the Bio start with the second level (===). Level zero and one (and for session descriptions, two) section heads
-are used in the website production system.
-<br/>
-All other text entry fields are plain text (assumed UTF-8 encoded).
-<br/>
-<em>All conference sessions, except workshops, will be videoed, and the video published on the ACCUConf YouTube channel,
-except in the cases the "no video" box is ticked.</em>
-'''),
+                'data': Markup(submit_form_preface_markup),
                 'title': '',
                 'session_type': SessionType.session.value,
                 'summary': '',
@@ -296,7 +301,9 @@ has been updated by the submitter and you have already scored that proposal.
         presenter = proposal.presenters[0]
         return render_template('submit.html', page=md(base_page, {
             'pagetitle': 'Update a proposal',
-            'data': Markup('''
+            'data': Markup(submit_form_preface_markup + '''
+</p>
+<p>
 This page should present all the data of the submission using editable fields.
 If you wish to change anything amend the field as needed and click Update.
 </p>
