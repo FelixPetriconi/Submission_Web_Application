@@ -210,11 +210,11 @@ def create_proposal_sheets():
     document = SimpleDocTemplate(file_path, pagesize=A4, rightMargin=30, leftMargin=30, topMargin=10, bottomMargin=30)
     elements = []
     for p in Proposal.query.all():
-        scores = tuple(score.score for score in p.scores if score.score != 0)
+        non_pass_scores = tuple(score.score for score in p.scores if score.score != 0)
         table = Table([
             [Paragraph(p.title, title_style_sheet), p.session_type.value],
             [', '.join(pp.name for pp in p.presenters), p.audience.value],
-            [Paragraph(p.constraints, constraints_style_sheet), ', '.join(str(score.score) for score in p.scores) + ' — {:.2f}, {}'.format(mean(scores), median(scores)) if len(scores) > 0 else ''],
+            [Paragraph(p.constraints, constraints_style_sheet), ', '.join(str(score.score) for score in p.scores) + ' — {:.2f}, {}'.format(mean(non_pass_scores), median(non_pass_scores)) if len(non_pass_scores) > 0 else ''],
         ], colWidths=(380, 180), spaceAfter=64)
         table.setStyle(TableStyle([
             ('FONTSIZE', (0, 0), (-1, -1), 12),
@@ -249,8 +249,8 @@ def create_proposals_document():
             constraints = p.constraints.strip()
             if constraints:
                 proposals_file.write("'''\n\n*Constraints*" + cleanup_text(constraints) + '\n\n')
-            scores = tuple(r.score for r in p.scores if r.score != 0)
-            proposals_file.write("'''\n\n*{}{}*\n\n".format(', '.join(str(score.score) for score in p.scores), ' — {:.2f}, {}'.format(mean(scores), median(scores)) if len(scores) > 0 else ''))
+            non_pass_scores = tuple(r.score for r in p.scores if r.score != 0)
+            proposals_file.write("'''\n\n*{}{}*\n\n".format(', '.join(str(score.score) for score in p.scores), ' — {:.2f}, {}'.format(mean(non_pass_scores), median(non_pass_scores)) if len(non_pass_scores) > 0 else ''))
             for comment in p.comments:
                 c = comment.comment.strip()
                 if c:
