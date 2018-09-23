@@ -18,12 +18,12 @@ from test_utils.fixtures import registrant
 from functions import register_user
 
 
-@pytest.mark.parametrize(('email', 'passphrase', 'error_key'), (
-    ('', '', 'email'),
-    ('russel.winder.org.uk', '', 'email'),
-    ('russel@winder.org.uk', '', 'passphrase'),
+@pytest.mark.parametrize(('email', 'passphrase', 'error_key', 'error_message'), (
+    ('', '', 'email', 'Email not valid.'),
+    ('russel.winder.org.uk', '', 'email', 'Email not valid.'),
+    ('russel@winder.org.uk', '', 'passphrase', 'Passphrase must be at least 8 characters long.'),
 ))
-def test_malformed_data_cases_local_error(email, passphrase, error_key, driver):
+def test_malformed_data_cases_local_error(email, passphrase, error_key, error_message, driver):
     driver.get(base_url + 'login')
     wait = WebDriverWait(driver, driver_wait_time)
     wait.until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Login'))
@@ -33,7 +33,7 @@ def test_malformed_data_cases_local_error(email, passphrase, error_key, driver):
     button.click()
     WebDriverWait(driver, driver_wait_time).until(ecs.text_to_be_present_in_element((By.CLASS_NAME, 'pagetitle'), ' – Login'))
     assert 'Problem with login form, not submitting.' in driver.find_element_by_id('alert').text
-    assert 'not valid.' in driver.find_element_by_id(error_key + '_alert').text
+    assert driver.find_element_by_id(error_key + '_alert').text == error_message
 
 
 def test_registered_user_can_successfully_login(driver, registrant):
