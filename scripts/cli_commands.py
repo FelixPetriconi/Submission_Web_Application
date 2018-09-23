@@ -267,11 +267,11 @@ def create_proposals_document():
             write_proposal(p)
 
         proposals_file.write('<<<\n\n== 90 minute workshops\n\n')
-        for p in Proposal.query.filter_by(session_type=SessionType.miniworkshop.value).all():
+        for p in Proposal.query.filter_by(session_type=SessionType.workshop.value).all():
             write_proposal(p)
 
         proposals_file.write('<<<\n\n== 180 minute workshops\n\n')
-        for p in Proposal.query.filter_by(session_type=SessionType.workshop.value).all():
+        for p in Proposal.query.filter_by(session_type=SessionType.longworkshop.value).all():
             write_proposal(p)
 
         proposals_file.write('<<<\n\n== 20 minute presentations\n\n')
@@ -290,13 +290,13 @@ def type_counts():
     proposals = Proposal.query.all()
     fulldayworkshop_count = len([p for p in proposals if p.session_type == SessionType.fulldayworkshop])
     workshop_count = len([p for p in proposals if p.session_type == SessionType.workshop])
-    miniworkshop_count = len([p for p in proposals if p.session_type == SessionType.miniworkshop])
+    longworkshop_count = len([p for p in proposals if p.session_type == SessionType.workshop])
     session_count = len([p for p in proposals if p.session_type == SessionType.session])
     quickie_count = len([p for p in proposals if p.session_type == SessionType.quickie])
     print("proposals:", len(proposals))
     print("fulldayworkshops:", fulldayworkshop_count)
     print("workshops:", workshop_count)
-    print("miniworkshops:", miniworkshop_count)
+    print("longworkshops:", longworkshop_count)
     print("sessions:", session_count)
     print("quickies:", quickie_count)
 

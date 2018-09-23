@@ -249,7 +249,7 @@ function isValidSummary(summary) {
 }
 
 function isValidSessionType(sessionType) {
-	return ['quickie', 'session', 'miniworkshop', 'workshop', 'fulldayworkshop'].indexOf(sessionType) > -1
+	return ['quickie', 'session', 'workshop', 'longworkshop', 'fulldayworkshop'].indexOf(sessionType) > -1
 }
 
 function isValidAudience(audience) {
@@ -268,7 +268,7 @@ function isValidConstraints(constraint) {
 	return true
 }
 
-function isValidSubmission(title, summary, sessionType, audience, keywords, notes, constraints, presenters) {
+function isValidSubmission(title, summary, sessionType, audience, keywords, no_video, notes, constraints, presenters) {
 	let returnCode = true
 	if (!isValidTitle(title)) {
 		$('#title_alert').text('Title not valid.')
@@ -346,7 +346,7 @@ function submitProposal(proposalId) {
 	const sessionType = $('#session_type').val()
 	const audience = $('#audience').val()
 	const keywords = $('#keywords').val()
-	const no_video= $('#no_video').val()
+	const no_video = document.getElementById('no_video').checked
 	const notes = $('#notes').val()
 	const constraints = $('#constraints').val()
 	const presenters = []
@@ -371,7 +371,7 @@ function submitProposal(proposalId) {
 			'country': country,
 		})
 	}
-	if (isValidSubmission(title, summary, sessionType, audience, keywords, notes, constraints, presenters)) {
+	if (isValidSubmission(title, summary, sessionType, audience, keywords, no_video, notes, constraints, presenters)) {
 		$.ajax({
 			method: 'POST',
 			url: (proposalId ? `/proposal_update/${proposalId}` : '/submit'),
