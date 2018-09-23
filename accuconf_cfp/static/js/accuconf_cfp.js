@@ -137,7 +137,7 @@ function isValidLoginData() {
 		$('#email_alert').text('')
 	}
 	if (!isValidPassphrase($('#passphrase').val())) {
-		$('#passphrase_alert').text('Passphrase not valid.')
+		$('#passphrase_alert').text('Passphrase must be at least 8 characters long.')
 		returnCode = false
 	} else {
 		$('#passphrase_alert').text('')
@@ -271,13 +271,13 @@ function isValidConstraints(constraint) {
 function isValidSubmission(title, summary, sessionType, audience, keywords, no_video, notes, constraints, presenters) {
 	let returnCode = true
 	if (!isValidTitle(title)) {
-		$('#title_alert').text('Title not valid.')
+		$('#title_alert').text('Title must be at least 8 characters long')
 		returnCode = false
 	} else {
 		$('#title_alert').text('')
 	}
 	if (!isValidSummary(summary)) {
-		$('#summary_alert').text('Summary not valid.')
+		$('#summary_alert').text('Summary must be at least 50 characters long')
 		returnCode = false
 	} else {
 		$('#summary_alert').text('')
