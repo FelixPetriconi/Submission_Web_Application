@@ -1,9 +1,10 @@
-dist: trusty
+dist: xenial
 sudo: true
 language: python
 python:
   - "3.5"
   - "3.6"
+  - "3.7"
 before_install:
   - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
   - sudo dpkg -i google-chrome-stable_current_amd64.deb
@@ -11,9 +12,7 @@ before_install:
   - unzip chromedriver_linux64.zip
   - sudo cp chromedriver /usr/bin
 install:
-  - pip install --upgrade -r pip_runtime_requirements.txt
-  - pip install --upgrade -r pip_test_requirements.txt
-  - pip install --upgrade -r pip_admin_requirements.txt
+  - pip install --upgrade -r pip_runtime_requirements.txt -r pip_test_requirements.txt -r pip_admin_requirements.txt
 before_script:
   - npm install --save-dev mocha
 script:
