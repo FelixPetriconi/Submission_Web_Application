@@ -47,8 +47,8 @@
 						<select name="session_type" id="session_type">
 							<option value="quickie" {% if page.session_type == "quickie" %} selected {% endif %}>20 (15+5) minute presentation</option>
 							<option value="session" {% if page.session_type == "session" %} selected {% endif %}>90 (60+30) minute presentation</option>
-							<option value="miniworkshop" {% if page.session_type == "miniworkshop" %} selected {% endif %}>90 minute workshop</option>
-							<option value="workshop" {% if page.session_type == "workshop" %} selected {% endif %}>180 minute workshop</option>
+							<option value="workshop" {% if page.session_type == "workshop" %} selected {% endif %}>90 minute workshop</option>
+							<option value="longworkshop" {% if page.session_type == "longworkshop" %} selected {% endif %}>180 minute workshop</option>
 							<option value="fulldayworkshop" {% if page.session_type == "fulldayworkshop" %} selected {% endif %}>6 hour pre-conference workshop</option>
 						</select>
 					</div>
@@ -67,14 +67,14 @@
 				<div class="form-group">
 					<label for="keywords" class="control-label col-sm-3">Keywords</label>
 					<div class="col-sm-8">
-						<textarea rows="1" cols="50" name="keywords" id="keywords" placeholder="A few comma separated keywords describing the session (optional) these will not be published">{{page.constraints}}</textarea>
+						<textarea rows="1" cols="50" name="keywords" id="keywords" placeholder="A few comma separated keywords describing the session (optional) these will not be published">{{page.keywords}}</textarea>
 						<span class="help-block" id="keywords_alert"></span>
 					</div>
 				</div>
 			<div class="form-group">
-				<label for=""no_video" class="control-label col-sm-3">No Video</label>
+				<label for="no_video" class="control-label col-sm-3">No Video</label>
 				<div class="col-lg-8">
-					<input type="checkbox" name="no_video"> &nbsp; <em>Tick this if you do </em><b>not</b> <em>want the session recorded and published</em>
+					<input type="checkbox" id="no_video" {% if page.no_video %} checked {% endif %} name="no_video"> &nbsp; <em>Tick this if you do </em><b>not</b> <em>want the session recorded and published</em>
 				</div>
 			</div>
 				<div class="form-group">

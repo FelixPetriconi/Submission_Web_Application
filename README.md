@@ -54,7 +54,7 @@ Running the submission application is then a matter of executing:
 
 This should set the submission application running on localhost:8000. The state of the application is
 determined at application start time. The default is the "off" state, so should just put up a "not open"
-message. To get the application into the "open" state you need to have a file _accuconf\_config.py_ in place
+message. To get the application into the "open" state you need to have a file _accuconf\_cfp\_config.py_ in place
 before starting the application. This file should have the line:
 
     from models.configuration import CallForProposalsOpen as Config

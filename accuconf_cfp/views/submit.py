@@ -247,7 +247,7 @@ def proposal_update(id):
                     return response
                 proposal = Proposal.query.filter_by(id=id).first()
                 changeset = {}
-                for item in ('title', 'summary', 'session_type', 'audience', 'notes', 'constraints'):
+                for item in ('title', 'summary', 'session_type', 'keywords', 'no_video', 'audience', 'notes', 'constraints'):
                     if item in proposal_data:
                         if item == 'session_type':
                             datum = SessionType(proposal_data[item])
@@ -316,6 +316,8 @@ is no specific button for "leave things as they are" that is the default action.
             'session_type': proposal.session_type.value,
             'summary': proposal.summary,
             'audience': proposal.audience.value,
+            'keywords': proposal.keywords,
+            'no_video': proposal.no_video,
             'notes': proposal.notes,
             'constraints': proposal.constraints,
             'presenter': {

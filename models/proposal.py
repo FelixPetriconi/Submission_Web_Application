@@ -44,7 +44,7 @@ class Proposal(db.Model):
         self.keywords = keywords
         self.no_video = no_video
         self.notes = notes
-        self.constraints= constraints
+        self.constraints = constraints
         self.status = status
         self.day = day
         self.session = session
