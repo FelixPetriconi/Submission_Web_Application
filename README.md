@@ -77,7 +77,7 @@ Running:
     ./run_tests.sh
 
 should run all of the tests and create coverage reports in _cov\_html\_accuconf\_api_,
-_cov\_html\_accuconf\_cfp, and _cov\_html\_accuconf\_cfp\_\_selenium_.
+_cov\_html\_accuconf\_cfp_, and _cov\_html\_accuconf\_cfp\_\_selenium_.
 
 ## Historical note
 
