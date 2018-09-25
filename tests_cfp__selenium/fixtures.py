@@ -48,7 +48,7 @@ def driver():
         }
         options = webdriver.ChromeOptions()
         options.add_argument('headless')
-        wd = Chrome(chrome_options=options, desired_capabilities=capabilities)
+        wd = Chrome(options=options, desired_capabilities=capabilities)
     else:
         options = webdriver.FirefoxOptions()
         options.add_argument('--headless')
