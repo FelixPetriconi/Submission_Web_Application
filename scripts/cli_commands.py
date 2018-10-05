@@ -857,7 +857,7 @@ def edit(selector, values):
 
 @app.cli.command()
 @click.argument('email')
-@click.argument('passphrase')
+@click.argument('passphrase', nargs=-1)
 def replace_passphrase_of_user(email, passphrase):
     """Replace the passphrase of the user.
 
@@ -869,8 +869,11 @@ def replace_passphrase_of_user(email, passphrase):
         click.echo(click.style('Something wrong with email', fg='red'))
     else:
         user = user[0]
+        # Shell and Click between them conspire to create a tuple from the space separted passphrase.
+        passphrase = ' '.join(passphrase)
         click.echo(click.style('Replacing  previous passphrase with "{}"'.format(passphrase), fg='green'))
         user.passphrase = hash_passphrase(passphrase)
+        click.echo(click.style('Generated {}'.format(user.passphrase), fg='yellow'))
         db.session.commit()
 
 
