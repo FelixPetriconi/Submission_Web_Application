@@ -20,7 +20,11 @@ from test_utils.constants import (
     register_menu_item, registration_update_menu_item, submit_menu_item
 )
 # PyCharm fails to spot the use of symbols as fixtures.
-from test_utils.fixtures import client, proposal_single_presenter, proposal_multiple_presenters_single_lead
+from test_utils.fixtures import (
+    client,
+    get_proposal_single_presenter, proposal_single_presenter,
+    get_proposal_multiple_presenters_single_lead, proposal_multiple_presenters_single_lead,
+)
 from test_utils.functions import add_a_proposal_as_user, add_new_user, get_and_check_content, post_and_check_content
 
 new_user = {
@@ -134,8 +138,8 @@ def test_logged_in_reviewer_can_get_review_list(client, registrant, monkeypatch)
 
 def test_logged_in_reviewer_can_get_review_list_and_see_all_not_own_entries(client, registrant, monkeypatch):
     add_new_user(new_user)
-    add_a_proposal_as_user(new_user['email'], proposal_single_presenter())
-    add_a_proposal_as_user(new_user['email'], proposal_multiple_presenters_single_lead())
+    add_a_proposal_as_user(new_user['email'], get_proposal_single_presenter())
+    add_a_proposal_as_user(new_user['email'], get_proposal_multiple_presenters_single_lead())
     test_registered_reviewer_can_login(client, registrant, monkeypatch)
     get_and_check_content(client, '/review_list',
                           includes=(
@@ -149,8 +153,8 @@ def test_logged_in_reviewer_can_get_review_list_and_see_all_not_own_entries(clie
 
 def test_logged_in_reviewer_can_get_review_list_and_see_no_own_entries(client, registrant, monkeypatch):
     test_registered_reviewer_can_login(client, registrant, monkeypatch)
-    add_a_proposal_as_user(registrant['email'], proposal_single_presenter())
-    add_a_proposal_as_user(registrant['email'], proposal_multiple_presenters_single_lead())
+    add_a_proposal_as_user(registrant['email'], get_proposal_single_presenter())
+    add_a_proposal_as_user(registrant['email'], get_proposal_multiple_presenters_single_lead())
     get_and_check_content(client, '/review_list',
                           includes=(' – List of Proposals',),
                           excludes=(
@@ -162,8 +166,8 @@ def test_logged_in_reviewer_can_get_review_list_and_see_no_own_entries(client, r
 
 def test_logged_in_reviewer_can_get_review_proposal_for_not_own_entries(client, registrant, monkeypatch):
     add_new_user(new_user)
-    add_a_proposal_as_user(new_user['email'], proposal_single_presenter())
-    add_a_proposal_as_user(new_user['email'], proposal_multiple_presenters_single_lead())
+    add_a_proposal_as_user(new_user['email'], get_proposal_single_presenter())
+    add_a_proposal_as_user(new_user['email'], get_proposal_multiple_presenters_single_lead())
     test_registered_reviewer_can_login(client, registrant, monkeypatch)
     get_and_check_content(client, '/review_proposal/1',
                           includes=(' – Proposal to Review',),

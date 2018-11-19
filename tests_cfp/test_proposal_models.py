@@ -3,6 +3,8 @@ Test putting instances of various proposal related types into the database
 and retrieving values and creating new instances of equal value.
 """
 
+import pytest
+
 # Apparently unused but loading has crucial side effects
 import configure
 
@@ -11,37 +13,42 @@ from models.proposal import Proposal, Presenter, ProposalPresenter
 from models.score import Score, CommentForProposer
 from models.proposal_types import SessionType, ProposalState, SessionAudience
 
-from fixtures import registrant
-
-# PyCharm believes it isn't a used symbol, but it is.
+# PyCharm believes this is an used symbol, but it isn't.
 from test_utils.fixtures import database
 
-user_data = registrant()
-
-presenter_data = {
-    'email': user_data['email'],
-    'name': user_data['name'],
-    'bio': 'A member of the human race.',
-    'country': user_data['country'],
-}
-
-proposal_data = {
-    'title': 'TDD with C++',
-    'session_type': SessionType.quickie,
-    'summary': 'A session about creating C++ programs with proper process.',
-    'notes': 'Some notes to the committee',
-    'audience': SessionAudience.intermediate,
-}
+# PyCharm believes this is an used symbol, but it isn't.
+from fixtures import registrant
 
 
-def test_putting_proposal_in_database(database):
+@pytest.fixture
+def presenter_data(registrant):
+    return {
+        'email': registrant['email'],
+        'name': registrant['name'],
+        'bio': 'A member of the human race.',
+        'country': registrant['country'],
+    }
+
+
+@pytest.fixture
+def proposal_data():
+    return {
+        'title': 'TDD with C++',
+        'session_type': SessionType.quickie,
+        'summary': 'A session about creating C++ programs with proper process.',
+        'notes': 'Some notes to the committee',
+        'audience': SessionAudience.intermediate,
+    }
+
+
+def test_putting_proposal_in_database(database, registrant, presenter_data, proposal_data):
     """Put a proposal item into the database.
 
     A proposal has to be submitted by a user so tehre must be a user.
     Proposals must also have at least one presenter, by default the user is
     the lead presenter.
     """
-    user = User(**user_data)
+    user = User(**registrant)
     proposal = Proposal(user, **proposal_data)
     presenter = Presenter(**presenter_data)
     ProposalPresenter(proposal, presenter, True)
@@ -71,14 +78,14 @@ def test_putting_proposal_in_database(database):
     assert (proposal_presenter.email, proposal_presenter.name) == (user.email, user.name)
 
 
-def test_adding_review_and_comment_to_proposal_in_database(database):
+def test_adding_review_and_comment_to_proposal_in_database(database, registrant, presenter_data, proposal_data):
     """A reviewed proposal has a score and possible a comment added.
 
     Put a proposal with user and presenter into the database. Although this is not
     allowed in the application have the user score and comment on their proposal
     to show that this all works in the database.
     """
-    user = User(**user_data)
+    user = User(**registrant)
     proposal = Proposal(user, **proposal_data)
     presenter = Presenter(**presenter_data)
     ProposalPresenter(proposal, presenter, True)

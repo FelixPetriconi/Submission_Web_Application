@@ -12,13 +12,13 @@ from accuconf_cfp.utils import hash_passphrase
 
 from models.user import User
 
-# PyCharm fails to spot the use of this symbol as a fixture.
-from fixtures import registrant
-
 from test_utils.constants import login_menu_item, register_menu_item
 # PyCharm fails to spot this is used as a fixture.
 from test_utils.fixtures import client
 from test_utils.functions import get_and_check_content, post_and_check_content
+
+# PyCharm fails to spot this is used as a fixture.
+from fixtures import registrant
 
 
 def test_attempt_to_get_registration_page_outside_open_period_causes_redirect(client):

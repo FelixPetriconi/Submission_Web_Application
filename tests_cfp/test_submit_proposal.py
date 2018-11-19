@@ -16,20 +16,27 @@ from accuconf_cfp.views.submit import validate_presenters, validate_proposal_dat
 from models.user import User
 from models.proposal_types import SessionType, SessionAudience
 
-# PyCharm fails to spot the use of this symbol as a fixture.
-from fixtures import registrant
-
 from test_utils.constants import login_menu_item, register_menu_item, registration_update_menu_item
-# PyCharm fails to spot this is used as a fixture.
-from test_utils.fixtures import (client,
-                                 proposal_single_presenter, proposal_multiple_presenters_single_lead,
-                                 proposal_single_presenter_not_lead, proposal_single_presenter_lead_field_set_to_none,
-                                 proposal_single_presenter_no_lead_field, proposal_multiple_presenters_and_leads,
-                                 proposal_single_presenter_summary_field_is_none, proposal_single_presenter_no_summary_field,
-                                 proposal_single_presenter_title_field_too_short, proposal_single_presenter_summary_field_too_short,
-                                 proposal_single_presenter_presenters_field_empty_list, proposal_single_presenter_presenters_field_not_a_list,
-                                 )
+# PyCharm fails to spot some of these are used as fixtures.
+from test_utils.fixtures import (
+    client,
+    get_proposal_single_presenter, proposal_single_presenter,
+    get_proposal_multiple_presenters_single_lead, proposal_multiple_presenters_single_lead,
+    get_proposal_single_presenter_not_lead, proposal_single_presenter_not_lead,
+    get_proposal_single_presenter_lead_field_set_to_none, proposal_single_presenter_lead_field_set_to_none,
+    get_proposal_single_presenter_no_lead_field, proposal_single_presenter_no_lead_field,
+    get_proposal_multiple_presenters_and_leads, proposal_multiple_presenters_and_leads,
+    get_proposal_single_presenter_summary_field_is_none, proposal_single_presenter_summary_field_is_none,
+    get_proposal_single_presenter_no_summary_field, proposal_single_presenter_no_summary_field,
+    get_proposal_single_presenter_title_field_too_short, proposal_single_presenter_title_field_too_short,
+    get_proposal_single_presenter_summary_field_too_short, proposal_single_presenter_summary_field_too_short,
+    get_proposal_single_presenter_presenters_field_empty_list, proposal_single_presenter_presenters_field_empty_list,
+    get_proposal_single_presenter_presenters_field_not_a_list, proposal_single_presenter_presenters_field_not_a_list,
+)
 from test_utils.functions import get_and_check_content, post_and_check_content
+
+# PyCharm fails to spot this is used as a fixture.
+from fixtures import registrant
 
 
 def test_submit_not_available_when_not_open(client):
@@ -71,8 +78,8 @@ def test_proposal_update_success_not_available_when_not_open(client):
 
 
 @pytest.mark.parametrize('presenters', (
-    proposal_single_presenter()['presenters'],
-    proposal_multiple_presenters_single_lead()['presenters'],
+    get_proposal_single_presenter()['presenters'],
+    get_proposal_multiple_presenters_single_lead()['presenters'],
 ))
 def test_validate_presenters_works_with_valid_data(presenters):
     status, message = validate_presenters(presenters)
@@ -81,10 +88,10 @@ def test_validate_presenters_works_with_valid_data(presenters):
 
 
 @pytest.mark.parametrize('presenters', (
-    proposal_single_presenter_not_lead()['presenters'],
-    proposal_single_presenter_lead_field_set_to_none()['presenters'],
-    proposal_single_presenter_no_lead_field()['presenters'],
-    proposal_multiple_presenters_and_leads()['presenters'],
+    get_proposal_single_presenter_not_lead()['presenters'],
+    get_proposal_single_presenter_lead_field_set_to_none()['presenters'],
+    get_proposal_single_presenter_no_lead_field()['presenters'],
+    get_proposal_multiple_presenters_and_leads()['presenters'],
 ))
 def test_validate_presenters_fails_with_invalid_data(presenters):
     status, message = validate_presenters(presenters)
@@ -92,8 +99,8 @@ def test_validate_presenters_fails_with_invalid_data(presenters):
 
 
 @pytest.mark.parametrize('proposal', (
-    proposal_single_presenter(),
-    proposal_multiple_presenters_single_lead(),
+    get_proposal_single_presenter(),
+    get_proposal_multiple_presenters_single_lead(),
 ))
 def test_validate_proposal_data_succeeds_with_reasonable_data(proposal):
     status, message = validate_proposal_data(proposal)
@@ -102,16 +109,16 @@ def test_validate_proposal_data_succeeds_with_reasonable_data(proposal):
 
 
 @pytest.mark.parametrize('proposal', (
-    proposal_single_presenter_not_lead(),
-    proposal_single_presenter_lead_field_set_to_none(),
-    proposal_single_presenter_no_lead_field(),
-    proposal_single_presenter_summary_field_is_none(),
-    proposal_single_presenter_no_summary_field(),
-    proposal_single_presenter_title_field_too_short(),
-    proposal_single_presenter_summary_field_too_short(),
-    proposal_single_presenter_presenters_field_empty_list(),
-    proposal_single_presenter_presenters_field_not_a_list(),
-    proposal_multiple_presenters_and_leads(),
+    get_proposal_single_presenter_not_lead(),
+    get_proposal_single_presenter_lead_field_set_to_none(),
+    get_proposal_single_presenter_no_lead_field(),
+    get_proposal_single_presenter_summary_field_is_none(),
+    get_proposal_single_presenter_no_summary_field(),
+    get_proposal_single_presenter_title_field_too_short(),
+    get_proposal_single_presenter_summary_field_too_short(),
+    get_proposal_single_presenter_presenters_field_empty_list(),
+    get_proposal_single_presenter_presenters_field_not_a_list(),
+    get_proposal_multiple_presenters_and_leads(),
 ))
 def test_validate_proposal_data_fails_with_invalid_data(proposal):
     status, message = validate_proposal_data(proposal)
