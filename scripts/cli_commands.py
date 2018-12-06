@@ -251,10 +251,18 @@ def create_proposals_document():
                 proposals_file.write("'''\n\n*Constraints*" + cleanup_text(constraints) + '\n\n')
             non_pass_scores = tuple(r.score for r in p.scores if r.score != 0)
             proposals_file.write("'''\n\n*{}{}*\n\n".format(', '.join(str(score.score) for score in p.scores), ' — {:.2f}, {}'.format(mean(non_pass_scores), median(non_pass_scores)) if len(non_pass_scores) > 0 else ''))
-            for comment in p.comments:
-                c = comment.comment.strip()
-                if c:
-                    proposals_file.write("'''\n\n{}\n\n".format(c))
+            if p.comments_for_proposer:
+                proposals_file.write("*Comment for the Proposer*\n\n")
+                for comment in p.comments_for_proposer:
+                    c = comment.comment.strip()
+                    if c:
+                        proposals_file.write("'''\n\n{}\n\n".format(c))
+            if p.comments_for_committee:
+                proposals_file.write("*Comments for the Committee*\n\n")
+                for comment in p.comments_for_committee:
+                    c = comment.comment.strip()
+                    if c:
+                        proposals_file.write("'''\n\n{}\n\n".format(c))
             nonlocal proposals_processed
             proposals_processed += 1
 
