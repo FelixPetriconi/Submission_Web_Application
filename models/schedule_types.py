@@ -33,3 +33,5 @@ class Room(Enum):
     great_britain = 'SS Great Britain'
     wallace = 'Wallace'
     concorde = 'Concorde'
+    old_vic = 'Old Vic'
+    castle_view = 'Castle View'
