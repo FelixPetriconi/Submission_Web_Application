@@ -159,12 +159,13 @@ def list_keynotes():
 
 
 @app.cli.command()
-def insert_keynotes_from_files():
+@click.argument('keynotes_directory')
+def insert_keynotes_from_files(keynotes_directory):
     """Insert new keynote records from files in the keynote_directory directory."""
     # The directory contains one directory per keynote with person's name as the name.
     # The directory contains three files: details.txt, bio.adoc, and blurb.adoc.
     # The file details.txt contains key: value pairs one on each line, with title, email and country.
-    keynotes_directory = Path('keynote_data')
+    keynotes_directory = Path(keynotes_directory)
     if keynotes_directory.exists():
         keynote_presenter_directories = os.listdir(keynotes_directory.as_posix())
         if len(keynote_presenter_directories) != 4:
@@ -190,8 +191,14 @@ def insert_keynotes_from_files():
                 assert 'title' in details
                 assert 'email' in details
                 assert 'country' in details
-                proposal = Proposal(user, details['title'], SessionType.keynote, blurb, status=ProposalState.acknowledged)
-                presenter = Presenter(details['email'], directory.replace('_', ' '), bio, details['country'])
+                proposal = Proposal(user, details['title'], blurb, SessionType.keynote, status=ProposalState.acknowledged)
+                # Protect against the case that the keynote has submitted a proposal.
+                presenter = Presenter.query.filter_by(email=details['email']).all()
+                if presenter:
+                    assert len(presenter) == 1
+                    presenter = presenter[0]
+                else:
+                    presenter = Presenter(details['email'], directory.replace('_', ' '), bio, details['country'])
                 proposal_presenter = ProposalPresenter(proposal, presenter, True)
                 db.session.add(proposal)
                 db.session.add(presenter)
@@ -356,7 +363,7 @@ def ensure_consistency_of_schedule():
     accepted = Proposal.query.filter_by(status=ProposalState.accepted).all()
     acknowledged = Proposal.query.filter_by(status=ProposalState.acknowledged).all()
     if len(accepted) > 0:
-        print('####  There are accepted sessions that have not been acknowledged.')
+        print('####  There are accepted proposals that have not been acknowledged.')
         for a in accepted:
             print('\t' + a.title)
     accepted = accepted + acknowledged
@@ -410,7 +417,8 @@ def ensure_consistency_of_schedule():
                 elif presenter_counter[p] == 0:
                     print('####  Session {}, {} appears to have no presenters.'.format(day, session))
             for room in Room:
-                if room == Room.bristol_suite or room == Room.wallace:  # TODO Fix Me
+                #  Only use these five venues for conference sessions. Assume keynotes are properly sorted.
+                if room not in (Room.bristol_1, Room.bristol_2, Room.bristol_3, Room.empire, Room.great_britain):
                     continue
                 sessions_now = tuple(s for s in sessions if s.day == day and s.session == session and s.room == room)
                 if len(sessions_now) == 0:
@@ -610,14 +618,17 @@ _The schedule is subject to change without notice until {}._
                           single_column_entry(Room.empire.value),
                           single_column_entry(Room.great_britain.value),
                           single_column_entry(Room.wallace.value),
-                          single_column_entry(Room.concorde.value)),
+                          single_column_entry(Room.concorde.value),
+                          single_column_entry('Old Vic'),
+                      ),
                       row(first_column('10:00'),
                           single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.empire)[0])),
                           single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.great_britain)[0])),
                           single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.wallace)[0])),
                           single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.concorde)[0])),
-                          )
+                          single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.bristol_1)[0])),  # TODO fix this hack.
                       )
+                )
             )
 
         def get_keynote(day):
@@ -661,8 +672,8 @@ _The schedule is subject to change without notice until {}._
                     row(first_column('10:30'), all_columns_entry(cols ,'Break')),
                     row(first_column('11:00'), *get_sessions(id, SessionSlot.session_1)),
                     row(first_column('12:30'), all_columns_entry(cols, 'Lunch')),
-                    row(first_column('13:00'), all_columns_entry(cols, 'WIBU Workshop, Conservatory/ACCU Lounge')),
-                    row(first_column('13:45'), all_columns_entry(cols, '')),
+                    # row(first_column('13:00'), all_columns_entry(cols, 'WIBU Workshop, Conservatory/ACCU Lounge')),
+                    # row(first_column('13:45'), all_columns_entry(cols, '')),
                     row(first_column('14:00'), *get_sessions(id, SessionSlot.session_2)),
                     row(first_column('15:30'), all_columns_entry(cols, 'Break')),
                     row(first_column('16:00'), *get_sessions(id, SessionSlot.session_3)),
@@ -684,14 +695,13 @@ _The schedule is subject to change without notice until {}._
                     row(first_column('10:30'), all_columns_entry(cols ,'Break')),
                     row(first_column('11:00'), *get_sessions(id, SessionSlot.session_1)),
                     row(first_column('12:30'), all_columns_entry(cols, 'Lunch')),
-                    row(first_column('13:00'), all_columns_entry(cols, 'Code Club Workshop, Conservatory/ACCU Lounge')),
-                    row(first_column('13:45'), all_columns_entry(cols, '')),
+                    # row(first_column('13:00'), all_columns_entry(cols, 'Code Club Workshop, Conservatory/ACCU Lounge')),
+                    # row(first_column('13:45'), all_columns_entry(cols, '')),
                     row(first_column('14:00'), *get_sessions(id, SessionSlot.session_2)),
                     row(first_column('15:30'), all_columns_entry(cols, 'Break')),
                     row(first_column('16:00'), *get_sessions(id, SessionSlot.session_3)),
                     row(first_column('17:30'), all_columns_entry(cols, 'Break')),
                     row(first_column('18:00'), all_columns_entry(cols, 'Lightning Talks (1 hour, Empire)')),
-                    row(first_column('19:30'), all_columns_entry(cols, 'Conference Dinner (19:30 for drinks, 20:00 service)'))
                 )
             )
 
@@ -707,14 +717,14 @@ _The schedule is subject to change without notice until {}._
                     row(first_column('10:30'), all_columns_entry(cols ,'Break')),
                     row(first_column('11:00'), *get_sessions(id, SessionSlot.session_1)),
                     row(first_column('12:30'), all_columns_entry(cols, 'Lunch')),
-                    row(first_column('13:00'), all_columns_entry(cols, 'ACCU – The View From The Conference, Conservatory/ACCU Lounge')),
-                    row(first_column('13:45'), all_columns_entry(cols, '')),
+                    # row(first_column('13:00'), all_columns_entry(cols, 'ACCU – The View From The Conference, Conservatory/ACCU Lounge')),
+                    # row(first_column('13:45'), all_columns_entry(cols, '')),
                     row(first_column('14:00'), *get_sessions(id, SessionSlot.session_2)),
                     row(first_column('15:30'), all_columns_entry(cols, 'Break')),
                     row(first_column('16:00'), *get_sessions(id, SessionSlot.session_3)),
                     row(first_column('17:30'), all_columns_entry(cols, 'Break')),
                     row(first_column('18:00'), all_columns_entry(cols, 'Lightning Talks (1 hour, Bristol Suite)')),
-                    row(first_column('19:00'), all_columns_entry(cols, 'Bloomberg Event'))
+                    row(first_column('19:30'), all_columns_entry(cols, 'Conference Dinner (19:30 for drinks, 20:00 service)'))
                 )
             )
 
