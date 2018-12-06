@@ -159,13 +159,12 @@ def list_keynotes():
 
 
 @app.cli.command()
-@click.argument('keynotes_directory')
-def insert_keynotes_from_files(keynotes_directory):
+def insert_keynotes_from_files():
     """Insert new keynote records from files in the keynote_directory directory."""
     # The directory contains one directory per keynote with person's name as the name.
     # The directory contains three files: details.txt, bio.adoc, and blurb.adoc.
     # The file details.txt contains key: value pairs one on each line, with title, email and country.
-    keynotes_directory = Path(keynotes_directory)
+    keynotes_directory = Path(__file__).parent.parent / 'keynotes_directory'
     if keynotes_directory.exists():
         keynote_presenter_directories = os.listdir(keynotes_directory.as_posix())
         if len(keynote_presenter_directories) != 4:
@@ -896,39 +895,38 @@ def replace_passphrase_of_user(email, passphrase):
 
 
 @app.cli.command()
-@click.argument('person')
-def replace_presenter_of_proposal(person):
+@click.argument('old_presenter_name')
+def replace_presenter_of_proposal(old_presenter_name):
     """Replace the, or one of the, presenters associated with a proposal.
 
-    The name is in the format <first_name>_<last_name> and refers to a directory
-    in presenter_replacements directory. This directory must contain a file
-    title.txt with the title of the proposal to be presented by the person being replaced.
-    There must also be a file new_presenter.txt with details of the replacement presenter.
+    old_presenter_name refers to a directory in the presenter_replacements
+    directory. This directory must contain a file title.txt with the title of
+    the proposal to be presented by the person being replaced. There must also
+    be a file new_presenter.txt with details of the replacement presenter.
     This file must contain a line for each of the fields of a Presenter object:
-    email, first_name, last_name, country, state, and then an Asciidoc paragraph for the bio.
+    email, name, country, and then an Asciidoc paragraph for the bio.
 
-    :param person: name of a directory in the presenter_replacements directory
+    :param old_presenter_name: name of a directory in the presenter_replacements directory
     :return: None
     """
-    directory = Path(__file__).parent.parent / 'presenter_replacements' / person
+    directory = Path(__file__).parent.parent / 'presenter_replacements' / old_presenter_name
     if not directory.exists():
-        print(person + ' replacement not set up correctly')
+        print(old_presenter_name + ' replacement not set up correctly')
         return
     title_file = directory / 'title.txt'
     if not title_file.exists():
-        print('no title.txt file for {} replacement'.format(person))
+        print('no title.txt file for {} replacement'.format(old_presenter_name))
         return
     with open(str(title_file)) as f:
         title = f.read().strip()
     new_presenter_file = directory / 'new_presenter.txt'
     if not new_presenter_file.exists():
-        print('no new_presenter.txt file for {} replacement'.format(person))
+        print('no new_presenter.txt file for {} replacement'.format(old_presenter_name))
         return
     with open(str(new_presenter_file)) as f:
         email = f.readline().strip()
         name = f.readline().strip()
         country = f.readline().strip()
-        state = f.readline().strip()
         bio = f.read().strip()
     proposal = Proposal.query.filter_by(title=title).all()
     if len(proposal) == 0:
@@ -938,24 +936,23 @@ def replace_presenter_of_proposal(person):
         print('Multiple proposals with the title: ' + title)
         return
     proposal = proposal[0]
-    f_name, l_name = tuple(p.capitalize() for p in person.split('_'))
-    old_presenter = Presenter.query.filter_by(name=f_name, last_name=l_name).all()
+    old_presenter = Presenter.query.filter_by(name=old_presenter_name).all()
     if len(old_presenter) == 0:
-        print('No presenter found with name: {} {}'.format(f_name, l_name))
+        print('No presenter found with name: {}'.format(old_presenter_name))
         return
     if len(old_presenter) > 1:
-        print('Multiple presenters found with name: {} {}'.format(f_name, l_name))
+        print('Multiple presenters found with name: {}'.format(old_presenter_name))
         return
     old_presenter = old_presenter[0]
     proposal_presenter = ProposalPresenter.query.filter_by(proposal=proposal, presenter=old_presenter).all()
     if len(proposal_presenter) == 0:
-        print('No proposal_presenter found with title {}, and name {} {}'.format(proposal.title, old_presenter.first_name, old_presenter.last_name))
+        print('No proposal_presenter found with title {}, and name {}'.format(proposal.title, old_presenter.name))
         return
     if len(proposal_presenter) > 1:
-        print('Multiple proposal_presenters found with title {}, and name {} {}'.format(proposal.title, old_presenter.first_name, old_presenter.last_name))
+        print('Multiple proposal_presenters found with title {}, and name {}'.format(proposal.title, old_presenter.name))
         return
     proposal_presenter = proposal_presenter[0]
-    new_presenter = Presenter(email, first_name, last_name, bio, country, state)
+    new_presenter = Presenter(email, name, bio, country)
     print(proposal.title)
     print(old_presenter.email)
     print(new_presenter.email)
@@ -965,7 +962,7 @@ def replace_presenter_of_proposal(person):
         return
     proposal_presenter.presenter = new_presenter
     print(proposal_presenter, proposal_presenter.proposal, proposal_presenter.presenter, proposal_presenter.is_lead)
-    #db.session.commit()
+    db.session.commit()
 
 
 # TODO Remove this when data model is correct.
