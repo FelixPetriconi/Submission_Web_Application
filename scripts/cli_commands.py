@@ -437,7 +437,7 @@ def ensure_consistency_of_schedule():
                     s = sessions_now[0]
                     if s.quickie_slot is not None:
                         print('####  Session listed as quickies scheduled as a session: {}, {}, {}, {}.'.format(s.title, day, session, room))
-    presenter_counter = Counter(p.presenter for s in sessions if s.session_type != SessionType.quickie and s.session_type != SessionType.fulldayworkshop for p in s.proposal_presenters if p.is_lead)
+    presenter_counter = Counter(p.presenter for s in sessions if s.session_type != SessionType.quickie and s.session_type != SessionType.fulldayworkshop and s.session_type != SessionType.keynote for p in s.proposal_presenters if p.is_lead)
     for p in presenter_counter:
         if presenter_counter[p] > 1:
             print('####  {} has more than one 90 minute session.'.format(p.email))
