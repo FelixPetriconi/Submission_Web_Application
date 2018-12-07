@@ -619,6 +619,7 @@ _The schedule is subject to change without notice until {}._
                           single_column_entry(Room.wallace.value),
                           single_column_entry(Room.concorde.value),
                           single_column_entry('Old Vic'),
+                          single_column_entry('Castle View'),
                       ),
                       row(first_column('10:00'),
                           single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.empire)[0])),
@@ -626,6 +627,7 @@ _The schedule is subject to change without notice until {}._
                           single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.wallace)[0])),
                           single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.concorde)[0])),
                           single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.bristol_1)[0])),  # TODO fix this hack.
+                          single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.bristol_2)[0])),  # TODO fix this hack.
                       )
                 )
             )
@@ -744,7 +746,7 @@ _The schedule is subject to change without notice until {}._
                     row(first_column('14:30'), *get_sessions(id, SessionSlot.session_3)),
                     row(first_column('16:00'), all_columns_entry(cols, 'Break')),
                     row(first_column('16:30'), all_columns_block(cols, single_column_entry(*session_and_presenters(get_keynote(id))))),
-                    row(first_column('17:30'), all_columns_entry(cols, 'Close')),
+                    row(first_column('18:00'), all_columns_entry(cols, 'Close')),
                 )
             )
 
