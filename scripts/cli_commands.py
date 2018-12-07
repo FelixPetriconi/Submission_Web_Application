@@ -640,6 +640,12 @@ _The schedule is subject to change without notice until {}._
         def find_entry(day, session, room):
             ss = tuple(p for p in sessions if p.day == day and p.session == session and p.room == room)
             if len(ss) == 0:
+                if session != SessionSlot.session_1:
+                    previous_session = SessionSlot.session_1 if session == SessionSlot.session_2 else SessionSlot.session_2
+                    sss = tuple(p for p in sessions if p.day == day and p.session == previous_session and p.room == room)
+                    assert len(sss) == 1
+                    if sss[0].session_type == SessionType.longworkshop:
+                        return single_column_entry('(continuation of 180 minute workshop)')
                 click.echo(click.style('Got no sessions for {}, {}, {}.'.format(day, session, room), fg='red'))
                 return single_column_entry('TBC')
             elif len(ss) == 1:
