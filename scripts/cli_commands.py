@@ -421,7 +421,15 @@ def ensure_consistency_of_schedule():
                     continue
                 sessions_now = tuple(s for s in sessions if s.day == day and s.session == session and s.room == room)
                 if len(sessions_now) == 0:
-                    print('####  {}, {}, {} appears empty'.format(day, session, room))
+                    session_is_empty = True
+                    if session != SessionSlot.session_1:
+                        previous_session_slot = SessionSlot.session_1 if session == SessionSlot.session_2 else SessionSlot.session_2
+                        previous_session = tuple(s for s in sessions if s.day == day and s.session == previous_session_slot and s.room == room)
+                        assert len(previous_session) == 1
+                        if previous_session[0].session_type == SessionType.longworkshop:
+                            session_is_empty = False
+                    if session_is_empty:
+                        print('####  {}, {}, {} appears empty'.format(day, session, room))
                 elif len(sessions_now) > 1:
                     quickies = tuple(s for s in sessions_now if s.quickie_slot is not None)
                     if len(sessions_now) > len(quickies):
