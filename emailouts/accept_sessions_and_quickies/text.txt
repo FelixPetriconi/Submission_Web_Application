@@ -1,13 +1,13 @@
-Hi {},
+{},
 
-You submitted the {} session proposal for ACCU 2018:
+You submitted the {} session proposal for ACCU 2019:
 
 {}
 
 Thanks again for making the submission. We would like to accept this session
-into the ACCU 2018 programme, and would be very pleased if the named
+into the ACCU 2019 programme, and would be very pleased if the named
 presenter(s) are willing and able to put the session on.
 {}
 If we could get you to email us back as soon as you able either accepting or
 declining this acceptance offer, it would be very much appreciated, so that
-we can get on with finalising the schedule and thus publishing it.
+we can get on with finalising the schedule and then publishing it.

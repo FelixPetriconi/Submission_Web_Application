@@ -14,7 +14,7 @@ from statistics import mean, median
 
 from email.mime.text import MIMEText
 from email.utils import formatdate
-from smtplib import SMTP
+from smtplib import SMTP, SMTPException
 
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
@@ -812,7 +812,7 @@ def do_emailout(trial, emailout_spec):
                 )
             else:
                 print('####  No data of person to send email to.')
-                return 1
+                return
             print('Subject:', subject)
             print('Recipient:', email_address)
             if proposal is not None:
@@ -824,7 +824,11 @@ def do_emailout(trial, emailout_spec):
                 message['Cc'] = 'ACCUConf <conference@accu.org>'
             message['Subject'] = subject
             message['Date'] = formatdate()  # RFC 2822 format.
-            server.send_message(message)
+            try:
+                refusals = server.send_message(message)
+                assert len(refusals) == 0
+            except SMTPException as e:
+                click.echo(click.style('SMTP failed in some way: {}'.format(e), fg='red'))
 
     if trial:
         click.echo(click.style('Sending a test emailout via Winder server.', fg='green'))
