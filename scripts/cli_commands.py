@@ -425,8 +425,7 @@ def ensure_consistency_of_schedule():
                     if session != SessionSlot.session_1:
                         previous_session_slot = SessionSlot.session_1 if session == SessionSlot.session_2 else SessionSlot.session_2
                         previous_session = tuple(s for s in sessions if s.day == day and s.session == previous_session_slot and s.room == room)
-                        assert len(previous_session) == 1
-                        if previous_session[0].session_type == SessionType.longworkshop:
+                        if len(previous_session) == 1 and previous_session[0].session_type == SessionType.longworkshop:
                             session_is_empty = False
                     if session_is_empty:
                         print('####  {}, {}, {} appears empty'.format(day, session, room))
