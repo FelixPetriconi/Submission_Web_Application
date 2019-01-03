@@ -439,7 +439,7 @@ def ensure_consistency_of_schedule():
                             print('\t' + ('(quickie) ' if s in quickies else '') + s.title)
                     else:
                         if len(quickies) != 4:
-                            print('#### Too few quickies in {}, {}, {}'.format(day, session, room))
+                            print('####  Too few quickies in {}, {}, {}'.format(day, session, room))
                 else:
                     s = sessions_now[0]
                     if s.quickie_slot is not None:
