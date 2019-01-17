@@ -1,14 +1,18 @@
 Hi {},
 
-You submitted the {} session proposal for ACCU 2018:
+You submitted the {} session proposal for ACCU 2019:
 
 {}
 
-We sent out an email just before the end of 2017 thanking you for making the
+We sent out an email just before the end of 2018 thanking you for making the
 submission and stating that we would like to accept this session into the ACCU
-2018 programme. We asked if the named presenter(s) are willing and able to put
-the session on, and if you could get back to use quickly telling us if you were
+2019 programme. We asked if the named presenter(s) are willing and able to put
+the session on, and if you could get back to use telling us if you were
 either accepting or declining this acceptance offer. We have no record of
 receiving an email back from you. We are not able to publish the conference
 schedule till we have all the sessions acknowledged. We would appreciate it if
 you can email us immediately.
+
+Of course it may be that our email didn't reach you, hopefully this one does.
+
+Another alternative is that you replied and it never got to us.
