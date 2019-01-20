@@ -518,6 +518,7 @@ def generate_pages():
                 .replace('–', '')
                 .replace('—', '')
                 .replace('&', 'and')
+                .replace('#', '')
         )
 
     def cppmark(text):
