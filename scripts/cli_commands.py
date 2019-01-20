@@ -503,6 +503,7 @@ def generate_pages():
                 .replace("'", '')
                 .replace('-', '')
                 .replace(':', '')
+                .replace(';', '')
                 .replace('.', '')
                 .replace(' ', '')
                 .replace('(', '')
@@ -881,9 +882,9 @@ def edit(selector, values):
             click.echo(click.style('Multiple proposal with this title found.', fg='red'))
         else:
             proposal = proposals[0]
-            datum = click.edit(proposal.text)
+            datum = click.edit(proposal.summary)
             if datum is not None and datum != proposal.title:
-                proposal.text = datum
+                proposal.summary = datum
                 db.session.commit()
                 click.echo(click.style('Blurb updated.', fg='green'))
             else:
