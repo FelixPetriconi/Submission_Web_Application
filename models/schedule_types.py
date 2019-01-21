@@ -35,3 +35,4 @@ class Room(Enum):
     concorde = 'Concorde'
     old_vic = 'Old Vic'
     castle_view = 'Castle View'
+    conservatory = 'Conservatory'

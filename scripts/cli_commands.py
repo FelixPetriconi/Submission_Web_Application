@@ -629,7 +629,7 @@ _The schedule is subject to change without notice until {}._
                           single_column_entry(Room.concorde.value),
                           single_column_entry('Old Vic'),  # TODO fix this hack
                           single_column_entry('Castle View'),  # TODO fix this hack
-                          single_column_entry('TBA'),  # TODO fix this hack
+                          single_column_entry('Conservatory'),  # TODO fix this hack
                       ),
                       row(first_column('10:00'),
                           single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.empire)[0])),
