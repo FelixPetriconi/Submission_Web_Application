@@ -629,7 +629,6 @@ _The schedule is subject to change without notice until {}._
                           single_column_entry(Room.concorde.value),
                           single_column_entry('Old Vic'),  # TODO fix this hack
                           single_column_entry('Castle View'),  # TODO fix this hack
-                          single_column_entry('Conservatory'),  # TODO fix this hack
                       ),
                       row(first_column('10:00'),
                           single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.empire)[0])),
@@ -638,7 +637,6 @@ _The schedule is subject to change without notice until {}._
                           single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.concorde)[0])),
                           single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.bristol_1)[0])),  # TODO fix this hack.
                           single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.bristol_2)[0])),  # TODO fix this hack.
-                          single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.bristol_3)[0])),  # TODO fix this hack.
                           )
                 )
             )
@@ -778,7 +776,7 @@ _The schedule is subject to change without notice until {}._
 def deploy_new_schedule_files():
     """Copy the three generated Asciidoc pages for the schedule, sessions,
     and presenters to their place in the static stories area."""
-    destination = Path('..') / 'Website' / 'pages' / str(start_date.year)
+    destination = Path('..') / 'ACCUConf_Website' / 'pages' / str(start_date.year)
     for name in ('sessions.adoc', 'presenters.adoc', 'schedule.adoc'):
         shutil.copyfile(name, str(destination / name))
 
