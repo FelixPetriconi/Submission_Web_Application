@@ -611,8 +611,13 @@ _The schedule is subject to change without notice until {}._
             return '{}+^'.format(cols) + data
 
         def session_and_presenters(proposal):
-            #  TODO  Put the lead presenter first in the tuple.
-            return (session_link(proposal), '', *tuple(presenter_link(p) for p in proposal.presenters))
+            return (session_link(proposal), '', *tuple(presenter_link(p) for p in sorted(proposal.presenters,
+                                                                                         key=lambda presenter: 1 == len(
+                                                                                             list(filter(
+                                                                                                 lambda
+                                                                                                     proposal_presenter: proposal_presenter.is_lead and proposal_presenter.presenter_id == presenter.id and proposal.id == proposal_presenter.proposal_id,
+                                                                                                 presenter.presenter_proposals))),
+                                                                                         reverse=True)))
 
         def schedule_write(text):
             schedule_file.write(text.replace('C++', '{cpp}'))
