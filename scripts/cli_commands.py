@@ -708,7 +708,7 @@ _The schedule is subject to change without notice until {}._
                     row(first_column('09:30'), all_columns_block(cols, single_column_entry(*session_and_presenters(get_keynote(id))))),
                     row(first_column('10:30'), all_columns_entry(cols ,'Break')),
                     row(first_column('11:00'), *get_sessions(id, SessionSlot.session_1)),
-                    row(first_column('12:30'), all_columns_entry(cols, 'Lunch')),
+                    row(first_column('12:30'), all_columns_entry(cols, 'Lunch +\n +\nBook Signings: Anthony Williams, Frances Buontempo, Ivan Čukić, Jonathan Boccarra')),
                     row(first_column('14:00'), *get_sessions(id, SessionSlot.session_2)),
                     row(first_column('15:30'), all_columns_entry(cols, 'Break')),
                     row(first_column('16:00'), *get_sessions(id, SessionSlot.session_3)),
