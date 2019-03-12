@@ -641,9 +641,8 @@ _The schedule is subject to change without notice until {}._
                           single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.concorde)[0])),
                           single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.old_vic)[0])),
                           ),
-                      row(first_column('18:00'), all_columns_entry(6, 'Break')),
-                      row(first_column('19:00'),
-                          all_columns_entry(6, 'Agile Bath & Bristol User Group Meeting (Bristol 3)')),
+                      row(first_column('18:00'), all_columns_entry(5, 'Break')),
+                      row(first_column('19:00'), all_columns_entry(5, 'Agile Bath & Bristol User Group Meeting (Bristol 3)')),
                 )
             )
 
