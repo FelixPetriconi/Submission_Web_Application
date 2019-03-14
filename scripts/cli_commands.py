@@ -710,7 +710,7 @@ _The schedule is subject to change without notice until {}._
                     row(first_column('16:00'), *get_sessions(id, SessionSlot.session_3)),
                     row(first_column('17:30'), all_columns_entry(cols, 'Break')),
                     row(first_column('18:00'), all_columns_entry(cols, 'Lightning Talks (1 hour, Bristol Suite)')),
-                    row(first_column('19:15'), single_column_entry(''), single_column_entry(''), single_column_entry(''), single_column_entry('Girl Geeks'), single_column_entry('Audio Developer Meetup'),),
+                    row(first_column('19:15'), all_columns_entry(3, ''), single_column_entry('Girl Geeks'), single_column_entry('Audio Developer Meetup'),),
                 )
             )
 
@@ -730,7 +730,7 @@ _The schedule is subject to change without notice until {}._
                     row(first_column('15:30'), all_columns_entry(cols, 'Break')),
                     row(first_column('16:00'), *get_sessions(id, SessionSlot.session_3)),
                     row(first_column('17:30'), all_columns_entry(cols, 'Break')),
-                    row(first_column('17:45'), all_columns_entry(cols, 'Lightning Talks (1 hour, Bristol Suite)')),
+                    row(first_column('17:45'), single_column_entry(''), all_columns_entry(2, 'Lightning Talks (1 hour)'), all_columns_entry(2, '')),
                     row(first_column('19:45'), all_columns_entry(cols, 'Conference Dinner (19:45 for drinks, 20:15 service)')),
                     row(first_column('22:15'), all_columns_entry(cols, 'http://www.echoborg.com/[Echoborg]')),
                 )
