@@ -623,27 +623,17 @@ _The schedule is subject to change without notice until {}._
             schedule_file.write(text.replace('C++', '{cpp}'))
 
         def create_workshops_day():
-            workshop_data = tuple(single_column_entry(*session_and_presenters(item)) for item in workshops)
+            workshop_count = len(workshops)
+            #  Set out the rooms to be used for the workshops.
+            workshop_rooms = (Room.empire, Room.great_britain, Room.wallace, Room.concorde, Room.old_vic)
+            assert workshop_count == len(workshop_rooms), 'Number of workshops and number of rooms assigned not equal.'
             schedule_write(
                 heading(day_names[start_date.weekday()] + ' ' + start_date.isoformat()) +
-                table(len(workshop_data) + 1,
-                      row(first_column(''),
-                          single_column_entry(Room.empire.value),
-                          single_column_entry(Room.great_britain.value),
-                          single_column_entry(Room.wallace.value),
-                          single_column_entry(Room.concorde.value),
-                          single_column_entry(Room.old_vic.value),
-                      ),
-                      row(first_column('10:00'),
-                          single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.empire)[0])),
-                          single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.great_britain)[0])),
-                          single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.wallace)[0])),
-                          single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.concorde)[0])),
-                          single_column_entry(*session_and_presenters(tuple(p for p in workshops if p.room == Room.old_vic)[0])),
-                          ),
-                      row(first_column('18:00'), all_columns_entry(6, 'Break')),
-                      row(first_column('19:00'),
-                          all_columns_entry(6, 'Agile Bath & Bristol User Group Meeting (Bristol 3)')),
+                table(workshop_count + 1,
+                      row(first_column(''), *tuple(single_column_entry(r.value) for r in workshop_rooms)),
+                      row(first_column('10:00'), *tuple(single_column_entry((*session_and_presenters(tuple(p for p in workshops if p.room == r)[0]))) for r in workshop_rooms)),
+                      row(first_column('18:00'), all_columns_entry(workshop_count, 'Break')),
+                      row(first_column('19:00'), all_columns_entry(workshop_count, 'Agile Bath & Bristol User Group Meeting (Bristol 3)')),
                 )
             )
 
@@ -714,13 +704,13 @@ _The schedule is subject to change without notice until {}._
                     row(first_column('09:30'), all_columns_block(cols, single_column_entry(*session_and_presenters(get_keynote(id))))),
                     row(first_column('10:30'), all_columns_entry(cols ,'Break')),
                     row(first_column('11:00'), *get_sessions(id, SessionSlot.session_1)),
-                    row(first_column('12:30'), all_columns_entry(cols, 'Lunch +\n +\nBook Signings: Anthony Williams, Frances Buontempo, Ivan Čukić, Jonathan Boccarra')),
+                    row(first_column('12:30'), all_columns_entry(cols, 'Lunch +\n +\nBook Signings: Anthony Williams, Frances Buontempo, Ivan Čukić, Jonathan Boccarra (Conservatory)')),
                     row(first_column('14:00'), *get_sessions(id, SessionSlot.session_2)),
                     row(first_column('15:30'), all_columns_entry(cols, 'Break')),
                     row(first_column('16:00'), *get_sessions(id, SessionSlot.session_3)),
                     row(first_column('17:30'), all_columns_entry(cols, 'Break')),
                     row(first_column('18:00'), all_columns_entry(cols, 'Lightning Talks (1 hour, Bristol Suite)')),
-                    row(first_column('19:15'), all_columns_entry(cols, 'Girl Geeks (Empire)')),
+                    row(first_column('19:15'), single_column_entry(''), single_column_entry(''), single_column_entry(''), single_column_entry('Girl Geeks'), single_column_entry('Audio Developer Meetup'),),
                 )
             )
 
