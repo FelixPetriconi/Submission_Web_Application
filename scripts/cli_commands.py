@@ -712,7 +712,7 @@ _The schedule is subject to change without notice until {}._
                     row(first_column('16:00'), *get_sessions(id, SessionSlot.session_3)),
                     row(first_column('17:30'), all_columns_entry(cols, 'Break')),
                     row(first_column('18:00'), all_columns_entry(cols, 'Lightning Talks (1 hour, Bristol Suite)')),
-                    row(first_column('19:15'), all_columns_entry(3, ''), single_column_entry('Girl Geeks'), single_column_entry('Audio Developer Meetup'),),
+                    row(first_column('19:15'), all_columns_entry(3, ''), single_column_entry('Girl Geeks +\n(https://www.eventbrite.co.uk/e/girlgeekdinners-support-at-the-accu-sponsored-by-bloomberg-tickets-59358016425[Please register])'), single_column_entry('Audio Developer Meetup'),),
                 )
             )
 
